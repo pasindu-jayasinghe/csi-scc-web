@@ -1,0 +1,254 @@
+
+<div class="container pl-20 pr-20">
+  <div class="mb-12">
+    <h4 class="mt-4" *ngIf="projectType ===  projectTypesEnum.GHG">{{ isNewEntry ? "Add" : isView ? "View": "Edit" }} Electricity</h4>
+    <h4 class="mt-4" *ngIf="projectType ===  projectTypesEnum.SBT">{{ isNewEntry ? "Add" : isView ? "View": "Edit" }} Indirect Emissions from Purchased Electricity</h4>
+  </div>
+  <form #fData="ngForm" (ngSubmit)="save(fData)">
+    <div class="card">
+
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Unit *</label>
+              <app-unit-select [isView]="isView" [unit]="selectedUnit" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>                
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Project *</label>
+              <app-project-select [isView]="isView" [unit]="selectedUnit" [project]="selectedProject" (onUpdateProject)="onChangeProject($event)" [data]="fData"></app-project-select>               
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label>Year *</label>
+              <input
+                [disabled]="true"
+                type="text"
+                name="year"
+                [(ngModel)]="electricity.year"
+                class="form-control"
+                placeholder="Enter Year"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label>Month *</label>
+              <div>
+                <p-dropdown
+                  [disabled]="isView"
+                  name="month"
+                  [options]="months"
+                  #fmonth="ngModel"
+                  [(ngModel)]="month"
+                  (onChange)="monthCgange()"
+                  placeholder="Select ..."
+                  optionLabel="name"
+                  [required]="true"
+                  appendTo="body"
+                ></p-dropdown>
+              </div>
+              <p
+              class="info-message text-danger"
+              *ngIf="
+                !month &&
+                (fData.submitted ||
+                fmonth.touched ||
+                fmonth.dirty)
+              "
+              >
+              This is a mandatory field
+            </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label>Meter No *</label>
+              <input
+                [disabled]="isView"
+                type="text"
+                name="firstname"
+                [(ngModel)]="electricity.meterNo"
+                class="form-control"
+                placeholder="Enter meter no"
+                required
+              />
+              <p
+                class="info-message text-danger" *ngIf="!electricity.meterNo&& (fData.submitted)">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label>Consumption *</label>
+
+              <div class="row">
+                <p-inputNumber 
+                  [min]="0"
+                  [disabled]="isView"
+                  type="number"
+                  name="consumption"
+                  [(ngModel)]="electricity.consumption"
+                  class="col-8"
+                  placeholder="Enter consumption value"
+                  style="width: 64%; "
+                  mode="decimal"
+                  [minFractionDigits]="2"
+                  [maxFractionDigits]="5"
+                ></p-inputNumber >
+                <p-dropdown
+                  [disabled]="isView"
+                  name="consumptionunits"
+                  [options]="units.consumption"
+                  [(ngModel)]="unit"
+                  #funit="ngModel"
+                  [autoDisplayFirst]="true"
+                  optionLabel="label"
+                  class=" col-4"
+                ></p-dropdown>
+              </div>
+              <p class="info-message text-danger" *ngIf=" !electricity.consumption && (fData.submitted)">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isView || !isNewEntry">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label>Emission (tCO<sub>2</sub>) *</label>
+              <input
+                [disabled]="true"
+                type="text"
+                name="emission"
+                [ngModel]="electricity.emission | number:'1.0-5'"
+                class="form-control"
+                placeholder="Enter the last name"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div>
+        <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+          One or more mandatory fields should be filled before save action.
+        </p>
+      </div>
+
+      
+
+      <br>
+      <div id="basic" class="row" *ngIf="puesData && puesData.sourceType && puesData.sourceType.toString() === 'B'">
+        <div class="col-1" style="margin-left: 10px;">                    
+          <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="true"></p-radioButton>
+          <label class="radio-l">Mobile</label>
+        </div> 
+
+        <div class="col-2" style="margin-left: 10px;">                    
+          <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="false"></p-radioButton>
+          <label class="radio-l">Stationary</label>
+        </div> 
+        <div class="col-9" style="margin-left: 10px;"> </div>
+        <br>
+      </div>
+
+
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="puesData && !puesData.clasification">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Ownership *</label>
+              <p-dropdown
+                [disabled]="isView"
+                name="ownership"
+                [options]="ownerships"
+                [(ngModel)]="electricity.ownership"
+                #fOwnership="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                optionValue="name"
+                appendTo="body"
+                ></p-dropdown>           
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
+
+
+
+      <div class="row p-grid p-fluid col-md-6 col-sm-6">
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+          <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+            Back
+          </button>
+        </div>
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+          <button *ngIf="!isNewEntry && deletable && !isView" class="btn btn-danger text-uppercase" type="button"
+            (click)="onDeleteClick()">
+            Delete
+          </button>
+        </div>
+        <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+          <button [disabled]="creating || !puesAssigned || isDuplicated" class="btn btn-primary text-uppercase" type="submit" *ngIf="!isView">
+            Save
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div *ngIf="creating" class="d-flex col-6 justify-content-end">
+          <p class="info-message text-warning mt-2" *ngIf="true">
+            please wait a moment...
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+ <!-- <p-toast position="top-right"></p-toast> -->
+  <!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+
+
+
+

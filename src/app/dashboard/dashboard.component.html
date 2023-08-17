@@ -1,0 +1,193 @@
+<!-- <div>
+    <div class="dahsboard-header">
+        <h1>Hello </h1>
+        <h2>We are on a mission to help take actions against climate change.</h2>
+    </div>
+    <div class="dashboard-wrapper container pl-20 pr-20">
+        <div class="row">
+            <div class="col-md-4">
+            <div class="card">
+                <h6>Sample Widget</h6>
+            </div>
+            </div>
+            <div class="col-md-8">
+            <div class="card">
+                <h6>Sample Widget</h6>
+            </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+            <div class="card">
+                <h6>Sample Widget</h6>
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div class="card">
+                <h6>Sample Widget</h6>
+            </div>
+            </div>
+        </div>
+        <div class="p-grid p-fluid card">
+            <div class="col-6 row">
+                <p class="col-3 card-text">Project Type</p>
+                <p-dropdown 
+                    name="projectType"
+                    [options]="projectTypes"
+                    [(ngModel)]="projectType"
+                    #ftype="ngModel"
+                    placeholder="Project Type"
+                    class="col-4"
+                ></p-dropdown>
+            </div>
+            <br >
+            <div class="" *ngIf="unit">
+                <app-project-emission-chart 
+                    [unitId]="unit.id"
+                    [projectType]="projectType"
+                ></app-project-emission-chart>
+            </div>
+            <div class=""  *ngIf="unit">
+                <app-es-emission-chart 
+                    [unitId]="unit.id"
+                    [projectType]="projectType"
+                ></app-es-emission-chart>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+</div>
+
+
+<ngx-org-chart direction="horizontal" [nodes]="nodes" (itemClick)="test($event)"></ngx-org-chart>-->
+
+
+
+<div class="dashboard-wrapper container pl-20 pr-20 pt-50">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card top-details">
+                <div class="row">
+                    <div class="col head-record"   *ngIf="isCSIUser">
+                        <p>Organisations Registered</p>
+                        <h4 class="one">{{orgs}}</h4>
+                    </div>
+                    <div class="col head-record">
+                        <p>Users Registered</p>
+                        <h4 class="two">{{users}}</h4>
+                    </div>
+                    <div class="col head-record">
+                        <p>Active Projects</p>
+                        <h4 class="three">{{activeProjects}}</h4>
+                    </div>
+                    <div class="col head-record last">
+                        <p>Closed Projects</p>
+                        <h4 class="four">{{closedProjects}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="p-grid p-fluid">
+        <div class="row">
+            <div class="col-5 row">
+                <p class="col-3 card-text">Project Type</p>
+                <p-dropdown 
+                    name="projectType"
+                    [options]="projectTypes"
+                    [(ngModel)]="projectType"
+                    #ftype="ngModel"
+                    placeholder="Project Type"
+                    class="col-4"
+                ></p-dropdown>
+            </div>
+            <div class="col-6 row">
+                <div class="row">
+                    <div class="col-2">
+                      <label style="padding-top: 8px">Unit</label>
+                    </div>
+                    <div class="col-8">
+                      <app-unit-select [isView]="!isAnyAdmin" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>   
+                    </div>
+                </div>
+            </div>
+            <div class="col-1 row" *ngIf="isCSIUser">
+                <p-checkbox (onChange)="check()" [(ngModel)]="isAllData" [binary]="true" name="Alldata" class="col-2">
+                </p-checkbox>
+                <label class="" for="Alldata">All data</label>
+            </div>
+        </div>
+        <div class="up-card card" *ngIf="unit && !isCSIUser">
+            <app-es-emission-chart
+                [isAll]="false"
+                [unitId]="unit.id"
+                [projectType]="projectType"
+            ></app-es-emission-chart>
+        </div>
+    </div>
+
+
+    <div class="p-grid p-fluid card" *ngIf="isCSIUser">
+        <div class="" *ngIf="unit || isAllData">    
+            <app-project-emission-chart
+                [isAll]="isAllData"
+                [unitId]="unit.id"
+                [projectType]="projectType"
+            ></app-project-emission-chart>
+        </div>
+        <div class=""  *ngIf="unit || isAllData">
+            <app-es-emission-chart 
+                [isAll]="isAllData"
+                [unitId]="unit.id"
+                [projectType]="projectType"
+            ></app-es-emission-chart>
+        </div>
+    </div>
+
+
+
+
+    <div class="p-grid p-fluid" *ngIf="!isCSIUser">
+        <div class="row down-row" *ngIf="unit">
+            <div class="col-6 card bello-card">
+                <app-es-emission-pie-chart 
+                    [unitId]="unit.id"
+                    [projectType]="projectType"
+                ></app-es-emission-pie-chart>
+            </div>
+            <div class="col-6 card bello-card">
+                <app-target-vs-actual-chart
+                    [unitId]="unit.id"
+                    [projectType]="projectType"
+                ></app-target-vs-actual-chart>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-grid p-fluid" *ngIf="!isCSIUser">
+        <div class="row down-row" *ngIf="unit">
+            <div class="col-6 card bello-card">
+                <app-org-emission-chart
+                    [unitId]="unit.id"
+                    [projectType]="projectType"
+                ></app-org-emission-chart>
+            </div>
+            <div class="col-6 card bello-card">
+                <app-org-emission-year-wise-chart 
+                    [unitId]="unit.id"
+                    [projectType]="projectType"
+                ></app-org-emission-year-wise-chart>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+

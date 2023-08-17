@@ -1,0 +1,298 @@
+<div class="container pl-16 pr-16">
+  <form #fData="ngForm" (ngSubmit)="saveForm(fData)">
+    <div class="card mt-3">
+      <div class="p-grid p-fluid col-sm-12">
+        <div class="p-2">
+          <h6>Unit Details</h6>
+          <span style="color: rgb(163, 85, 7);"
+            *ngIf="!isCSIUser && selecteUnit && selecteUnit.unitStatus.toString() !== 'APPROVED' ">
+            These details are not yet approved.
+          </span>
+        </div>
+        <div class="row p-2">
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label for="institute">Unit</label>
+              <app-unit-select [isView]="!isCSIUser" [unit]="unitDetail.unit"
+                (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>
+              <p class="info-message text-danger" *ngIf="!unitDetail.unit?.id && (fData.submitted)">
+                  This is a mandatory field
+              </p>   
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label for="contatname">Code*</label>
+              <input type="text" maxlength="50" [(ngModel)]="unitDetail.code" placeholder="Enter Code Name"
+                name="contatname" field="contatname" class="p-inputtext" required />
+              <p class="info-message text-danger" *ngIf="!unitDetail.code && (fData.submitted)">
+                  This is a mandatory field
+              </p>                
+            </div>
+          </div>
+        </div>
+
+        <div class="row p-2">
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label for="contatemail">Email*</label>
+              <input [(ngModel)]="unitDetail.email" pattern="[\w-\.]+@([\w-]+\.)+[\w-]{1,30}$" type="text"
+                maxlength="50" placeholder="Enter Email Address" name="contatemail" class="p-inputtext" pInputText
+                required />
+              <p class="info-message text-danger" *ngIf="!unitDetail.email && (fData.submitted)">
+                  This is a mandatory field
+              </p>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label for="designation">Address Line 1*</label>
+              <input type="text" [(ngModel)]="unitDetail.address" maxlength="100" placeholder="Enter Address"
+                name="address" class="p-inputtext" pInputText />
+              <p class="info-message text-danger" *ngIf="!unitDetail.address && (fData.submitted)">
+                  This is a mandatory field
+              </p>
+            </div>
+          </div>
+        
+         
+        </div>
+        <div class="row p-2">
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label for="designation">Address Line 2*</label>
+              <input type="text" [(ngModel)]="unitDetail.addressLine2" maxlength="100" placeholder="Enter Address"
+                name="addressLine2" class="p-inputtext" pInputText />
+              <p class="info-message text-danger" *ngIf="!unitDetail.addressLine2 && (fData.submitted)">
+                  This is a mandatory field
+              </p>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label for="designation">Address Line 3*</label>
+              <input type="text" [(ngModel)]="unitDetail.addressLine3" maxlength="100" placeholder="Enter Address"
+                name="addressLine2" class="p-inputtext" pInputText />
+              <p class="info-message text-danger" *ngIf="!unitDetail.addressLine3 && (fData.submitted)">
+                  This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="row p-2">
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label for="mobileNumber">Mobile Number *</label>
+              <p-inputMask type="text" [(ngModel)]="unitDetail.telephone" name="mobileNumber" mask="+99 99-999-9999"
+                [autoClear]="false" placeholder="+99 999 999-9999" [styleClass]="'form-control'"></p-inputMask>
+              <p class="info-message text-danger" *ngIf="!unitDetail.telephone && (fData.submitted)">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label for="institution">Base year *</label>
+              <p-calendar (onClose)="onChangeBaseYear()" appendTo="body" [(ngModel)]="baseyear" name="baseyear"
+                view="year" dateFormat="yy" inputId="yearpicker" placeholder="Enter Base Year"></p-calendar>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="row p-2">
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label for="institution">Introduction</label>
+              <textarea rows="10" type="text" name="introduction" [(ngModel)]="unitDetail.introduction" class="p-inputtext"
+                maxlength="500" placeholder="Enter introdcution" pInputText></textarea>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label for="mobileNumber">Base year emission (tCO₂e)</label>
+              <p-inputNumber type="number" [disabled]="hasBaseYearEmission" [(ngModel)]="baseYearEmission" 
+              placeholder="Enter base year emission" name="baseYearEmission" class="" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+              pattern="^[a-zA-Z0-9 ]{1,64}$"  ></p-inputNumber> 
+              <p class="info-message text-danger" *ngIf="( baseYearEmission == undefined || baseYearEmission == null) && (fData.submitted)">
+                  This is a mandatory field
+              </p>
+            </div>
+           
+              <div class="p-field">
+                <label for="mobileNumber">Fax Number *</label>
+                <p-inputMask type="text" [(ngModel)]="unitDetail.faxNumber" name="faxNumber" mask="+99 99-999-9999"
+                  [autoClear]="false" placeholder="+99 999 999-9999" [styleClass]="'form-control'"></p-inputMask>
+                <p class="info-message text-danger" *ngIf="!unitDetail.faxNumber && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div class="p-field">
+                <label for="mobileNumber">Registraion Number *</label>
+               
+                  <input type="text" [(ngModel)]="unitDetail.registrationNumber"  placeholder="Enter Address"
+                name="registrationNumber" class="p-inputtext" pInputText />
+                <p class="info-message text-danger" *ngIf="!unitDetail.registrationNumber && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+           
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+    <div class="card mt-3">
+      <div class="p-grid p-fluid col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 ">
+            <div class="p-field">
+              <label for="mobileNumber">Upload previous reports</label>
+              <ng-container *ngFor="let _year of preReports; let idx=index">
+                <div class="row" style="justify-content: 'space-between';">
+                  <p-calendar class="col-3" appendTo="body" name="{{ 'ryear' + idx }}" view="year" dateFormat="yy"
+                    [(ngModel)]="_year.year" placeholder="Enter year" inputId="yearpicker">
+                  </p-calendar>                  
+                  <div class="col-7">
+                    <app-file-uploader *ngIf="unitDetail.id" [rootUrl]="imageUrl" [data]="_year.file" [multiple]="false"
+                      [deletable]="true" (onChangeFile)="onAddReport($event, idx)"
+                      (onDeleteFile)="onRemoveReport($event)"></app-file-uploader>
+                    <app-file-uploader *ngIf="!unitDetail.id" [multiple]="false" [deletable]="true"
+                      (onChangeFile)="onAddReport($event, idx)"
+                      (onDeleteFile)="onRemoveReport($event)"></app-file-uploader>
+                  </div>
+                  <div class="col-2">
+                    <button *ngIf="idx === preReports.length - 1" (click)="addReport()" pButton pRipple type="button"
+                      icon="pi pi-plus" class="p-button-rounded p-button-outlined"></button>
+                    <button *ngIf="idx  !== preReports.length - 1" (click)="removeReport(idx)" pButton pRipple
+                      type="button" icon="pi pi-minus" class="p-button-rounded p-button-outlined"></button>
+                  </div>
+                </div>
+                <hr *ngIf="preReports.length > 1">
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card mt-3">
+      <div class="p-grid p-fluid col-sm-12">  
+        <div class="row p-2">
+          <div class="col-12 ">
+            <div class="p-field">
+              <div class="col-9">
+                
+                <button                                                    
+                class="ml-4"
+                type="button"
+                (click)="uploadExcell()"
+      
+                pButton
+                pRipple       
+                style="width: 150px;margin-left: 4px;"                   
+                styleClass="p-button-warn"
+                > Upload Excel
+            </button> 
+            <br>        
+              </div>
+              <div class="row p-2">
+                <label for="institution" class="col-2">Year</label>
+                <label for="institution" class="col-2">No of employees</label>
+                <label for="institution" class="col-4">Revenue</label>
+                <label for="institution" class="col-3">Target Emission (tCO₂e)</label>
+              </div>
+              <ng-container *ngFor="let emp of totalEmployees; let idx=index">
+                <div class="row p-2">
+                  <div class="col-2">
+                    <p-calendar appendTo="body" name="{{ 'year' + idx }}" view="year" dateFormat="yy"
+                    [(ngModel)]="emp.year" inputId="{{ 'yearpicker' + idx }}"></p-calendar> 
+                  </div>
+                  <div class="col-2">
+                    <p-inputNumber class="" type="text" name="{{ 'total' + idx }}" placeholder="Enter Number of Employees"
+                    [(ngModel)]="emp.total" ></p-inputNumber>
+                  </div>
+                  <div class="col-2">
+                    <p-inputNumber class="" type="text" name="{{ 'revenue' + idx }}" placeholder="Enter Revenue"
+                    [(ngModel)]="emp.revenue" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"></p-inputNumber>
+                  </div>
+                  <div class="col-2">
+                    <p-dropdown name="{{ 'revenueUnit' + idx }}" [options]="revenue_units" [(ngModel)]="emp.revenueUnit" #ftype="ngModel"
+                    optionValue="code" optionLabel="name"></p-dropdown>
+                  </div>
+                  <div class="col-2">
+                    <p-inputNumber class="" type="number" name="{{ 'target' + idx }}" placeholder="Enter Target Emission"
+                    [(ngModel)]="emp.target" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"></p-inputNumber>
+                  </div>
+                  <div class="col-2">
+                    <button *ngIf="idx === totalEmployees.length - 1" (click)="add()" pButton pRipple type="button"
+                    icon="pi pi-plus" class="p-button-rounded p-button-outlined"></button>
+                    <button *ngIf="idx  !== totalEmployees.length - 1" (click)="remove(idx)" pButton pRipple type="button"
+                    icon="pi pi-minus" class="p-button-rounded p-button-outlined"></button>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>    
+    <div class="card mt-3">
+      <div class="p-grid p-fluid col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label for="unitlogo">Unit Logo</label>
+              <app-file-uploader *ngIf="unitDetail.id" [rootUrl]="imageUrl" [data]="getLogo()" [multiple]="false"
+                [deletable]="true" (onChangeFile)="onAddFile($event)"
+                (onDeleteFile)="onRemoveFile($event)"></app-file-uploader>
+              <app-file-uploader *ngIf="!unitDetail.id" [multiple]="false" [deletable]="true"
+                (onChangeFile)="onAddFile($event)" (onDeleteFile)="onRemoveFile($event)"></app-file-uploader>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p-messages *ngIf="messages.length > 0" [(value)]="messages" [enableService]="false" [closable]="false"></p-messages>
+
+
+    <div class="d-flex flex-row-reverse mt-15 card">
+      <button (click)="login()" *ngIf="!isCSIUser && selecteUnit && selecteUnit.unitStatus.toString() !== 'APPROVED' "
+        pButton pRipple type="button" label="Login"></button>
+      
+      <button 
+        *ngIf="appService.hasUserActionAccessTo(userActions.ENTER_UNIT_DETAILS) && appService.hasUserActionAccessTo(userActions.EDIT_UNIT_DETAILS)" 
+        [disabled]="selectUnitState &&( selectUnitState.toString() === 'APPROVED' || selectUnitState.toString() !== 'DATA_REQUESTED')" 
+        pButton pRipple label="Submit" style="margin-right: 10px" type="submit">
+      </button>
+      
+      <button (click)="approve()" type="button" pButton pRipple label="Approve" style="margin-right: 10px"
+        *ngIf="isCSIUser && selectUnitState && selectUnitState.toString()  !== 'APPROVED' && appService.hasUserActionAccessTo(userActions.EDIT_UNIT_DETAILS)"></button>
+      
+      <button (click)="messageVisible=true" pButton  type="button"pRipple label="Request More Info" style="margin-right: 10px"
+        *ngIf="isCSIUser && selectUnitState && selectUnitState.toString() !== 'DATA_REQUESTED'"></button>
+      
+      <button *ngIf="appService.hasUserActionAccessTo(userActions.EDIT_UNIT_DETAILS)" (click)="addPreviousEmission()" pButton pRipple label="Add Previous Emission" style="margin-right: 10px" type="button"></button>
+
+    </div>
+
+    <br>
+  </form>
+</div>
+
+
+
+<p-dialog header="Header" [(visible)]="messageVisible" [style]="{width: '50vw'}">
+  <p>
+      <textarea [(ngModel)]="unitDetailMessage.message" name="message" id="message" cols="100" rows="5"></textarea>
+  </p>
+
+  <div class="row">
+    <div class="d-flex flex-row-reverse mt-15">
+      <button (click)="requestData()" pButton pRipple type="button" label="Send"></button>
+    </div>
+  </div>
+</p-dialog>

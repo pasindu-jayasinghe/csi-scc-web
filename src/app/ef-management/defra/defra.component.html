@@ -1,0 +1,251 @@
+<div class="container">
+  <h4 class="mt-4">Defra</h4>
+  <div class="ui-fluid formgrid grid">
+
+    <div class="p-grid p-fluid card">
+      <div class="col-3">
+        
+        <div class="col-9">
+          <button                                                    
+          class="ml-4"
+          type="button"
+          (click)="uploadExcell()"
+
+          pButton
+          pRipple       
+          style="width: 150px;margin-left: 4px;"                   
+          styleClass="p-button-warn"
+          > Upload Excel
+      </button>         
+        </div>
+      </div>
+    </div>
+    <p-table
+      paginatorDropdownAppendTo="body" [lazy]="true" [value]="defraFacs" (onLazyLoad)="loadEF($event)" [paginator]="true" [rows]="rows"
+      [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rowsPerPageOptions]="[10,25,50]" [totalRecords]="totalRecords" [loading]="loading">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>
+            <div class="col-sm-2" style="width: 30%">
+              <!-- <button type="button" (click)="showDialog()" icon="pi pi-info-circle" label="Show"></button> -->
+
+              <button class="ml-4" type="button" (click)="newEF()" pButton pRipple icon="pi pi-plus"
+                styleClass="p-button-warn"></button>
+
+
+            </div>
+          </th>
+          <th>Waste Name</th>
+          <th>Re-Use</th>
+          <th>Open Loop</th>
+          <th>Closed Loop</th>
+          <th>Combution</th>
+          <th>Composting</th>
+          <th>Land Fill</th>
+          <th>Anaeriobic Digestion</th>
+          <th>Piggery Feeding</th>
+          <th>Incineration</th>
+
+
+
+
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-efData>
+        <tr>
+          <td>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button (click)="viewEF(efData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                class="p-button p-button-success p-button-outlined"></button>
+              <button (click)="editEF(efData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                class="p-button p-button-warning p-button-outlined"></button>
+              <!-- <button (click)="onDeleteClick(elecData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button> -->
+            </div>
+          </td>
+
+          <td>{{ efData.name }}</td>
+          <td>{{ efData.reUse }}</td>
+          <td>{{ efData.openLoop }}</td>
+          <td>{{ efData.closedLoop }}</td>
+          <td>{{ efData.combution }}</td>
+          <td>{{ efData.composting }}</td>
+          <td>{{ efData.landFill }}</td>
+          <td>{{ efData.anaeriobicDigestions }}</td>
+          <td>{{ efData.PiggeryFeeding }}</td>
+          <td>{{ efData.Incineration }}</td>
+
+
+
+
+          <!-- <td>EF:{{ efData.ef ?  efData.ef:" N/A" }} | dm: {{ efData.dm ?  efData.dm:" N/A" }} | cf: {{ efData.cf ?  efData.cf:" N/A" }} | fcf: {{ efData.fcf ?  efData.fcf:" N/A" }} | of:{{ efData.of ?  efData.of:" N/A" }}</td> -->
+
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-dialog header="Defra" [(visible)]="displayFuel" [style]="{width: '70vw' }">
+  <form #wasteFacData="ngForm" (ngSubmit)="saveWasteFac(wasteFacData)" novalidate>
+
+    <div class="p-grid p-fluid col-md-12 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Waste Name *</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="defraFac.name" type="text" name="name"
+              class="form-control" placeholder="Enter Name" [required]="true" />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Code *</label>
+            <!-- <input
+                    [disabled]="isView"
+                    [disabled]="false"
+                    [(ngModel)]="defraFac.code"
+                    type="text"
+                    name="code"
+                    class="form-control"
+                    placeholder="Enter Code"
+                    [required]="true"
+                  /> -->
+            <p-dropdown [disabled]="isView" name="code" [(ngModel)]="defraFac.code" [options]="efCodes"
+              placeholder="Select .." [required]="true"></p-dropdown>
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Tier*</label>
+            <p-dropdown [disabled]="isView" name="tier" [(ngModel)]="defraFac.tier" [options]="tieres"
+              placeholder="Select .." optionValue="code" optionLabel="name" [required]="true"></p-dropdown>
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Year*</label>
+            <p-dropdown [disabled]="isView" name="year" [(ngModel)]="defraFac.year" [options]="years"
+              placeholder="Select .." [required]="true"></p-dropdown>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Re-Use</label>
+            <input [disabled]="isView" min="0" [disabled]="false" [(ngModel)]="defraFac.reUse" type="number" name="reUse"
+              class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Open Loop</label>
+            <input [disabled]="isView" min="0" [disabled]="false" [(ngModel)]="defraFac.openLoop" type="number" name="openLoop"
+              class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Closed Loop</label>
+            <input [disabled]="isView"min="0" [disabled]="false" [(ngModel)]="defraFac.closedLoop" type="number"
+              name="closedLoop" class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Combustion</label>
+            <input [disabled]="isView"min="0" [disabled]="false" [(ngModel)]="defraFac.combution" type="number"
+              name="combution" class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Composting</label>
+            <input [disabled]="isView"min="0" [disabled]="false" [(ngModel)]="defraFac.composting" type="number"
+              name="composting" class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Land Fill</label>
+            <input [disabled]="isView" min="0" [disabled]="false" [(ngModel)]="defraFac.landFill" type="number" name="landFill"
+              class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="p-grid p-fluid col-md-12 col-sm-12">
+        <div class="row p-2">
+
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Anaeriobic digestions</label>
+              <input [disabled]="isView" min="0" [disabled]="false" [(ngModel)]="defraFac.anaeriobicDigestions" type="number"
+                name="anaeriobicDigestions" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Piggery Feeding</label>
+              <input [disabled]="isView" min="0" [disabled]="false" [(ngModel)]="defraFac.piggeryFeeding" type="number"
+                name="piggeryFeeding" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Incineration</label>
+              <input [disabled]="isView"min="0"  [disabled]="false" [(ngModel)]="defraFac.incineration" type="number"                     onkeyup="if(this.value<0){this.value= this.value * -1}"
+
+                name="incineration" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+
+    <div class="row p-grid p-fluid col-md-6 col-sm-6">
+
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+        <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+          Back
+        </button>
+      </div>
+
+      <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10">
+        <button pButton type="submit" label="Save"></button>
+      </div>
+
+    </div>
+  </form>
+</p-dialog>

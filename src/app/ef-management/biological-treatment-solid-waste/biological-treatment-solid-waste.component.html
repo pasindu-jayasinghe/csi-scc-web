@@ -1,0 +1,163 @@
+<div class="container">
+  <h4 class="mt-4">Biological Treatment</h4>
+  <div class="ui-fluid formgrid grid">
+    <p-table
+      paginatorDropdownAppendTo="body" [value]="biologicalTeatmentSolidWasteFacs" [lazy]="true" (onLazyLoad)="loadEF($event)" [paginator]="true"
+      [rows]="rows" [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]"
+      [totalRecords]="totalRecords" [loading]="loading">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>
+            <div class="col-sm-2" style="width: 30%">
+              <!-- <button type="button" (click)="showDialog()" icon="pi pi-info-circle" label="Show"></button> -->
+
+              <button class="ml-4" type="button" (click)="newEF()" pButton pRipple icon="pi pi-plus"
+                styleClass="p-button-warn"></button>
+
+
+            </div>
+          </th>
+          <th>Factor</th>
+          <th>Waste Basis</th>
+          <th>Biological Treatment System</th>
+          <th>Waste Category</th>
+          <th>Type of Waste</th>
+          <th>Value</th>
+
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-efData>
+        <tr>
+          <td>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button (click)="viewEF(efData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                class="p-button p-button-success p-button-outlined"></button>
+              <button (click)="editEF(efData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                class="p-button p-button-warning p-button-outlined"></button>
+              <!-- <button (click)="onDeleteClick(elecData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button> -->
+            </div>
+          </td>
+
+          <td>{{ efData.name }}</td>
+          <td>{{ efData.wasteBasis }}</td>
+          <td>{{ efData.biologicalTreatmentSystem }}</td>
+          <td>{{ efData.wasteCategory }}</td>
+          <td>{{ efData.typeOfWaste }}</td>
+          <td>{{ efData.ef }}</td>
+
+
+
+
+
+
+
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-dialog header="Biological Treatment" [(visible)]="displayFuel" [style]="{width: '50vw' }">
+  <form #wasteFacData="ngForm" (ngSubmit)="saveWasteFac(wasteFacData)" novalidate>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Gas Type *</label>
+            <p-dropdown name="gasTypes" [disabled]="isView" [options]="gasTypes"
+              [(ngModel)]="biologicalTeatmentSolidWasteFac.name" placeholder="Select .." optionValue="name"
+              optionLabel="name"></p-dropdown>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Waste Basis *</label>
+            <p-dropdown [disabled]="isView" name="wasteBasis" [(ngModel)]="biologicalTeatmentSolidWasteFac.wasteBasis"
+              [options]="wasteBasis" placeholder="Select .." optionValue="name" optionLabel="name"></p-dropdown>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Tier*</label>
+            <p-dropdown [disabled]="isView" name="tiere" [options]="tieres"
+              [(ngModel)]="biologicalTeatmentSolidWasteFac.tier" placeholder="Select .." optionValue="name"
+              optionLabel="name"></p-dropdown>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Biological Treatment System*</label>
+            <p-dropdown name="biologicalTreatmentsys" [disabled]="isView" [options]="biologicalTreatments"
+              [(ngModel)]="biologicalTeatmentSolidWasteFac.biologicalTreatmentSystem" placeholder="Select .."
+              optionValue="name" optionLabel="name"></p-dropdown>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Waste Category*</label>
+            <p-dropdown name="wcat" [disabled]="isView" [options]="wasteCategories"
+              [(ngModel)]="biologicalTeatmentSolidWasteFac.wasteCategory" placeholder="Select .." optionValue="name"
+              optionLabel="name" (onChange)="onChangeWasteCat($event.value)"></p-dropdown>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Type of Waste*</label>
+            <p-dropdown name="typeofwaste1" [disabled]="isView" [options]="wasteTypes"
+              [(ngModel)]="biologicalTeatmentSolidWasteFac.typeOfWaste" placeholder="Select .." optionValue="name"
+              optionLabel="name"></p-dropdown>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-8">
+          <div class="p-field">
+            <label>Emission Factor (g CH₄ waste treated)*</label>
+            <input [disabled]="isView" [(ngModel)]="biologicalTeatmentSolidWasteFac.ef" [disabled]="false" type="number"
+              name="btwf" class="form-control" placeholder="Enter Emission Factor" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Country*</label>
+            <p-dropdown name="country" [disabled]="isView" [options]="countries"
+              [(ngModel)]="biologicalTeatmentSolidWasteFac.countryCode" placeholder="Select .." optionValue="code"
+              optionLabel="name"></p-dropdown>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row p-grid p-fluid col-md-6 col-sm-6">
+
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+        <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+          Back
+        </button>
+      </div>
+
+      <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10">
+        <button pButton type="submit" label="Save"></button>
+      </div>
+
+    </div>
+  </form>
+</p-dialog>

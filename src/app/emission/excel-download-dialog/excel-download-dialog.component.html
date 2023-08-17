@@ -1,0 +1,31 @@
+<div class="p-grid p-fluid card">
+    <!-- <div class="row"> -->
+    <div class="row">
+        <div class="col-2">
+            <label style="padding-top: 8px">Unit</label>
+        </div>
+        <div class="col-10">
+            <app-unit-select [isView]="!isAnyAdmin" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>
+        </div>
+    </div>
+    <div class="row br">
+        <div class="col-2">
+            <label style="padding-top: 8px">Project</label>
+        </div>
+        <div class="col-10">
+            <app-project-select [project]="selectedProject" [isView]="false"
+                (onUpdateProject)="onChangeProject($event)"></app-project-select>
+        </div>
+    </div>
+    <!-- </div> -->
+    <div>
+       
+    </div>
+    <div class="row br">
+        <div class="col-12">
+            <button class="btn btn-primary text-uppercase" type="button" style="float: right" (click)="download()"> Download
+                Excel
+            </button>
+        </div>
+    </div>
+</div>

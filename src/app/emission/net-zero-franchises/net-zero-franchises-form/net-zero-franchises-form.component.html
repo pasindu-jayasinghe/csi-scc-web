@@ -1,0 +1,518 @@
+<div class="container pl-25 pr-25">
+  <div class="mb-12">
+    <h4 class="mt-4">
+      {{ isNewEntry ? "Add" : isView ? "View" : "Edit" }} Franchises
+    </h4>
+  </div>
+  <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+    <div class="card">
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Unit *</label>
+              <app-unit-select [isView]="isView" [unit]="selectedUnit"
+                (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Project *</label>
+              <app-project-select [isView]="isView" [unit]="selectedUnit" [project]="franchises.project"
+                (onUpdateProject)="onChangeProject($event)" [data]="fData"></app-project-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Year *</label>
+
+              <input [disabled]="true" type="text" name="year" [(ngModel)]="franchises.year" class="form-control"
+                placeholder="Enter Year" required />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Month *</label>
+              <p-dropdown [disabled]="isView" name="institution" [options]="months" [(ngModel)]="month"
+                (onChange)="monthCgange()" #fmonth="ngModel" placeholder="Select .." optionLabel="name" appendTo="body"
+                [required]="true"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="
+                  !month && (fData.submitted || fmonth.touched || fmonth.dirty)
+                ">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Method *</label>
+              <p-dropdown [disabled]="isView" name="method" [options]="methods_franchise" [(ngModel)]="franchises.method"
+                (onChange)="onSelectMethod($event)" #method="ngModel" placeholder="Select .." optionLabel="name"   [disabled]="isView ||!isNewEntry"
+
+                optionValue="value" appendTo="body" [required]="true"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="
+                  !franchises.method && (fData.submitted || method.touched || method.dirty)
+                ">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="franchises.method == franchisesActivityDataDtoMethod.SPECIFICMETHOD">
+        <!-- <ng-container *ngTemplateOutlet="SPECIFICMETHOD"></ng-container> -->
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2" *ngFor="let specData of franchises.specific_method_data.data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Scope One Emission </label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'scopeOneEmission' + i"
+                      [(ngModel)]="specData.scopeOneEmission" class="form-control" placeholder="Enter Scope One Emission" required />
+                    <p class="info-message text-danger" *ngIf="!specData.scopeOneEmission && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'scopeOneEmission_unit' + i" [options]="units.emission"
+                      [(ngModel)]="specData.scopeOneEmission_unit" #funit="ngModel" optionValue="code" optionLabel="label"
+                      class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf="!specData.scopeOneEmission_unit && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Scope Two Emission </label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'scopeTwoEmission' + i"
+                      [(ngModel)]="specData.scopeTwoEmission" class="form-control" placeholder="Enter Scope Two Emission" required />
+                    <p class="info-message text-danger" *ngIf="!specData.scopeTwoEmission && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'scopeTwoEmission_unit' + i" [options]="units.emission"
+                      [(ngModel)]="specData.scopeTwoEmission_unit" #funit="ngModel" optionValue="code" optionLabel="label"
+                      class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf="!specData.scopeTwoEmission_unit && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+      
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button" (click)="removeRow(franchises.specific_method_data.data,i)" pButton
+                    pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="franchises.specific_method_data.data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="addNewDataObject(franchisesActivityDataDtoMethod.SPECIFICMETHOD)" pButton pRipple
+                    icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+            <!-- <hr> -->
+          </div>
+        </div>
+      </div>
+      <div *ngIf="franchises.method == franchisesActivityDataDtoMethod.NOTSUBMETERED">
+        <!-- <ng-container *ngTemplateOutlet="NOTSUBMETERED"></ng-container> -->
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2" *ngFor="let notSubmetered of franchises.not_sub_metered_data.data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Franchises Area </label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'franchises_area' + i"
+                      [(ngModel)]="notSubmetered.franchises_area" class="form-control" placeholder="Enter Franchises Area"
+                      required />
+                    <p class="info-message text-danger" *ngIf="!notSubmetered.franchises_area && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'franchises_area_unit' + i" [options]="units.area"
+                      [(ngModel)]="notSubmetered.franchises_area_unit" #funit="ngModel" optionValue="code" optionLabel="label"
+                      class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf="!notSubmetered.franchises_area_unit && fData.submitted">This is
+                      a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Building Total Area </label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'building_total_area' + i"
+                      [(ngModel)]="notSubmetered.building_total_area" class="form-control" placeholder="Enter Building total area"
+                      required />
+                    <p class="info-message text-danger" *ngIf="!notSubmetered.building_total_area && fData.submitted">This is
+                      a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'building_total_area_unit' + i" [options]="units.area"
+                      [(ngModel)]="notSubmetered.building_total_area_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf="!notSubmetered.building_total_area_unit && fData.submitted">
+                      This is a mandatory field</p>
+                  </div>
+                </div>
+              </div>
+      
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Building Occupancy Rate </label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'building_occupancy_rate' + i"
+                      [(ngModel)]="notSubmetered.building_occupancy_rate" class="form-control" placeholder="Enter Building Occupancy Rate"
+                      required />
+                    <p class="info-message text-danger" *ngIf="!notSubmetered.building_occupancy_rate && fData.submitted">This
+                      is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'building_occupancy_rate_unit' + i" [options]="units.presenttage"
+                      [(ngModel)]="notSubmetered.building_occupancy_rate_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!notSubmetered.building_occupancy_rate_unit && fData.submitted">This is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Building total energy use</label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'building_total_energy_use' + i" [(ngModel)]="notSubmetered.building_total_energy_use"
+                      class="form-control" placeholder="Enter Building total energy use" required />
+                    <p class="info-message text-danger" *ngIf="!notSubmetered.building_total_energy_use && fData.submitted">
+                      This is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'building_total_energy_use_unit' + i" [options]="units.energy"
+                      [(ngModel)]="notSubmetered.building_total_energy_use_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!notSubmetered.building_total_energy_use_unit && fData.submitted">This is a mandatory field</p>
+                  </div>
+                </div>
+              </div>
+      
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button" (click)="removeRow(franchises.not_sub_metered_data.data,i)" pButton
+                    pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="franchises.not_sub_metered_data.data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button" (click)="addNewDataObject(franchisesActivityDataDtoMethod.NOTSUBMETERED)"
+                    pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+            <!-- <hr> -->
+          </div>
+        </div>
+      </div>
+      <div *ngIf="franchises.method == franchisesActivityDataDtoMethod.SAMPLEGROUPS">
+        <!-- <ng-container *ngTemplateOutlet="SAMPLEGROUPS"></ng-container> -->
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2" *ngFor="let sampled of franchises.sample_groups_data.data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Total emissions from sampled franchises within group</label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'total_e_of_sampled_franchises' + i" [(ngModel)]="sampled.total_e_of_sampled_franchises"
+                      class="form-control" placeholder="Enter total emissions from sampled franchises within group" required />
+                    <p class="info-message text-danger" *ngIf="!sampled.total_e_of_sampled_franchises && fData.submitted">This
+                      is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Total number of franchises within group</label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'total_number_of_franchises' + i" [(ngModel)]="sampled.total_number_of_franchises"
+                      class="form-control" placeholder="Enter total number of franchises within group" required />
+                    <p class="info-message text-danger" *ngIf="!sampled.total_number_of_franchises && fData.submitted">This is
+                      a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Number of franchises sampled within group</label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'number_of_franchises_sampled' + i" [(ngModel)]="sampled.number_of_franchises_sampled"
+                      class="form-control" placeholder="Enter number of franchises sampled within group" required />
+                    <p class="info-message text-danger" *ngIf="!sampled.number_of_franchises_sampled && fData.submitted">This
+                      is a mandatory field</p>
+                  </div>
+                </div>
+      
+              </div>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button" (click)="removeRow(franchises.sample_groups_data.data,i)" 
+                  pButton 
+                  pRipple
+                  icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="franchises.sample_groups_data.data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button" (click)="addNewDataObject(franchisesActivityDataDtoMethod.SAMPLEGROUPS)"
+                    pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="franchises.method == franchisesActivityDataDtoMethod.AVERAGEDATAMETHODFLOORSPACE">
+        <!-- <ng-container *ngTemplateOutlet="AVERAGEDATAMETHODFLOORSPACE"></ng-container> -->
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2" *ngFor="let averageData of franchises.average_data_method_floor_space_data.data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Building type</label>
+                    <!-- <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'building_type_total_floor_space' + i" [(ngModel)]="averageData.building_type_total_floor_space"
+                      class="form-control" placeholder="Enter Total floor space of building" required /> -->
+
+                      <p-dropdown [disabled]="isView" [name]="'fuelBaseRefrigerantType'+i" [options]="building_types"
+                      [required]="true" [(ngModel)]="averageData.building_type" #fgWP_RGs="ngModel"
+                      placeholder="Select Building Type.." optionLabel="name" optionValue="code"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!averageData.building_type && fData.submitted">This is a mandatory field</p>
+                  </div>
+                </div>
+
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Total floor space of building type </label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'building_type_total_floor_space' + i" [(ngModel)]="averageData.building_type_total_floor_space"
+                      class="form-control" placeholder="Enter Total floor space of building" required />
+                    <p class="info-message text-danger"
+                      *ngIf="!averageData.building_type_total_floor_space && fData.submitted">This is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'building_type_total_floor_space_unit' + i" [options]="units.area"
+                      [(ngModel)]="averageData.building_type_total_floor_space_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!averageData.building_type_total_floor_space_unit && fData.submitted">This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Average emission factor for building type </label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'building_type_average_emission_factor' + i"
+                      [(ngModel)]="averageData.building_type_average_emission_factor" class="form-control"
+                      placeholder="Enter Average emission factor for building type" />
+                    <!-- <p class="info-message text-danger"
+                      *ngIf="!averageData.building_type_average_emission_factor && fData.submitted">This is a mandatory field
+                    </p> -->
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'building_type_average_emission_factor_unit' + i"
+                      [options]="units.building_type_average_emission_factor_units"
+                      [(ngModel)]="averageData.building_type_average_emission_factor_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!averageData.building_type_average_emission_factor_unit && fData.submitted">This is a mandatory
+                      field</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="removeRow(franchises.average_data_method_floor_space_data.data,i)" pButton pRipple
+                    icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="franchises.average_data_method_floor_space_data.data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="addNewDataObject(franchisesActivityDataDtoMethod.AVERAGEDATAMETHODFLOORSPACE)" pButton pRipple
+                    icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="franchises.method == franchisesActivityDataDtoMethod.AVERAGEDATAMETHODNOTFLOORSPACE">
+        <!-- <ng-container *ngTemplateOutlet="AVERAGEDATAMETHODNOTFLOORSPACE"></ng-container> -->
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2"
+            *ngFor="let notFloorSpace of franchises.average_data_method_not_floor_space_data.data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Asset type</label>
+                    <!-- <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'number_of_buildings' + i"
+                      [(ngModel)]="notFloorSpace.number_of_buildings" class="form-control" placeholder="Enter average emissions per building or asset type per year"
+                      required /> -->
+                      
+                      <p-dropdown [disabled]="isView" [name]="'asset_type'+i" [options]="building_types"
+                      [required]="true" [(ngModel)]="notFloorSpace.asset_type" #fgWP_RGs="ngModel"
+                      placeholder="Select Asset Type.." optionLabel="name" optionValue="code"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf="!notFloorSpace.asset_type && fData.submitted">This is
+                      a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Average emissions per building or asset type per year</label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'number_of_buildings' + i"
+                      [(ngModel)]="notFloorSpace.number_of_buildings" class="form-control" placeholder="Enter average emissions per building or asset type per year"
+                      required />
+                    <p class="info-message text-danger" *ngIf="!notFloorSpace.number_of_buildings && fData.submitted">This is
+                      a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Number of buildings or assets </label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'average_emissions_of_building' + i" [(ngModel)]="notFloorSpace.average_emissions_of_building"
+                      class="form-control" placeholder="Enter number of buildings or assets" required />
+                    <p class="info-message text-danger"
+                      *ngIf="!notFloorSpace.average_emissions_of_building && fData.submitted">This is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'average_emissions_of_building_unit' + i"
+                      [options]="units.average_emissions_of_building_units"
+                      [(ngModel)]="notFloorSpace.average_emissions_of_building_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!notFloorSpace.average_emissions_of_building_unit && fData.submitted">This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+      
+              </div>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="removeRow(franchises.average_data_method_not_floor_space_data.data,i)" pButton pRipple
+                    icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="franchises.average_data_method_not_floor_space_data.data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="addNewDataObject(franchisesActivityDataDtoMethod.AVERAGEDATAMETHODNOTFLOORSPACE)" pButton pRipple
+                    icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+          One or more mandatory fields should be filled before save action.
+        </p>
+      </div>
+      <br />
+
+      <div class="row p-grid p-fluid col-md-6 col-sm-6">
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+          <button class="btn btn-secondary text-uppercase" (click)="onBackClick()">Back</button>
+        </div>
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+          <button *ngIf="!isNewEntry && deletable && !isView" class="btn btn-danger text-uppercase" type="button"
+            (click)="onDeleteClick()">Delete</button>
+        </div>
+        <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+          <button [disabled]="creating || !puesAssigned || isDuplicated || !hasEnterEnyValue()" class="btn btn-primary text-uppercase"
+            type="submit" *ngIf="!isView">Save</button>
+        </div>
+      </div>
+      <div class="row"></div>
+    </div>
+  </form>
+</div>
+
+<!-- <p-toast position="top-right"></p-toast> -->
+<!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+
+
+
+
+
+

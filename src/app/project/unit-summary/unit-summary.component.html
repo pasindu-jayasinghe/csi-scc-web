@@ -1,0 +1,58 @@
+<div class="container">
+    <h4 class="mt-4">Project Summary - Emission</h4>
+    <h6 class="mt-4">{{unitName}} </h6>
+    <div class="p-grid p-fluid card">
+        <!-- <h5 class="mt-4">Emission Factors</h5> -->
+        <div id="basic" class="row">
+            <div class="p-field row container" *ngFor="let detail of card1">
+                <div class="col-4" >
+                    <p class = "card-text"><strong>{{detail.title}}</strong> </p>
+                </div> 
+                <div class="col-8">
+                    <p class = "card-text">{{detail.value}}</p>
+                </div>                 
+            </div>  
+        </div>
+    </div>
+    <div class="p-grid p-fluid card">
+        <div *ngIf="dataList.length === 0">
+            <p>No result found</p>
+        </div>
+        <ng-container *ngFor="let unit of dataList">
+            <!-- <p class = "card-text" *ngIf="(unit.data[0] |json) !== '{}'">{{unit.unit | titlecase}}</p> -->
+            <h6 *ngIf="(unit.data[0] |json) !== '{}'">{{unit.unit| titlecase}} - {{unit.total}} tCO₂e</h6>
+            <p-table
+      paginatorDropdownAppendTo="body" [columns]="unit.columns" [value]="unit.data" responsiveLayout="scroll" *ngIf="(unit.data[0] |json) !== '{}'">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns">
+                            {{col.header | titlecase}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <!-- <p>{{parameters | json }}</p> -->
+                    <tr *ngFor="let para of unit.parameters">
+                        <td *ngFor="let col of columns">
+                            <span *ngIf="col.field === 'parameter'">{{para.name}}</span>
+                            <span *ngIf="col.field !== 'parameter'"  
+                           >{{getValue(rowData[col.field], para.code)}}</span>
+                            <!-- <span *ngIf="col.field === 'all'">{{rowData[col.field][para.code]}}</span> -->
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <br>
+        </ng-container>
+    </div>
+    <div class="row" >
+        <div class="d-flex col-1 justify-content-start" style="float: right;">
+            <button class="btn btn-secondary text-uppercase ml-15 btn-lg" (click)="onBackClick()">
+            Back
+            </button>
+        </div>
+    </div>
+    <br>
+    
+</div>
+

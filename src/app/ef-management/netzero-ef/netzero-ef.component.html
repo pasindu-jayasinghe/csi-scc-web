@@ -1,0 +1,148 @@
+<div class="container">
+    <h4 class="mt-4">NetZero Emission Factors</h4>
+
+    <div class="p-grid p-fluid card">
+        <div class="row">
+          <div class="col-3">
+            <div class="col-3">
+                <label for="firstname">Country</label>
+            </div>
+            <div class="col-9" *ngIf="countries.length > 0">
+                <p-dropdown name="countryCode" [options]="countries" 
+                  (onChange)="changeCountry($event.value)"
+                  placeholder="Select .." 
+                  optionLabel="name"
+                  [filter]="true"
+                  filterBy="name"
+                  appendTo="body">
+                </p-dropdown>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="col-3">
+                <label for="firstname">Year</label>
+            </div>
+            <div class="col-9">
+                <p-dropdown name="countryCode" [options]="years" 
+                  (onChange)="changeYear($event.value)"
+                  placeholder="Select .." 
+                  appendTo="body">
+                </p-dropdown>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="col-3">
+                <label for="firstname">Name</label>
+            </div>
+            <div class="col-9">
+                <input 
+                  (blur)="changeName($event.target)"
+                  type="text" name="reference" class="form-control" placeholder="Enter the Reference"                  
+                />             
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="col-3">
+              <label for="firstname"></label>
+            </div>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button (click)="reset()" pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-button-warning">Reset</button>
+            </div>
+          </div>
+       
+          
+        </div>
+    </div>
+
+    <div class="p-grid p-fluid card">
+      <div class="col-3">
+        
+        <div class="col-9">
+          <button                                                    
+          class="ml-4"
+          type="button"
+          (click)="uploadExcell()"
+
+          pButton
+          pRipple       
+          style="width: 150px;margin-left: 4px;"                   
+          styleClass="p-button-warn"
+          > Upload Excel
+      </button>         
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <p-table
+      paginatorDropdownAppendTo="body"
+     [value]="NetzeroEmissionFactors"
+     [lazy]="true"
+     (onLazyLoad)="load($event)"
+     [paginator]="true"
+     [rows]="rows"
+     [showCurrentPageReport]="true"
+     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+     [rowsPerPageOptions]="[10,25,50]"
+     [totalRecords]="totalRecords"
+     [loading]="loading"
+     >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>
+            <div class="col-sm-2" style="width: 70.666667%">
+              <button
+                class="ml-4"
+                type="button"
+                (click)="new()"
+                pButton
+                pRipple
+                icon="pi pi-plus"
+                styleClass="p-button-warn"
+              ></button>
+            </div>
+          </th>
+          <th>Country Code</th>
+          <th>Year</th>
+          <th>Name</th>
+          <th>Code</th>
+          <th>Value</th>
+          <th>Unit</th>
+          <th>Reference</th>
+
+
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-data>
+        <tr>
+          <td>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button (click)="edit(data)" pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-button-warning p-button-outlined"></button>
+              <!-- <button (click)="onDeleteClick(data)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button> -->
+            </div>
+          </td>
+          <td>{{data.countryCode}}</td>
+          <td>{{data.year}}</td>
+          <td>{{data.name}}</td>
+          <td>{{data.code}}</td>
+          <td>{{data.value}}</td>
+          <td>{{data.unit}}</td>
+          <td>{{data.reference}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+</div>
+
+
+<p-dialog header="Add New Emission Factor" [(visible)]="display">
+    <app-netzero-ef-single [new]="true" [efCodes]="efCodes" [countries]="countries"></app-netzero-ef-single>
+</p-dialog>
+
+
+<p-dialog  header="Edit Emission Factor" [(visible)]="editEF">
+  <app-netzero-ef-single *ngIf="editEF" [new]="false" [ef]="ef" [efCodes]="efCodes"
+    [countries]="countries">
+  </app-netzero-ef-single>
+</p-dialog>

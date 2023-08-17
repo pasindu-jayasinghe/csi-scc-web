@@ -1,0 +1,100 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div class="container">
+       <img width="60" src="../../../../assets/logo//cover.png" alt="">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars ms-1"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#page-top" >Home</a></li>
+          <li class="nav-item"><a target="_blank" class="nav-link" href="https://www.climatesi.com/index.php">About</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="../login">Login</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+  <header class="masthead">
+    <div class="container">
+      <div class="masthead-subheading">Know your contribution to climate change!</div>
+      <div class="masthead-heading text-uppercase">Smart Trees</div>
+    </div>
+    <ng-container *ngFor="let i of [0,1,2,3]">
+      <div *ngIf="i==index && !loading" [@flyInOut] [ngClass]="'background div'+i">
+      </div>
+    </ng-container>
+    <div *ngIf="loading" class="background div0"></div>
+  </header>
+
+
+  
+  <section class="page-section bg-light" id="team">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-heading text-uppercase">Smart Trees</h2>
+        <h3 class="section-subheading text-muted">Smart Trees is an online calculator to measure the carbon sequestration of Trees.</h3>
+      </div>
+      <div class="row">
+  
+      </div>
+      <div class="row">
+        <div class="text-center">
+          <h3 class="section-heading text-uppercase">Introduction</h3>
+          <h6 class="section-subheading text-muted">
+            Currently, the world experiences many catastrophic environmental issues because of the
+            industrialization which cause severe damage to the stability of the environment. Climate
+            change or global warming, air pollution, water pollution, and extinction of species can be
+            described as some of the key issues. Therefore, it becomes crucial to take necessary actions
+            to mitigate these environmental issues by businesses through their active participation. Also,
+            now it becomes a norm among consumers to purchase goods and services from sustainable
+            businesses. Therefore, businesses take several possible actions to mitigate and offset their
+            impacts on environment.
+          </h6>
+          <h6 class="section-subheading text-muted">
+            Reforestation or tree plantation become very popular among world business leaders to
+            showcase their environmental consciousness to their peers and valued consumers. Further,
+            a well-planned and managed tree plantation activity can cause many Environmental, Social
+            and Economic benefits for the business and the neighboring community.
+          </h6>
+          <h6 class="section-subheading text-muted">
+            Carbon sequestration is one of the key benefits from planting of trees as it will reduce CO2
+            level in the atmosphere and contribute for reducing global warming. Therefore, businesses
+            are always enthusiastic of knowing how much they have contributed to combat climate
+            change by their plantations projects. And for that here we are introducing Smart Trees.
+          </h6>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+
+
+<section class="page-section" id="services">
+  <div class="container">
+    <div class="text-center">
+      <h2 class="section-heading text-uppercase">Services</h2>
+      <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-4 col-lg-4 col-sm-4" >
+        <img width="60" src="../../../../assets/logo//cover.png" alt="">
+
+        <!-- <h4 class="my-3">E-Commerce</h4> -->
+      </div>
+      <div class="col-md-4 col-lg-4 col-sm-4" >
+        <img width="60" src="../../../../assets/logo//cover.png" alt="">
+
+        <!-- <h4 class="my-3">Responsive Design</h4> -->
+      </div>
+      <div class="col-md-4 col-lg-4 col-sm-4" >
+        <img width="60" src="../../../../assets/logo//cover.png" alt="">
+
+        <!-- <h4 class="my-3">Web Security</h4> -->
+      </div>
+    </div>
+  </div>
+</section>

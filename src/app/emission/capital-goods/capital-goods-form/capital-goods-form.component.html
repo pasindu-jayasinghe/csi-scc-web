@@ -1,0 +1,330 @@
+
+<div class="container pl-25 pr-25">
+    <div class="mb-12">
+      <h4 class="mt-4">{{isNewEntry ? "Add" : isView ? "View": "Edit"  }} Capital Goods</h4>
+    </div>
+    <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+      <div class="card">
+  
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Unit *</label>
+                <app-unit-select [isView]="isView" [unit]="selectedUnit" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>                
+              </div>
+            </div>
+          </div>
+        </div>
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Project *</label>
+                <app-project-select [isView]="isView" [unit]="selectedUnit" [project]="capitalgoods.project" (onUpdateProject)="onChangeProject($event)" [data]="fData"></app-project-select>               
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Year *</label>
+                
+              <input
+                [disabled]="true"
+                type="text"
+                name="year"
+                [(ngModel)]="capitalgoods.year"
+                class="form-control"
+                placeholder="Enter Year"
+                required
+              />
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Month *</label>
+              <p-dropdown
+                [disabled]="isView"
+                name="institution"
+                [options]="months"
+                [(ngModel)]="month"
+                  (onChange)="monthCgange()"
+                #fmonth="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                [required]="true"
+                appendTo="body"
+              ></p-dropdown>
+              <p 
+              class="info-message text-danger"
+              *ngIf="
+                !month &&
+                (fData.submitted ||
+                fmonth.touched ||
+                fmonth.dirty)
+              "
+              >
+                This is a mandatory field
+              </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+          <!--Method-->
+          <div class="p-grid p-fluid col-md-12 col-sm-12" style="background-color: #F4FFFF;">
+            <div class="row p-2" *ngFor="let data of capitalgoods.method_data; let i = index">
+              <div class="col-10 col-md-10">
+              <div class="row">
+              <div class="col-4 col-md-4">
+                <div class="p-field">
+                  <label>Type*</label>
+
+                  <p-dropdown
+                    [disabled]="isView"
+                    (onChange)="onSelect($event,i)"
+                    [name]="'capital_goods_type' + i"
+                    [options]="capital_goods_types"
+                    [(ngModel)]="data.type_of_cg"
+                    placeholder="Select .."
+                    optionLabel="name"
+                    optionValue="name"
+                    [filter]="true"
+                    filterBy="name"
+                    appendTo="body"
+                    class="col-4"
+                    [required]="true"
+                  >
+                  </p-dropdown>
+                  <p
+                    class="info-message text-danger"
+                    *ngIf="!data.type_of_cg && fData.submitted"
+                  >
+                    This is a mandatory field
+                  </p>
+                </div>
+            </div>
+
+            <div class="col-4 col-md-4">
+              <div class="p-field">
+                <label>Category*</label>
+                <p-dropdown
+                [disabled]="isView"
+                [name]="'category' + i"
+                [options]="categoryOptions[i]"
+                [(ngModel)]="data.category"
+                placeholder="Select .."
+                optionLabel="name"
+                optionValue="code"
+                [filter]="true"
+                filterBy="name"
+                appendTo="body"
+                class="col-4"
+                [required]="true"
+              >
+              </p-dropdown>
+              
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!data.category && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+          </div>
+
+            <div class="col-4 col-md-4">
+              <div class="p-field">
+                
+              <label>Emission Factor <i pTooltip="Enterd EF will overide the system EF" class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+
+                <div class="row">
+                <input
+                step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'user_input_ef' + i"
+                  [(ngModel)]="data.user_input_ef"
+                  class="form-control"
+                  class="col-8"
+                  placeholder="Enter Factor"
+                  
+                />
+
+                <p-dropdown
+                [disabled]="isView"
+                [name]="'user_input_ef_unit' + i"               
+                class=" col-4"
+                [options]="units.ef_units"
+                [(ngModel)]="data.user_input_ef_unit"
+                #funit="ngModel"
+                [autoDisplayFirst]="true"
+                optionLabel="label"
+                optionValue="code"
+              ></p-dropdown>
+            </div>
+            </div>
+            </div>
+            </div>
+
+            <div class="row">
+              <div class="col-4 col-md-4">
+                <div class="p-field">
+                <label>Quantity*</label>
+                  <input
+                    step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'quantity' + i"
+                    [(ngModel)]="data.quantity"
+                    class="form-control"
+                    placeholder="Enter Quantity"
+                    required
+                  />
+                  </div>
+                 </div>
+
+                 <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                  <p-dropdown
+                  [disabled]="isView"
+                  [name]="'quantity_unit' + i"               
+                  class=" col-4"
+                  [options]="units.qty"
+                  [(ngModel)]="data.quantity_unit"
+                  #funit="ngModel"
+                  [autoDisplayFirst]="true"
+                  optionLabel="label"
+                  optionValue="code"
+                ></p-dropdown>
+              </div>
+              </div>
+              </div>
+              </div>
+
+
+              <div class="col-2 col-md-2 text-right" *ngIf="!isView">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  (click)="deleteOneA(i,data.id)"
+                  pButton
+                  pRipple
+                  icon="pi pi-minus"
+                >
+                </button>
+              </div>
+            </div>
+            <div class="row p-2"  *ngIf="!isView">
+              <div class="col-12 text-right">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  (click)="addMethodAData()"
+                  pButton
+                  pRipple
+                  icon="pi pi-plus"
+                >
+                  
+                </button>
+              </div>
+            </div>
+          </div>
+
+  
+        <div id="basic" class="row" *ngIf="puesData && puesData.sourceType && puesData.sourceType.toString() === 'B'">
+          <div class="col-1" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="true"></p-radioButton>
+            <label class="radio-l">Mobile</label>
+          </div> 
+
+          <div class="col-2" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="false"></p-radioButton>
+            <label class="radio-l">Stationary</label>
+          </div> 
+          <div class="col-9" style="margin-left: 10px;"> </div>
+          <br>
+        </div>
+
+
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="puesData && !puesData.clasification">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Ownership *</label>
+              <p-dropdown
+                [disabled]="isView"
+                name="ownership"
+                [options]="ownerships"
+                placeholder="Select .."
+                optionLabel="name"
+                optionValue="name"
+                appendTo="body"
+                [required]="true"
+                ></p-dropdown>           
+            </div>
+          </div>
+          <!-- <p
+            class="info-message text-danger" *ngIf="!generator.ownership && (fData.submitted)">
+              This is a mandatory field
+          </p> -->
+        </div>
+        <br>
+      </div>
+
+      <div>
+        <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+          One or more mandatory fields should be filled before save action.
+        </p>
+      </div>
+      <br>
+
+      <div class="row p-grid p-fluid col-md-6 col-sm-6">
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+          <button class="btn btn-secondary text-uppercase" (click)="onBackClick()">
+            Back
+          </button>
+        </div>
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2"  *ngIf="!isView">
+          <button *ngIf="!isNewEntry && deletable" class="btn btn-danger text-uppercase" type="button"
+            (click)="onDeleteClick()">
+            Delete
+          </button>
+        </div>
+        <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+          <button [disabled]="creating || !puesAssigned || isDuplicated" class="btn btn-primary text-uppercase" type="submit" *ngIf="!isView">
+            Save
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <!-- <div *ngIf="creating" class="d-flex col-6 justify-content-end">
+          <p class="info-message text-warning mt-2" *ngIf="true">
+            please wait a moment...
+          </p>
+        </div> -->
+      </div>
+      </div>
+
+  </form>
+</div>
+
+ <!-- <p-toast position="top-right"></p-toast> -->
+  <!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+
+  
+  

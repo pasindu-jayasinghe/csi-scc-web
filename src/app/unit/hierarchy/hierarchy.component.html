@@ -1,0 +1,133 @@
+<p-toast></p-toast>
+
+
+
+<div class="container" style="min-height: 500px">
+    <h4 class="mt-4">Hierarchy</h4>
+    
+    
+    <div class="card" *ngIf="isCSIUser">
+        <div class="row">
+            <div class="p-grid p-fluid col-md-9 col-sm-9"> 
+                <div class="row">
+                    <div class="col-2">
+                        <label for="selectUnit" style="padding-top: 10px">Root Unit</label>
+                    </div>
+                    <div class="col-8">
+                        <div class="p-field">
+                            <p-dropdown
+                                [filter]="true" filterBy="name" [showClear]="true"
+                                (onChange)="onChangeUnit()"
+                                name="selectUnit"
+                                [options]="parentUnits"
+                                [(ngModel)]="selectUnit"
+                                placeholder="Select .."
+                                optionLabel="name"       
+                                appendTo="body"                     
+                            >
+                            <ng-template let-u pTemplate="unit">
+                                <div class="flex align-items-center operatingSystems-item">
+                                    <div>
+                                        {{u.name}} <span *ngIf="u.perfix"> - {{u.perfix}}</span>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                        </div>            
+                    </div>
+                </div>       
+            </div>
+            <div class="p-grid p-fluid col-md-3 col-sm-3" *ngIf="appService.hasUserActionAccessTo(userActions.CREATE_HIERARCHY)">
+                <button
+                    class="ml-4"
+                    type="button"
+                    (click)="new(null)"
+                    pButton
+                    pRipple
+                    icon="pi pi-plus"
+                    styleClass="p-button-warn"
+                ></button>
+                <button                                                    
+                    class="ml-4"
+                    type="button"
+                    (click)="addMultiple()"
+                    pButton
+                    pRipple       
+                    style="width: 150px;margin-left: 4px;"                   
+                    styleClass="p-button-warn"
+                    >Import Hierarchy
+                </button>
+          </div>
+        </div>
+    </div>
+
+    <br>
+    
+    
+    <div class="p-grid p-fluid card">
+        <div class="row">
+            <div class="col-3">
+                <button style="height: 20px; width: 30px;border: none; background: #64cde03b;"></button>
+                <label style="margin-left: 20px;">Initial Unit</label>
+            </div>
+            <div class="col-3">
+                <button style="height: 20px; width: 30px;border: none;background: #e2dd5f3b"></button>
+                <label style="margin-left: 20px;">Signed Unit</label>
+            </div>
+            <div class="col-3">
+                <button style="height: 20px; width: 30px;border: none;background: #7cec403b"></button>
+                <label style="margin-left: 20px;">Approved Unit</label>
+            </div>
+            <!-- *ngIf="selectUnit" -->
+            <div class="col-3">
+                <button                                                    
+                    class="ml-4"
+                    type="button"
+                    (click)="changeAllStatus()"
+                    pButton
+                    pRipple       
+                    style="width: 150px;margin-left: 4px;"                   
+                    styleClass="p-button-warn"
+                    >Change all Status
+                </button>
+            </div>
+        </div>
+        <hr>
+        <div [style]="!isLenghtly?'margin-left: 33%;':'margin-left: 33%;'">
+            <ngx-org-chart direction="horizontal" [nodes]="nodes" (itemClick)="chickUnit($event)"></ngx-org-chart>
+        </div>
+    </div>
+</div>
+
+
+<p-dialog [header]="header" [(visible)]="seeUnitDetails" [style]="{width: '30vw'}">
+    <!-- <app-add-unit *ngIf="clickedUnit" [editing]="true" [unit]="clickedUnit"></app-add-unit> -->
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-times" (click)="new(clickedUnit)" label="Add Child Unit"></p-button>
+        <p-button icon="pi pi-times" (click)="seeUnitDetails=false" label="Close"></p-button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog header="Changing status of all units" [(visible)]="isChangeAllStatus" [style]="{width: '30vw'}">
+    <ng-template pTemplate="body">
+        <div class="row">
+            <div class="col-4">
+                <label>Unit Status*</label>
+            </div>
+            <div class="col-8">
+                <p-dropdown
+                    name="fuelspType"
+                    [options]="unitsStatusList"
+                    [(ngModel)]="selectedAllStatus"
+                    #fmonth="ngModel"
+                    placeholder="Select .."              
+                    appendTo="body"
+                ></p-dropdown>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi" (click)="changeAllStatusSave()" label="Change"></p-button>
+    </ng-template>
+</p-dialog>

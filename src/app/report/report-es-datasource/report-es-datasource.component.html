@@ -1,0 +1,96 @@
+<form #fData="ngForm" (ngSubmit)="saveCSIData()">
+  <div class="row br">
+    <p-table
+      paginatorDropdownAppendTo="body" [value]="emissionSources">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Emission Source</th>
+          <th>Ownership</th>
+          <th>Data Source</th>
+          <th>Category</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-es>
+        <tr>
+          <td rowspan="4">{{es.emissionSource}}</td>
+          <td>Hired</td>
+          <td><input type="text" name="hiredSource+{{es.esId}}" class="form-control" placeholder="Enter Data source" required
+              [(ngModel)]="es.hiredSource" /> </td>
+          <td>
+            <p-dropdown
+                  name="hiredCategory+{{es.esId}}"
+                  [options]="emissionCategories"
+                  [(ngModel)]="es.hiredCategory"
+                  #fOwnership="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  appendTo="body"
+                ></p-dropdown>   
+          </td>    
+        </tr>
+        <tr>
+          <td>Rented</td>
+          <td>
+            <input type="text" name="rentedSource+{{es.esId}}" class="form-control" placeholder="Enter Data source" required
+              [(ngModel)]="es.rentedSource" />
+          </td>
+          <td>
+            <p-dropdown
+                  name="rentedCategory+{{es.esId}}"
+                  [options]="emissionCategories"
+                  [(ngModel)]="es.rentedCategory"
+                  #fOwnership="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  appendTo="body"
+                ></p-dropdown>   
+          </td>    
+        </tr>
+        <tr>
+          <td>Own</td>
+          <td>
+            <input type="text" name="ownSource+{{es.esId}}" class="form-control" placeholder="Enter Data source" required
+              [(ngModel)]="es.ownSource" />
+          </td>
+          <td>
+            <p-dropdown
+                  name="ownCategory+{{es.esId}}"
+                  [options]="emissionCategories"
+                  [(ngModel)]="es.ownCategory"
+                  #fOwnership="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  appendTo="body"
+                ></p-dropdown>   
+          </td>    
+        </tr>
+        <tr>
+          <td>None</td>
+          <td>
+            <input type="text" name="noneSource+{{es.esId}}" class="form-control" placeholder="Enter Data source" required
+              [(ngModel)]="es.noneSource" />
+          </td>
+          <td>
+            <p-dropdown
+                  name="noneCategory+{{es.esId}}"
+                  [options]="emissionCategories"
+                  [(ngModel)]="es.noneCategory"
+                  #fOwnership="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  appendTo="body"
+                ></p-dropdown>   
+          </td>    
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="row br">
+    <div class="col-12">
+      <button class="btn btn-primary text-uppercase" type="submit" style="float: right">
+        Save
+      </button>
+    </div>
+  </div>
+</form>

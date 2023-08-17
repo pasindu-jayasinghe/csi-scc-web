@@ -1,0 +1,38 @@
+<div class="container pl-20 pr-20">
+    <div class="mb-12">
+        <h4 class="mt-4">{{ isNewEntry ? "Add" : isView ? "View": "Edit" }} Passenger Transport</h4>
+    </div>
+    <div class="p-grid p-fluid card">
+        <div class="row" style="width: 90.666667%;margin-bottom: 140px;margin-left: 4px;">
+            <div id="basic" class="row">
+                <div class="col">
+                    <div class="p-field row container">
+                        <label for="year">Domestic/International * </label>
+                        <div class="col-9">
+                            <p-dropdown [disabled]="isView" name="domesticInternational"
+                                [options]="domesticInternationals" [(ngModel)]="domesticInternational"
+                                #fdomesticInternational="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" >
+                            </p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="p-field row container">
+                        <label for="year">Passenger Mode *</label>
+                        <div class="col-9">
+                            <p-dropdown (onChange)="onSelectMode($event)" [disabled]="isView" name="passengerMode"
+                                [options]="passengerModes" [(ngModel)]="passengerMode" #ffreightMode="ngModel"
+                                placeholder="Select .." optionLabel="name" appendTo="body" ></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-passenger-air-transport-form *ngIf="passengerMode.code === 'AIR'"></app-passenger-air-transport-form>
+<app-passenger-road-transport-form *ngIf="passengerMode.code === 'ROAD'"></app-passenger-road-transport-form>
+<app-passenger-rail-transport-form *ngIf="passengerMode.code === 'RAIL'"></app-passenger-rail-transport-form>
+<app-passenger-offroad-transport-form *ngIf="passengerMode.code === 'OFFROAD'"></app-passenger-offroad-transport-form>
+<app-business-travel-transport-form *ngIf="passengerMode.code === 'BT'"></app-business-travel-transport-form>

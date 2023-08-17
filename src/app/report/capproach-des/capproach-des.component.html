@@ -1,0 +1,27 @@
+<form #fData="ngForm" (ngSubmit)="saveCSIData()">
+    <div class="row br">
+        <div class="col-4">
+            <label>Standard and approach*</label>
+        </div>
+        <div class="col-6">
+            <textarea
+            
+                name="dissemination"
+                class="form-control"
+                required
+                maxlength="1000"
+                [(ngModel)]="reportData.standardAndApproach"
+                (ngInit)="initialize()"           
+                ></textarea> 
+
+     
+        </div>
+    </div>
+    <div class="row br">
+        <div class="col-12">
+          <button class="btn btn-primary text-uppercase" type="submit" style="float: right">
+            Save
+          </button>
+        </div>
+      </div>
+</form>

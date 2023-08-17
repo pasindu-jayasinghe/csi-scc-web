@@ -1,0 +1,324 @@
+.scc{
+/* background-color: #E9ECEF; */
+
+
+
+}
+.scc .scc-details h1{
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 48px;
+line-height: 58px;
+
+color: rgba(99, 99, 99, 0.82);
+}
+.scc .scc-details video{
+    margin-top: 5%;
+  
+    }
+    
+
+.scc .scc-details .details{
+
+    margin-top: 10%;
+    }
+    .scc .scc-details .details p{
+        font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 140%;
+
+        }
+
+.scc .scc-foot-print {
+   display: flex ;
+   justify-content: center;
+   padding-left: 14%;
+}
+@media (max-width:991px) {
+    .scc .scc-foot-print {
+        display: none ;
+       
+       
+     } 
+}
+
+.scc .scc-foot-print img{
+    align-self: center;
+    margin: auto;
+    width: auto;
+    height:100vh;
+  
+}
+
+.key-feature h1{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 58px;
+    
+    color: rgba(99, 99, 99, 0.82);
+    }
+
+    .key-feature .key-feature-details div div{
+       display:inline-flex;
+       margin: auto;
+        }
+        .key-feature .key-feature-details div {
+            margin-bottom: 15%;
+            margin-top: 5%;
+             }
+
+        .key-feature .key-feature-details div div:first-child{
+            max-width: 60px;
+            width: 60px;
+          height: 60px;
+            background: #29BA86;
+            border-radius: 50%;
+           padding: 0;
+            align-items: center;
+           
+             }
+
+             .key-feature .key-feature-details div div:first-child img{
+              
+                width: 50px;
+                height:50px;
+                display:flex;
+            /* justify-content: center; */
+            align-items: center;
+            margin: auto;
+                
+                  }
+                  .key-feature .key-feature-details{
+                    position: relative;
+                          
+                            }
+                  .key-feature .key-feature-details>img{
+              
+                    max-height: 100%;
+                    max-width: 100%;
+                    width: auto;
+                    height: 80%;
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    margin: auto;
+                    
+                      }
+    
+             .key-feature .key-feature-details div div:last-child{
+                max-width: 75%;
+                padding-left: 5%;
+               /* top: -40px; */
+               position: relative;
+               font-family: 'Inter';
+                font-style: normal;
+                font-weight: 700;
+                font-size: 16px;
+                line-height: 19px;
+
+                color: #636363;
+                /* height: 100px; */
+                margin: auto;
+             align-items: center;
+                
+                  }
+
+                  .footer-new{
+    background: #383838;
+
+                  }
+
+     .footer-new .footer-companylogo{
+        display:inline-block;
+         justify-content: center;
+         align-items: center;
+         margin-bottom: 5%;
+        
+                  }
+
+                  .footer-new .footer-companylogo img{
+                    display:flex;
+                    margin: auto;
+                    
+                              }
+
+                              .footer-new .footer-companylogo p{
+                                font-family: Inter;
+                                font-size: 12px;
+                                font-weight: 400;
+                                line-height: 24px;
+                               
+                                text-align: center;
+                                color:#BFBFBF;
+                                white-space:nowrap;
+                                ;
+                                
+                                
+                                          }
+.footer-new .footer-contact div{
+    margin-bottom: 2%;
+    color: #FFFFFF;
+    ;
+
+            }
+.footer-new .footer-head{
+    font-family: Inter;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    
+           
+                        }
+.footer-new .footer-content{
+    font-family: Inter;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    
+
+            }
+
+.clients .header-client h3{
+    font-family: Inter;
+font-size: 48px;
+font-weight: 700;
+line-height: 58px;
+letter-spacing: 0em;
+/* text-align: left; */
+color: #636363D1;
+
+}
+.testmonial  h1{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 58px;
+    
+    color: rgba(99, 99, 99, 0.82);
+    }
+.testmonial .testmonial-card{
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25), 0px -4px 6px rgba(0, 0, 0, 0.25), 4px 0px 6px rgba(0, 0, 0, 0.25), -4px 0px 6px rgba(0, 0, 0, 0.25);
+    background: #f4fff2;
+    height: 400px;
+    min-height: 300px;
+    min-width: 300px;
+    margin-bottom: 10%;
+    width: 300px;
+    border-style: solid;
+    border-color: #29BA86;
+    border-width: 5px;
+    border-radius: 10px;
+
+
+}
+
+@media (max-width:767px) {
+    .testmonial .testmonial-card{
+        width: 100%;
+        margin: 10%;
+    
+    
+    }
+}
+.testmonial .testmonial-card .testmonial-card-header{
+ display: flex;
+ height: 30%;
+overflow: hidden;
+  align-items: center;
+  /* justify-content:space-between; */
+position: relative;
+    
+}
+.testmonial .testmonial-card .testmonial-card-header img{
+    position: absolute;
+   margin-right: 10%;
+   height: 80%;
+   width: auto;
+     right: 0;
+   }
+
+   .testmonial .testmonial-card .testmonial-card-header div{
+    position: absolute;
+    height: 200px;
+    width:200px;
+    background: #29BA86;
+    border-radius: 50%;
+    top: -100px;
+    left: -100px;
+    
+      
+    }
+    .testmonial .testmonial-card .testmonial-card-header div img{
+       position: absolute;
+       right: 15px;
+       bottom: 30px;
+       height: 50px;
+       width: 50px;
+  
+    
+       background-color: #29BA86;
+        
+          
+        }
+.testmonial .testmonial-card .testmonial-card-body{
+    height: 50%;
+    display:flex;
+
+    align-items: center;
+   
+
+    
+}
+
+.testmonial .testmonial-card .testmonial-card-body p{
+    padding: 0 5% 0 5%;
+    font-family: 'Inter';
+    /* font-style: italic; */
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 136.02%;
+    /* or 27px */
+    text-align: center;
+    /* text-justify: inter-word; */
+    
+    color: #3F3F3F;
+    
+}
+.testmonial .testmonial-card .testmonial-card-footer{
+    height: 20%;
+   text-align: center;
+  /* border-color: #29BA86; */
+
+   /* background: linear-gradient(0deg, #29BA86 10%, #eaffe5 0%); */
+    
+}
+.testmonial .testmonial-card .testmonial-card-footer h6{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+
+
+    
+} 
+.testmonial .testmonial-card .testmonial-card-footer p{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    color: rgba(116, 116, 116, 0.86);
+    line-height: 136.02%;
+
+
+    
+} 

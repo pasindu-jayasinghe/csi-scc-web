@@ -1,0 +1,61 @@
+<div class="container" style="min-height: 500px">
+    <h4 class="mt-4">Import/Export users</h4>
+
+    <div class="card">
+        <div class="row">
+            <div class="p-grid p-fluid col-md-6 col-sm-6"> 
+                <div class="row">
+                    <div class="col-2">
+                        <label for="selectUnit" style="padding-top: 10px">Select Unit</label>
+                    </div>
+                    <div class="col-8">
+                        <div class="col-9 p-2">
+                            <app-unit-select [isView]="false" [unit]="selectedUnit" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>                
+                        </div>          
+                    </div>
+                </div>       
+            </div>           
+        </div>
+    </div>
+    <div class="card">
+        <div class="row">
+            <div class="col-2">
+                <h6>Import Users</h6>
+            </div>
+            <div class="col-3">
+                <p-button [disabled]="selectedUnit == undefined || !appService.hasUserActionAccessTo(userActions.IMPORT_USERS)" (onClick)="downloadTemp()" icon="pi pi-down" label="Download Template"></p-button>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="p-grid p-fluid col-md-6 col-sm-6">
+                <div class="col-6">
+                    <label for="institution">Select Excel file to upload *</label>
+                    <app-file-uploader [addable]="true" [multiple]="false" (onChangeFile)="onAddFile($event)"
+                    (onDeleteFile)="onRemoveFile($event)"></app-file-uploader>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row col-3">
+            <button [disabled]="!uploadedExcellFile" (click)="upload()" class="ml-4" type="button" pButton pRipple styleClass="p-button-warn">Upload</button>
+        </div>
+    </div>
+    <div class="card">
+        <h6>Export Users</h6>
+        <br>
+        <div class="p-grid p-fluid col-md-3 col-sm-3">
+            <div class="row">
+                <div class="col-1">
+                    <p-checkbox  [(ngModel)]="isAllBranches" [binary]="true" name="Allbranches" class="col-2"></p-checkbox>
+                </div>
+                <div class="col">
+                    <label class="" for="Allbranches">Export all branches</label>
+                </div>
+            </div>
+        </div>
+        <div class="row col-3">
+            <button [disabled]="selectedUnit == undefined || !appService.hasUserActionAccessTo(userActions.EXPORT_USERS)"  (click)="export()" class="ml-4" type="button" pButton pRipple styleClass="p-button-warn">Export</button>
+        </div>
+    </div>
+</div>

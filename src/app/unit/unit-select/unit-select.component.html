@@ -1,0 +1,19 @@
+<p-dropdown
+    [disabled]="isView"
+    (onChange)="onChangeUnit($event)"
+    name="project"
+    [options]="units"
+    [(ngModel)]="unit"
+    #fproject="ngModel"
+    placeholder="Select .."
+    appendTo="body"
+    optionLabel="name"
+    [showClear]="true"
+    [filter]="true" filterBy="name" [showClear]="true"
+    >
+    <ng-template let-u pTemplate="unit">
+        <div class="flex align-items-center operatingSystems-item">
+        <div>{{u.name}} <span *ngIf="u.perfix"> - {{u.perfix}}</span></div>
+    </div>
+  </ng-template>   
+</p-dropdown>

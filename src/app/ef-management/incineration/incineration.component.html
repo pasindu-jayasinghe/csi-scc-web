@@ -1,0 +1,185 @@
+<div class="container">
+    <h4 class="mt-4">Incineration Factors</h4>
+    <div class="ui-fluid formgrid grid">
+      <p-table
+        paginatorDropdownAppendTo="body" [value]="incinerationFacData" [lazy]="true" (onLazyLoad)="loadEF($event)" [paginator]="true" [rows]="rows"
+        [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10,25,50]" [totalRecords]="totalRecords" [loading]="loading">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <div class="col-sm-2" style="width: 30%">
+  
+                <button class="ml-4" type="button" (click)="newEF()" pButton pRipple icon="pi pi-plus"
+                  styleClass="p-button-warn"></button>
+  
+  
+              </div>
+            </th>
+            <th>Waste Name</th>
+            <th>Year</th>
+            <th>Carbon Fraction</th>
+            <th>Dry Matter</th>
+            <th>Fossil Carbon Fraction</th>
+            <th>Oxidation Factor</th>
+            <th>EF CH₄</th>
+            <th>EF N₂O</th>
+            
+
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-efData>
+          <tr>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button (click)="viewEF(efData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                  class="p-button p-button-success p-button-outlined"></button>
+                <button (click)="editEF(efData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                  class="p-button p-button-warning p-button-outlined"></button>
+                <button (click)="onDeleteClick(efData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+              </div>
+            </td>
+  
+            <td>{{ efData.wasteType }}</td>
+            <td>{{ efData.year }}</td>
+            <td>{{ efData.carbonFraction }}</td>
+            <td>{{ efData.dryMatter }}</td>
+            <td>{{ efData.fossilCarbonFraction }}</td>
+            <td>{{ efData.oxidationFactor }}</td>
+            <td>{{ efData.ef_ch4 }}</td>
+            <td>{{ efData.ef_n2o }}</td>
+  
+  
+  
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  
+  <p-dialog header="Incineration" [(visible)]="display" [style]="{width: '70vw' }">
+    <form #incinerationFacsData="ngForm" (ngSubmit)="saveIncinerationFac(incinerationFacsData)" novalidate>
+  
+      <div class="p-grid p-fluid col-md-12 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-3">
+            <div class="p-field">
+              <label>Waste Name *</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="incinerationFac.wasteType" type="text" name="wasteType"
+                class="form-control" placeholder="Enter Name" [required]="true" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-3">
+            <div class="p-field">
+              <label>Code *</label>
+              <!-- <input
+                      [disabled]="isView"
+                      [disabled]="false"
+                      [(ngModel)]="incinerationFac.code"
+                      type="text"
+                      name="code"
+                      class="form-control"
+                      placeholder="Enter Code"
+                      [required]="true"
+                    /> -->
+              <p-dropdown [disabled]="isView" name="code" [(ngModel)]="incinerationFac.code" [options]="efCodes"
+                placeholder="Select .." [required]="true" optionLabel="code" optionValue="code"></p-dropdown>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <div class="p-field">
+              <label>Year*</label>
+              <p-dropdown [disabled]="isView" name="year" [(ngModel)]="incinerationFac.year" [options]="years"
+                placeholder="Select .." [required]="true"></p-dropdown>
+            </div>
+          </div>
+        </div>
+  
+      </div>
+  
+  
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+  
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Carbon Fraction</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="incinerationFac.carbonFraction" type="number" name="carbonFraction"
+                class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Dry Matter</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="incinerationFac.dryMatter" type="number" name="dryMatter"
+                class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Fossil Carbon Fraction</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="incinerationFac.fossilCarbonFraction" type="number"
+                name="fossilCarbonFraction" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+  
+        </div>
+      </div>
+  
+  
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+  
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Oxidation Factor</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="incinerationFac.oxidationFactor" type="number"
+                name="oxidationFactor" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>EF CH₄</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="incinerationFac.ef_ch4" type="number"
+                name="ef_ch4" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>EF N₂O</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="incinerationFac.ef_n2o" type="number" name="ef_n2o"
+                class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+  
+        </div>
+    
+  
+  
+      </div>
+  
+  
+  
+      <div class="row p-grid p-fluid col-md-6 col-sm-6">
+  
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+          <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+            Back
+          </button>
+        </div>
+  
+        <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10">
+          <button pButton type="submit" label="Save"></button>
+        </div>
+  
+      </div>
+    </form>
+  </p-dialog>

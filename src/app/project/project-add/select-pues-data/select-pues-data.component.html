@@ -1,0 +1,44 @@
+<div class="row">
+    <div class="col">
+        <div class="p-field row container">                    
+            <div class="col-9">
+                <p-dropdown
+                    (onChange)="change()"
+                    [disabled]="isView"
+                    [(ngModel)]="pues.clasification"
+                    name="type"
+                    [options]="clasifications"
+                    placeholder="Select classification"                
+                    appendTo="body" 
+                ></p-dropdown>
+                <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+            </div>                    
+        </div>     
+    </div>
+    <div class="col">
+        <div class="p-field row container">                    
+            <div class="col-9">
+                <p-dropdown
+                    (onChange)="change()"
+                    [disabled]="isView"
+                    [(ngModel)]="pues.tier"
+                    name="tier"
+                    [options]="tiers"
+                    placeholder="Select tier"      
+                    appendTo="body" 
+                ></p-dropdown>
+                <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+            </div>                    
+        </div>     
+    </div>
+    <div class="col">
+        <div class="col" style="margin-left: 10px;">                    
+            <p-checkbox (onChange)="change()" [disabled]="isView" name="isfy" [value]="true"  [(ngModel)]="mobile"></p-checkbox>
+            <label class="check-box-label" for="la">Mobile</label>
+        </div> 
+        <div class="col" style="margin-left: 10px;">                    
+            <p-checkbox (onChange)="change()" [disabled]="isView" name="isfy" [value]="true" [(ngModel)]="stationary"></p-checkbox>
+            <label class="check-box-label" for="la">Stationary</label>
+        </div> 
+    </div>
+</div>

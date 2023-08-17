@@ -1,0 +1,39 @@
+<div class="p-grid p-fluid card ">
+    <div class="row" style="margin-top: 5px">
+        <!-- <div class="row"> -->
+            <div class="p-field row container" style="margin-bottom: 5px;" >
+         
+
+                <label for="employee">Employee Name </label>
+                <div class="col-6">
+                  <input type="text" name="employeName"
+                    [(ngModel)]="employeeName.name" class="form-control" placeholder="Enter employee name"  
+                    required />
+                </div>
+                <p class="info-message text-danger">
+                  This is a mandatory field
+                </p>
+                <label for="employee">Employee Id </label>
+
+                <div class="col-6">
+                    <input type="text" name="employeeId"
+                      [(ngModel)]="employeeName.empId" class="form-control" placeholder="Enter employee Id"  
+                      required />
+                  </div>
+                  <p class="info-message text-danger">
+                    This is a mandatory field
+                  </p>
+                <div class="col-3">
+                  <p-button 
+                  icon="pi pi-user-plus" iconPos="right"(onClick)="save()"
+                 >
+              </p-button>
+                </div>
+            
+            
+              <!-- </div> -->
+
+    </div>
+</div>
+
+</div>

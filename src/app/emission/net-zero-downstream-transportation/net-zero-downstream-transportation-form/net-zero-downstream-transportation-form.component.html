@@ -1,0 +1,1416 @@
+<div class="container pl-25 pr-25">
+  <div class="mb-12">
+    <h4 class="mt-4">
+      {{ isNewEntry ? "Add" : isView ? "View" : "Edit" }}Downstream Transportation and Distribution
+    </h4>
+  </div>
+  <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+    <div class="card">
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Unit *</label>
+              <app-unit-select [isView]="isView" [unit]="selectedUnit"
+                (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Project *</label>
+              <app-project-select [isView]="isView" [unit]="selectedUnit" [project]="downstreamTransportation.project"
+                (onUpdateProject)="onChangeProject($event)" [data]="fData"></app-project-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Year *</label>
+
+              <input [disabled]="true" type="text" name="year" [(ngModel)]="downstreamTransportation.year"
+                class="form-control" placeholder="Enter Year" required />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Month *</label>
+              <p-dropdown [disabled]="isView" name="institution" [options]="months" [(ngModel)]="month"
+                (onChange)="monthCgange()" #fmonth="ngModel" placeholder="Select .." optionLabel="name" appendTo="body"
+                [required]="true"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="
+                  !month && (fData.submitted || fmonth.touched || fmonth.dirty)
+                ">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Method *</label>
+              <p-dropdown [disabled]="isView" name="method" [options]="methods"
+                [(ngModel)]="downstreamTransportation.method" (onChange)="onSelectMethod($event)" #method="ngModel"
+                placeholder="Select .." optionLabel="name" optionValue="code" appendTo="body" [disabled]="isView ||!isNewEntry"
+
+                [required]="true"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="
+                  !downstreamTransportation.method && (fData.submitted || method.touched || method.dirty)
+                ">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="downstreamTransportation.method == downstreamTransportationActivityDataDtoMethod.FUELBASEMETHOD">
+        <!-- <ng-container *ngTemplateOutlet="FUELBASEMETHOD"></ng-container> -->
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2"
+            *ngFor="let average_data of downstreamTransportation.fule_based_method_data.fuel_data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Fuel Type</label>
+                    <app-fuel-select *ngIf="selectedUnit" [year]="downstreamTransportation.year"
+                      [countryCode]="selectedUnit.country.code" [es]="sourceName.Downstream_transportation_and_distribution"
+                      [fuel]="average_data.fuelBasefuelType" [isView]="isView" (onUpdateFuel)="onUpdateFuel($event, average_data,'fuelBasefuelType')">
+                    </app-fuel-select>
+                    <p class="info-message text-danger" *ngIf="!average_data.fuelBasefuelType && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Quantity of fuel consumed</label>
+                    <input min="0" max="100" [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'quantity_of_fuel_consumed' + i" [(ngModel)]="average_data.quantity_of_fuel_consumed"
+                      class="form-control" placeholder="Enter Quantity of fuel consumed" required />
+                    <p class="info-message text-danger" *ngIf="!average_data.quantity_of_fuel_consumed && fData.submitted">
+                      This is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'quantity_of_fuel_consumed_unit' + i" [options]="units.fuel"
+                      [(ngModel)]="average_data.quantity_of_fuel_consumed_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!average_data.quantity_of_fuel_consumed_unit && fData.submitted">This is a mandatory field</p>
+                  </div>
+                </div>
+              </div>
+              <br>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="removeRow(downstreamTransportation.fule_based_method_data.fuel_data,i)" pButton pRipple
+                    icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="downstreamTransportation.fule_based_method_data.fuel_data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.FUELBASEMETHOD,'fuel')" pButton
+                    pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2"
+            *ngFor="let average_data of downstreamTransportation.fule_based_method_data.refrigerent_data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Refrigerant Tyoe</label>
+                    <p-dropdown [disabled]="isView" [name]="'fuelBaseRefrigerantType'+i" [options]="refrigerantTypes"
+                      [required]="true" [(ngModel)]="average_data.fuelBaseRefrigerantType" #fgWP_RGs="ngModel"
+                      placeholder="Select Refrigerant Type.." optionLabel="name" optionValue="name"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf="!average_data.fuelBaseRefrigerantType && fData.submitted">This
+                      is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Quantity of refrigerent leaked</label>
+                    <input min="0" max="100" [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'quantity_of_refrigerent_leaked' + i" [(ngModel)]="average_data.quantity_of_refrigerent_leaked"
+                      class="form-control" placeholder="Enter Quantity of refrigerent leaked" required />
+                    <p class="info-message text-danger"
+                      *ngIf="!average_data.quantity_of_refrigerent_leaked && fData.submitted">This is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'quantity_of_refrigerent_leaked_unit' + i" [options]="units.ref"
+                      [(ngModel)]="average_data.quantity_of_refrigerent_leaked_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!average_data.quantity_of_refrigerent_leaked_unit && fData.submitted">This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <br>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="removeRow(downstreamTransportation.fule_based_method_data.refrigerent_data,i)" pButton pRipple
+                    icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="downstreamTransportation.fule_based_method_data.refrigerent_data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.FUELBASEMETHOD,'refrigerent')"
+                    pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+      
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2"
+            *ngFor="let average_data of downstreamTransportation.fule_based_method_data.electricity_data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Grid Region</label>
+                    <input  [disabled]="isView" type="text" 
+                      [name]="'grid_region' + i"
+                      [(ngModel)]="average_data.grid_region" class="form-control"
+                      placeholder="Enter Grid Region" required />
+                    <p class="info-message text-danger"
+                      *ngIf="!average_data.grid_region && fData.submitted">This is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Quantity of electricity consumed</label>
+                    <input min="0" max="100" [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'quantity_of_electricity_consumed' + i"
+                      [(ngModel)]="average_data.quantity_of_electricity_consumed" class="form-control"
+                      placeholder="Enter Quantity of electricity consumed" required />
+                    <p class="info-message text-danger"
+                      *ngIf="!average_data.quantity_of_electricity_consumed && fData.submitted">This is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'quantity_of_refrigerent_leaked_unit' + i" [options]="units.grid"
+                      [(ngModel)]="average_data.quantity_of_electricity_consumed_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!average_data.quantity_of_electricity_consumed_unit && fData.submitted">This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <br>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="removeRow(downstreamTransportation.fule_based_method_data.electricity_data,i)" pButton pRipple
+                    icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="downstreamTransportation.fule_based_method_data.electricity_data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.FUELBASEMETHOD,'electricity')"
+                    pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+      
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2"
+            *ngFor="let average_data of downstreamTransportation.fule_based_method_data.backhaul_data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Fuel Type</label>
+                    <app-fuel-select *ngIf="selectedUnit" [year]="downstreamTransportation.year" (onUpdateFuel)="onUpdateFuel($event, average_data,'fuelBaseBackhaulFuelType')"
+                      [countryCode]="selectedUnit.country.code" [es]="sourceName.Downstream_transportation_and_distribution"
+                      [fuel]="average_data.fuelBaseBackhaulFuelType" [isView]="isView">
+                    </app-fuel-select>
+                    <p class="info-message text-danger" *ngIf="!average_data.fuelBaseBackhaulFuelType && fData.submitted">This
+                      is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Quantity of fuel consumed backhaul</label>
+                    <input min="0" max="100" [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'quantity_of_fuel_consumed_from_backhaul' + i"
+                      [(ngModel)]="average_data.quantity_of_fuel_consumed_from_backhaul" class="form-control"
+                      placeholder="Enter Quantity of fuel consumed backhaul" required />
+                    <p class="info-message text-danger"
+                      *ngIf="!average_data.quantity_of_fuel_consumed_from_backhaul && fData.submitted">This is a mandatory
+                      field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'quantity_of_fuel_consumed_from_backhaul_unit' + i"
+                      [options]="units.fuel" [(ngModel)]="average_data.quantity_of_fuel_consumed_from_backhaul_unit"
+                      #funit="ngModel" optionValue="code" optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!average_data.quantity_of_fuel_consumed_from_backhaul_unit && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+              </div>
+              <br>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="removeRow(downstreamTransportation.fule_based_method_data.backhaul_data,i)" pButton pRipple
+                    icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="downstreamTransportation.fule_based_method_data.backhaul_data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.FUELBASEMETHOD,'backhaul')"
+                    pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+      </div>
+      <div *ngIf="downstreamTransportation.method == downstreamTransportationActivityDataDtoMethod.DISTANCEBASEMETHOD">
+        <!-- <ng-container *ngTemplateOutlet="DISTANCEBASEMETHOD"></ng-container> -->
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2"
+            *ngFor="let notSubmetered of downstreamTransportation.distance_based_method_data.data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Mass of goods purchased </label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'mass_of_goods_purchased' + i"
+                      [(ngModel)]="notSubmetered.mass_of_goods_purchased" class="form-control" placeholder="Enter Mass of goods purchased"
+                      required />
+                    <p class="info-message text-danger" *ngIf="!notSubmetered.mass_of_goods_purchased && fData.submitted">This
+                      is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'mass_of_goods_purchased_unit' + i" [options]="units.weight"
+                      [(ngModel)]="notSubmetered.mass_of_goods_purchased_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!notSubmetered.mass_of_goods_purchased_unit && fData.submitted">This is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Distance travelled in transport leg </label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'distance_travelled_in_transport_leg' + i"
+                      [(ngModel)]="notSubmetered.distance_travelled_in_transport_leg" class="form-control"
+                      placeholder="Enter Distance travelled in transport leg" required />
+                    <p class="info-message text-danger"
+                      *ngIf="!notSubmetered.distance_travelled_in_transport_leg && fData.submitted">This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'distance_travelled_in_transport_leg_unit' + i"
+                      [options]="units.distance" [(ngModel)]="notSubmetered.distance_travelled_in_transport_leg_unit"
+                      #funit="ngModel" optionValue="code" optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!notSubmetered.distance_travelled_in_transport_leg_unit && fData.submitted">This is a mandatory
+                      field</p>
+                  </div>
+                </div>
+              </div>
+      
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Vehicle_type</label>
+                    <p-dropdown [disabled]="isView" [name]="'vehicle_type' + i" [options]="vehicleTypes"
+                      [(ngModel)]="notSubmetered.vehicle_type" #funit="ngModel" optionValue="code" optionLabel="name"
+                      class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf="!notSubmetered.vehicle_type && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+              </div>
+      
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="removeRow(downstreamTransportation.distance_based_method_data.data,i)" pButton pRipple
+                    icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="downstreamTransportation.distance_based_method_data.data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.DISTANCEBASEMETHOD)" pButton
+                    pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="downstreamTransportation.method == downstreamTransportationActivityDataDtoMethod.SPENDBASEMETHOD">
+        <!-- <ng-container *ngTemplateOutlet="SPENDBASEMETHOD"></ng-container> -->
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2"
+            *ngFor="let average_data of downstreamTransportation.spend_based_method_data.data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Amount spent on transportation by type</label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'amount_spent_on_transportation_by_type' + i"
+                      [(ngModel)]="average_data.amount_spent_on_transportation_by_type" class="form-control"
+                      placeholder="Enter Amount spent on transportation by type" required />
+                    <p class="info-message text-danger"
+                      *ngIf="!average_data.amount_spent_on_transportation_by_type && fData.submitted">This is a mandatory
+                      field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'amount_spent_on_transportation_by_type_unit' + i"
+                      [options]="units.currencies" [(ngModel)]="average_data.amount_spent_on_transportation_by_type_unit"
+                      #funit="ngModel" optionValue="code" optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!average_data.amount_spent_on_transportation_by_type_unit && fData.submitted">This is a mandatory
+                      field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Share Of Total Project Costs</label>
+                    <input min="0" max="100" [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'shareOfTotalProjectCosts' + i"
+                      [(ngModel)]="average_data.shareOfTotalProjectCosts" class="form-control" placeholder="Enter Share Of Total Project Costs"
+                      required />
+                    <p class="info-message text-danger" *ngIf="!average_data.shareOfTotalProjectCosts && fData.submitted">This
+                      is a mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'shareOfTotalProjectCosts_unit' + i" [options]="units.presantage"
+                      [(ngModel)]="average_data.shareOfTotalProjectCosts_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!average_data.shareOfTotalProjectCosts_unit && fData.submitted">This is a mandatory field</p>
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>EEIO emission factors per unit of economic value <i
+                        pTooltip="Entered Emission  factor will override system Emission Factors" class="pi pi-info-circle "
+                        style="font-size: 1rem"></i></label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'EEIO_factor' + i"
+                      [(ngModel)]="average_data.eEIO_factor" class="form-control" placeholder="Enter EEIO emission factors per unit of economic value" />
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'storage_facility_ef_unit' + i" [options]="units.EEIO_EF"
+                      [(ngModel)]="average_data.eEIO_factor_unit" #funit="ngModel" optionValue="code" optionLabel="label"
+                      class="col-4" appendTo="body"></p-dropdown>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="removeRow(downstreamTransportation.spend_based_method_data.data,i)" pButton pRipple
+                    icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="downstreamTransportation.spend_based_method_data.data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.SPENDBASEMETHOD)" pButton pRipple
+                    icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="downstreamTransportation.method == downstreamTransportationActivityDataDtoMethod.SITESPECIFICMETHOD">
+        <!-- <ng-container *ngTemplateOutlet="SITESPECIFICMETHOD"></ng-container> -->
+        <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+          <div class="row p-2"
+            *ngFor="let averageData of downstreamTransportation.site_specific_method_data.data;let i = index">
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Volume of reporting companys purchased goods</label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'volume_of_reporting_companys_purchased_goods' + i"
+                      [(ngModel)]="averageData.volume_of_reporting_companys_purchased_goods" class="form-control"
+                      placeholder="Enter Volume of reporting companys purchased goods" required />
+                    <p class="info-message text-danger"
+                      *ngIf="!averageData.volume_of_reporting_companys_purchased_goods && fData.submitted">This is a mandatory
+                      field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'volume_of_reporting_companys_purchased_goods_unit' + i"
+                      [options]="units.volUnits" [(ngModel)]="averageData.volume_of_reporting_companys_purchased_goods_unit"
+                      #funit="ngModel" optionValue="code" optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!averageData.volume_of_reporting_companys_purchased_goods_unit && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Total volume of goods in storage facility</label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                      [name]="'total_volume_of_goods_in_storage_facility' + i"
+                      [(ngModel)]="averageData.total_volume_of_goods_in_storage_facility" class="form-control"
+                      placeholder="Enter Total volume of goods in storage facility" required />
+                    <p class="info-message text-danger"
+                      *ngIf="!averageData.total_volume_of_goods_in_storage_facility && fData.submitted">This is a mandatory
+                      field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'total_volume_of_goods_in_storage_facility_unit' + i"
+                      [options]="units.volUnits" [(ngModel)]="averageData.total_volume_of_goods_in_storage_facility_unit"
+                      #funit="ngModel" optionValue="code" optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger"
+                      *ngIf="!averageData.total_volume_of_goods_in_storage_facility_unit && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Electricity consumed</label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'electricity_consumed' + i"
+                      [(ngModel)]="averageData.electricity_consumed" class="form-control" placeholder="Enter Electricity consumed"
+                      required />
+                    <p class="info-message text-danger" *ngIf="!averageData.electricity_consumed && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'electricity_consumed_unit' + i" [options]="units.grid"
+                      [(ngModel)]="averageData.electricity_consumed_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf="!averageData.electricity_consumed_unit && fData.submitted">This
+                      is a mandatory field</p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Refrigerant Tyoe</label>
+                    <p-dropdown [disabled]="isView" [name]="'refrigerantType'+i" [options]="refrigerantTypes"
+                      [required]="true" [(ngModel)]="averageData.refrigerantType" #fgWP_RGs="ngModel"
+                      placeholder="Select Refrigerant Type.." optionLabel="name" optionValue="name"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf="!averageData.refrigerantType && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Refrigerant leakage</label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'refrigerant_leakage' + i"
+                      [(ngModel)]="averageData.refrigerant_leakage" class="form-control" placeholder="Enter Refrigerant leakage"
+                      required />
+                    <p class="info-message text-danger" *ngIf="!averageData.refrigerant_leakage && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'refrigerant_leakage_unit' + i" [options]="units.ref"
+                      [(ngModel)]="averageData.refrigerant_leakage_unit" #funit="ngModel" optionValue="code"
+                      optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf="!averageData.refrigerant_leakage_unit && fData.submitted">This
+                      is a mandatory field</p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Fuel Type</label>
+                    <app-fuel-select (onUpdateFuel)="onUpdateFuel($event, averageData,'fuelType')" *ngIf="selectedUnit"
+                      [year]="downstreamTransportation.year" [countryCode]="selectedUnit.country.code"
+                      [es]="sourceName.Downstream_transportation_and_distribution" [fuel]="averageData.fuelType"
+                      [isView]="isView">
+                    </app-fuel-select>
+                    <p class="info-message text-danger" *ngIf="!averageData.fuelType && fData.submitted">This is a mandatory
+                      field</p>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4">
+                  <div class="p-field">
+                    <label>Fuel consumed</label>
+                    <input [disabled]="isView" type="number" step="any" min="0"
+                      oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'fuel_consumed' + i"
+                      [(ngModel)]="averageData.fuel_consumed" class="form-control" placeholder="Enter Fuel consumed" required />
+                    <p class="info-message text-danger" *ngIf="!averageData.fuel_consumed && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Unit </label>
+                    <p-dropdown [disabled]="isView" [name]="'fuel_consumed_unit' + i" [options]="units.fuel"
+                      [(ngModel)]="averageData.fuel_consumed_unit" #funit="ngModel" optionValue="code" optionLabel="label"
+                      class="col-4" appendTo="body"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf="!averageData.fuel_consumed_unit && fData.submitted">This is a
+                      mandatory field</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="removeRow(downstreamTransportation.site_specific_method_data.data,i)" pButton pRipple
+                    icon="pi pi-minus" styleClass="p-button-warn"></button>
+                </div>
+                <div *ngIf="downstreamTransportation.site_specific_method_data.data.length ==i + 1" class="col-2">
+                  <button class="ml-1" type="button"
+                    (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.SITESPECIFICMETHOD)" pButton
+                    pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="downstreamTransportation.method == downstreamTransportationActivityDataDtoMethod.AVERAGEDATAMETHOD">
+        <!-- <ng-container *ngTemplateOutlet="AVERAGEDATAMETHOD"></ng-container> -->
+          <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+    <div class="row p-2"
+      *ngFor="let average_data of downstreamTransportation.average_data_method_data.data;let i = index">
+      <div class="col-10 col-md-10">
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Average number of days stored</label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                [name]="'average_number_of_days_stored' + i" [(ngModel)]="average_data.average_number_of_days_stored"
+                class="form-control" placeholder="Enter Average number of days stored" required />
+              <p class="info-message text-danger"
+                *ngIf="!average_data.average_number_of_days_stored && fData.submitted">This is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Volume of stored goods</label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'volume_of_stored_goods' + i"
+                [(ngModel)]="average_data.volume_of_stored_goods" class="form-control" placeholder="Enter Volume of stored goods"
+                required />
+              <p class="info-message text-danger" *ngIf="!average_data.volume_of_stored_goods && fData.submitted">This
+                is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'volume_of_stored_goods_unit' + i" [options]="units.volUnits"
+                [(ngModel)]="average_data.volume_of_stored_goods_unit" #funit="ngModel" optionValue="code"
+                optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="!average_data.volume_of_stored_goods_unit && fData.submitted">
+                This is a mandatory field</p>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Storage facility emission factor <i
+                  pTooltip="Entered Emission  factor will override system Emission Factors" class="pi pi-info-circle "
+                  style="font-size: 1rem"></i></label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'storage_facility_ef' + i"
+                [(ngModel)]="average_data.storage_facility_ef" class="form-control" placeholder="Enter Storage facility emission factor" />
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'storage_facility_ef_unit' + i" [options]="units.facility"
+                [(ngModel)]="average_data.storage_facility_ef_unit" #funit="ngModel" optionValue="code"
+                optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!isView" class="col-2 col-md-2">
+        <div class="row">
+          <div class="col-2">
+            <button class="ml-1" type="button"
+              (click)="removeRow(downstreamTransportation.average_data_method_data.data,i)" pButton pRipple
+              icon="pi pi-minus" styleClass="p-button-warn"></button>
+          </div>
+          <div *ngIf="downstreamTransportation.average_data_method_data.data.length ==i + 1" class="col-2">
+            <button class="ml-1" type="button"
+              (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.AVERAGEDATAMETHOD)" pButton
+              pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+      </div>
+
+      <div>
+        <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+          One or more mandatory fields should be filled before save action.
+        </p>
+      </div>
+      <br />
+
+      <div class="row p-grid p-fluid col-md-6 col-sm-6">
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+          <button type="button" class="btn btn-secondary text-uppercase" (click)="onBackClick()">Back</button>
+        </div>
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+          <button *ngIf="!isNewEntry && deletable && !isView" class="btn btn-danger text-uppercase" type="button"
+            (click)="onDeleteClick()">Delete</button>
+        </div>
+        <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+          <button [disabled]="creating || !puesAssigned || isDuplicated" class="btn btn-primary text-uppercase"
+            type="submit" *ngIf="!isView">Save</button>
+        </div>
+      </div>
+      <div class="row"></div>
+    </div>
+  </form>
+</div>
+
+<!-- <p-toast position="top-right"></p-toast> -->
+<!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+
+<ng-template #AVERAGEDATAMETHOD>
+  <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+    <div class="row p-2"
+      *ngFor="let average_data of downstreamTransportation.average_data_method_data.data;let i = index">
+      <div class="col-10 col-md-10">
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Average number of days stored</label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                [name]="'average_number_of_days_stored' + i" [(ngModel)]="average_data.average_number_of_days_stored"
+                class="form-control" placeholder="Enter Average number of days stored" required />
+              <p class="info-message text-danger"
+                *ngIf="!average_data.average_number_of_days_stored && fData.submitted">This is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Volume of stored goods</label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'volume_of_stored_goods' + i"
+                [(ngModel)]="average_data.volume_of_stored_goods" class="form-control" placeholder="Enter Volume of stored goods"
+                required />
+              <p class="info-message text-danger" *ngIf="!average_data.volume_of_stored_goods && fData.submitted">This
+                is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'volume_of_stored_goods_unit' + i" [options]="units.volUnits"
+                [(ngModel)]="average_data.volume_of_stored_goods_unit" #funit="ngModel" optionValue="code"
+                optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="!average_data.volume_of_stored_goods_unit && fData.submitted">
+                This is a mandatory field</p>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Storage facility emission factor <i
+                  pTooltip="Entered Emission  factor will override system Emission Factors" class="pi pi-info-circle "
+                  style="font-size: 1rem"></i></label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'storage_facility_ef' + i"
+                [(ngModel)]="average_data.storage_facility_ef" class="form-control" placeholder="Enter Storage facility emission factor" />
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'storage_facility_ef_unit' + i" [options]="units.facility"
+                [(ngModel)]="average_data.storage_facility_ef_unit" #funit="ngModel" optionValue="code"
+                optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!isView" class="col-2 col-md-2">
+        <div class="row">
+          <div class="col-2">
+            <button class="ml-1" type="button"
+              (click)="removeRow(downstreamTransportation.average_data_method_data.data,i)" pButton pRipple
+              icon="pi pi-minus" styleClass="p-button-warn"></button>
+          </div>
+          <div *ngIf="downstreamTransportation.average_data_method_data.data.length ==i + 1" class="col-2">
+            <button class="ml-1" type="button"
+              (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.AVERAGEDATAMETHOD)" pButton
+              pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #SITESPECIFICMETHOD>
+  <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+    <div class="row p-2"
+      *ngFor="let averageData of downstreamTransportation.site_specific_method_data.data;let i = index">
+      <div class="col-10 col-md-10">
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Volume of reporting companys purchased goods</label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                [name]="'volume_of_reporting_companys_purchased_goods' + i"
+                [(ngModel)]="averageData.volume_of_reporting_companys_purchased_goods" class="form-control"
+                placeholder="Enter Volume of reporting companys purchased goods" required />
+              <p class="info-message text-danger"
+                *ngIf="!averageData.volume_of_reporting_companys_purchased_goods && fData.submitted">This is a mandatory
+                field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'volume_of_reporting_companys_purchased_goods_unit' + i"
+                [options]="units.volUnits" [(ngModel)]="averageData.volume_of_reporting_companys_purchased_goods_unit"
+                #funit="ngModel" optionValue="code" optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger"
+                *ngIf="!averageData.volume_of_reporting_companys_purchased_goods_unit && fData.submitted">This is a
+                mandatory field</p>
+            </div>
+          </div>
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Total volume of goods in storage facility</label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                [name]="'total_volume_of_goods_in_storage_facility' + i"
+                [(ngModel)]="averageData.total_volume_of_goods_in_storage_facility" class="form-control"
+                placeholder="Enter Total volume of goods in storage facility" required />
+              <p class="info-message text-danger"
+                *ngIf="!averageData.total_volume_of_goods_in_storage_facility && fData.submitted">This is a mandatory
+                field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'total_volume_of_goods_in_storage_facility_unit' + i"
+                [options]="units.volUnits" [(ngModel)]="averageData.total_volume_of_goods_in_storage_facility_unit"
+                #funit="ngModel" optionValue="code" optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger"
+                *ngIf="!averageData.total_volume_of_goods_in_storage_facility_unit && fData.submitted">This is a
+                mandatory field</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Electricity consumed</label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'electricity_consumed' + i"
+                [(ngModel)]="averageData.electricity_consumed" class="form-control" placeholder="Enter Electricity consumed"
+                required />
+              <p class="info-message text-danger" *ngIf="!averageData.electricity_consumed && fData.submitted">This is a
+                mandatory field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'electricity_consumed_unit' + i" [options]="units.grid"
+                [(ngModel)]="averageData.electricity_consumed_unit" #funit="ngModel" optionValue="code"
+                optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="!averageData.electricity_consumed_unit && fData.submitted">This
+                is a mandatory field</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Refrigerant Tyoe</label>
+              <p-dropdown [disabled]="isView" [name]="'refrigerantType'+i" [options]="refrigerantTypes"
+                [required]="true" [(ngModel)]="averageData.refrigerantType" #fgWP_RGs="ngModel"
+                placeholder="Select Refrigerant Type.." optionLabel="name" optionValue="name"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="!averageData.refrigerantType && fData.submitted">This is a
+                mandatory field</p>
+            </div>
+          </div>
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Refrigerant leakage</label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'refrigerant_leakage' + i"
+                [(ngModel)]="averageData.refrigerant_leakage" class="form-control" placeholder="Enter Refrigerant leakage"
+                required />
+              <p class="info-message text-danger" *ngIf="!averageData.refrigerant_leakage && fData.submitted">This is a
+                mandatory field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'refrigerant_leakage_unit' + i" [options]="units.ref"
+                [(ngModel)]="averageData.refrigerant_leakage_unit" #funit="ngModel" optionValue="code"
+                optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="!averageData.refrigerant_leakage_unit && fData.submitted">This
+                is a mandatory field</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Fuel Type</label>
+              <app-fuel-select (onUpdateFuel)="onUpdateFuel($event, averageData,'fuelType')" *ngIf="selectedUnit"
+                [year]="downstreamTransportation.year" [countryCode]="selectedUnit.country.code"
+                [es]="sourceName.Downstream_transportation_and_distribution" [fuel]="averageData.fuelType"
+                [isView]="isView">
+              </app-fuel-select>
+              <p class="info-message text-danger" *ngIf="!averageData.fuelType && fData.submitted">This is a mandatory
+                field</p>
+            </div>
+          </div>
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Fuel consumed</label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'fuel_consumed' + i"
+                [(ngModel)]="averageData.fuel_consumed" class="form-control" placeholder="Enter Fuel consumed" required />
+              <p class="info-message text-danger" *ngIf="!averageData.fuel_consumed && fData.submitted">This is a
+                mandatory field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'fuel_consumed_unit' + i" [options]="units.fuel"
+                [(ngModel)]="averageData.fuel_consumed_unit" #funit="ngModel" optionValue="code" optionLabel="label"
+                class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="!averageData.fuel_consumed_unit && fData.submitted">This is a
+                mandatory field</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!isView" class="col-2 col-md-2">
+        <div class="row">
+          <div class="col-2">
+            <button class="ml-1" type="button"
+              (click)="removeRow(downstreamTransportation.site_specific_method_data.data,i)" pButton pRipple
+              icon="pi pi-minus" styleClass="p-button-warn"></button>
+          </div>
+          <div *ngIf="downstreamTransportation.site_specific_method_data.data.length ==i + 1" class="col-2">
+            <button class="ml-1" type="button"
+              (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.SITESPECIFICMETHOD)" pButton
+              pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #SPENDBASEMETHOD>
+  <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+    <div class="row p-2"
+      *ngFor="let average_data of downstreamTransportation.spend_based_method_data.data;let i = index">
+      <div class="col-10 col-md-10">
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Amount spent on transportation by type</label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                [name]="'amount_spent_on_transportation_by_type' + i"
+                [(ngModel)]="average_data.amount_spent_on_transportation_by_type" class="form-control"
+                placeholder="Enter Amount spent on transportation by type" required />
+              <p class="info-message text-danger"
+                *ngIf="!average_data.amount_spent_on_transportation_by_type && fData.submitted">This is a mandatory
+                field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'amount_spent_on_transportation_by_type_unit' + i"
+                [options]="units.currencies" [(ngModel)]="average_data.amount_spent_on_transportation_by_type_unit"
+                #funit="ngModel" optionValue="code" optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger"
+                *ngIf="!average_data.amount_spent_on_transportation_by_type_unit && fData.submitted">This is a mandatory
+                field</p>
+            </div>
+          </div>
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Share Of Total Project Costs</label>
+              <input min="0" max="100" [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'shareOfTotalProjectCosts' + i"
+                [(ngModel)]="average_data.shareOfTotalProjectCosts" class="form-control" placeholder="Enter Share Of Total Project Costs"
+                required />
+              <p class="info-message text-danger" *ngIf="!average_data.shareOfTotalProjectCosts && fData.submitted">This
+                is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'shareOfTotalProjectCosts_unit' + i" [options]="units.presantage"
+                [(ngModel)]="average_data.shareOfTotalProjectCosts_unit" #funit="ngModel" optionValue="code"
+                optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger"
+                *ngIf="!average_data.shareOfTotalProjectCosts_unit && fData.submitted">This is a mandatory field</p>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>EEIO emission factors per unit of economic value <i
+                  pTooltip="Entered Emission  factor will override system Emission Factors" class="pi pi-info-circle "
+                  style="font-size: 1rem"></i></label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'EEIO_factor' + i"
+                [(ngModel)]="average_data.eEIO_factor" class="form-control" placeholder="Enter EEIO emission factors per unit of economic value" />
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'storage_facility_ef_unit' + i" [options]="units.EEIO_EF"
+                [(ngModel)]="average_data.eEIO_factor_unit" #funit="ngModel" optionValue="code" optionLabel="label"
+                class="col-4" appendTo="body"></p-dropdown>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!isView" class="col-2 col-md-2">
+        <div class="row">
+          <div class="col-2">
+            <button class="ml-1" type="button"
+              (click)="removeRow(downstreamTransportation.spend_based_method_data.data,i)" pButton pRipple
+              icon="pi pi-minus" styleClass="p-button-warn"></button>
+          </div>
+          <div *ngIf="downstreamTransportation.spend_based_method_data.data.length ==i + 1" class="col-2">
+            <button class="ml-1" type="button"
+              (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.SPENDBASEMETHOD)" pButton pRipple
+              icon="pi pi-plus" styleClass="p-button-warn"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #DISTANCEBASEMETHOD>
+  <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+    <div class="row p-2"
+      *ngFor="let notSubmetered of downstreamTransportation.distance_based_method_data.data;let i = index">
+      <div class="col-10 col-md-10">
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Mass of goods purchased </label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0" [name]="'mass_of_goods_purchased' + i"
+                [(ngModel)]="notSubmetered.mass_of_goods_purchased" class="form-control" placeholder="Enter Mass of goods purchased"
+                required />
+              <p class="info-message text-danger" *ngIf="!notSubmetered.mass_of_goods_purchased && fData.submitted">This
+                is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'mass_of_goods_purchased_unit' + i" [options]="units.weight"
+                [(ngModel)]="notSubmetered.mass_of_goods_purchased_unit" #funit="ngModel" optionValue="code"
+                optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger"
+                *ngIf="!notSubmetered.mass_of_goods_purchased_unit && fData.submitted">This is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Distance travelled in transport leg </label>
+              <input [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                [name]="'distance_travelled_in_transport_leg' + i"
+                [(ngModel)]="notSubmetered.distance_travelled_in_transport_leg" class="form-control"
+                placeholder="Enter Distance travelled in transport leg" required />
+              <p class="info-message text-danger"
+                *ngIf="!notSubmetered.distance_travelled_in_transport_leg && fData.submitted">This is a mandatory field
+              </p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'distance_travelled_in_transport_leg_unit' + i"
+                [options]="units.distance" [(ngModel)]="notSubmetered.distance_travelled_in_transport_leg_unit"
+                #funit="ngModel" optionValue="code" optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger"
+                *ngIf="!notSubmetered.distance_travelled_in_transport_leg_unit && fData.submitted">This is a mandatory
+                field</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Vehicle_type</label>
+              <p-dropdown [disabled]="isView" [name]="'vehicle_type' + i" [options]="vehicleTypes"
+                [(ngModel)]="notSubmetered.vehicle_type" #funit="ngModel" optionValue="code" optionLabel="name"
+                class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="!notSubmetered.vehicle_type && fData.submitted">This is a
+                mandatory field</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div *ngIf="!isView" class="col-2 col-md-2">
+        <div class="row">
+          <div class="col-2">
+            <button class="ml-1" type="button"
+              (click)="removeRow(downstreamTransportation.distance_based_method_data.data,i)" pButton pRipple
+              icon="pi pi-minus" styleClass="p-button-warn"></button>
+          </div>
+          <div *ngIf="downstreamTransportation.distance_based_method_data.data.length ==i + 1" class="col-2">
+            <button class="ml-1" type="button"
+              (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.DISTANCEBASEMETHOD)" pButton
+              pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #FUELBASEMETHOD>
+  <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+    <div class="row p-2"
+      *ngFor="let average_data of downstreamTransportation.fule_based_method_data.fuel_data;let i = index">
+      <div class="col-10 col-md-10">
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Fuel Type</label>
+              <app-fuel-select *ngIf="selectedUnit" [year]="downstreamTransportation.year"
+                [countryCode]="selectedUnit.country.code" [es]="sourceName.Downstream_transportation_and_distribution"
+                [fuel]="average_data.fuelBasefuelType" [isView]="isView">
+              </app-fuel-select>
+              <p class="info-message text-danger" *ngIf="!average_data.fuelBasefuelType && fData.submitted">This is a
+                mandatory field</p>
+            </div>
+          </div>
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Quantity of fuel consumed</label>
+              <input min="0" max="100" [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                [name]="'quantity_of_fuel_consumed' + i" [(ngModel)]="average_data.quantity_of_fuel_consumed"
+                class="form-control" placeholder="Enter Quantity of fuel consumed" required />
+              <p class="info-message text-danger" *ngIf="!average_data.quantity_of_fuel_consumed && fData.submitted">
+                This is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'quantity_of_fuel_consumed_unit' + i" [options]="units.fuel"
+                [(ngModel)]="average_data.quantity_of_fuel_consumed_unit" #funit="ngModel" optionValue="code"
+                optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger"
+                *ngIf="!average_data.quantity_of_fuel_consumed_unit && fData.submitted">This is a mandatory field</p>
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
+      <div *ngIf="!isView" class="col-2 col-md-2">
+        <div class="row">
+          <div class="col-2">
+            <button class="ml-1" type="button"
+              (click)="removeRow(downstreamTransportation.fule_based_method_data.fuel_data,i)" pButton pRipple
+              icon="pi pi-minus" styleClass="p-button-warn"></button>
+          </div>
+          <div *ngIf="downstreamTransportation.fule_based_method_data.fuel_data.length ==i + 1" class="col-2">
+            <button class="ml-1" type="button"
+              (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.FUELBASEMETHOD,'fuel')" pButton
+              pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+    <div class="row p-2"
+      *ngFor="let average_data of downstreamTransportation.fule_based_method_data.refrigerent_data;let i = index">
+      <div class="col-10 col-md-10">
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Refrigerant Tyoe</label>
+              <p-dropdown [disabled]="isView" [name]="'fuelBaseRefrigerantType'+i" [options]="refrigerantTypes"
+                [required]="true" [(ngModel)]="average_data.fuelBaseRefrigerantType" #fgWP_RGs="ngModel"
+                placeholder="Select Refrigerant Type.." optionLabel="name" optionValue="name"></p-dropdown>
+              <p class="info-message text-danger" *ngIf="!average_data.fuelBaseRefrigerantType && fData.submitted">This
+                is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Quantity of refrigerent leaked</label>
+              <input min="0" max="100" [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                [name]="'quantity_of_refrigerent_leaked' + i" [(ngModel)]="average_data.quantity_of_refrigerent_leaked"
+                class="form-control" placeholder="Enter Quantity of refrigerent leaked" required />
+              <p class="info-message text-danger"
+                *ngIf="!average_data.quantity_of_refrigerent_leaked && fData.submitted">This is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'quantity_of_refrigerent_leaked_unit' + i" [options]="units.ref"
+                [(ngModel)]="average_data.quantity_of_refrigerent_leaked_unit" #funit="ngModel" optionValue="code"
+                optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger"
+                *ngIf="!average_data.quantity_of_refrigerent_leaked_unit && fData.submitted">This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
+      <div *ngIf="!isView" class="col-2 col-md-2">
+        <div class="row">
+          <div class="col-2">
+            <button class="ml-1" type="button"
+              (click)="removeRow(downstreamTransportation.fule_based_method_data.refrigerent_data,i)" pButton pRipple
+              icon="pi pi-minus" styleClass="p-button-warn"></button>
+          </div>
+          <div *ngIf="downstreamTransportation.fule_based_method_data.refrigerent_data.length ==i + 1" class="col-2">
+            <button class="ml-1" type="button"
+              (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.FUELBASEMETHOD,'refrigerent')"
+              pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+    <div class="row p-2"
+      *ngFor="let average_data of downstreamTransportation.fule_based_method_data.electricity_data;let i = index">
+      <div class="col-10 col-md-10">
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Quantity of electricity consumed</label>
+              <input min="0" max="100" [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                [name]="'quantity_of_electricity_consumed' + i"
+                [(ngModel)]="average_data.quantity_of_electricity_consumed" class="form-control"
+                placeholder="Enter Quantity of electricity consumed" required />
+              <p class="info-message text-danger"
+                *ngIf="!average_data.quantity_of_electricity_consumed && fData.submitted">This is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'quantity_of_refrigerent_leaked_unit' + i" [options]="units.grid"
+                [(ngModel)]="average_data.quantity_of_electricity_consumed_unit" #funit="ngModel" optionValue="code"
+                optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger"
+                *ngIf="!average_data.quantity_of_electricity_consumed_unit && fData.submitted">This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
+      <div *ngIf="!isView" class="col-2 col-md-2">
+        <div class="row">
+          <div class="col-2">
+            <button class="ml-1" type="button"
+              (click)="removeRow(downstreamTransportation.fule_based_method_data.electricity_data,i)" pButton pRipple
+              icon="pi pi-minus" styleClass="p-button-warn"></button>
+          </div>
+          <div *ngIf="downstreamTransportation.fule_based_method_data.electricity_data.length ==i + 1" class="col-2">
+            <button class="ml-1" type="button"
+              (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.FUELBASEMETHOD,'electricity')"
+              pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+    <div class="row p-2"
+      *ngFor="let average_data of downstreamTransportation.fule_based_method_data.backhaul_data;let i = index">
+      <div class="col-10 col-md-10">
+        <div class="row">
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Fuel Type</label>
+              <app-fuel-select *ngIf="selectedUnit" [year]="downstreamTransportation.year"
+                [countryCode]="selectedUnit.country.code" [es]="sourceName.Downstream_transportation_and_distribution"
+                [fuel]="average_data.fuelBaseBackhaulFuelType" [isView]="isView">
+              </app-fuel-select>
+              <p class="info-message text-danger" *ngIf="!average_data.fuelBaseBackhaulFuelType && fData.submitted">This
+                is a mandatory field</p>
+            </div>
+          </div>
+          <div class="col-4 col-md-4">
+            <div class="p-field">
+              <label>Quantity of fuel consumed backhaul</label>
+              <input min="0" max="100" [disabled]="isView" type="number" step="any" min="0"
+                oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                [name]="'quantity_of_fuel_consumed_from_backhaul' + i"
+                [(ngModel)]="average_data.quantity_of_fuel_consumed_from_backhaul" class="form-control"
+                placeholder="Enter Quantity of fuel consumed backhaul" required />
+              <p class="info-message text-danger"
+                *ngIf="!average_data.quantity_of_fuel_consumed_from_backhaul && fData.submitted">This is a mandatory
+                field</p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div class="p-field">
+              <label>Unit </label>
+              <p-dropdown [disabled]="isView" [name]="'quantity_of_fuel_consumed_from_backhaul_unit' + i"
+                [options]="units.fuel" [(ngModel)]="average_data.quantity_of_fuel_consumed_from_backhaul_unit"
+                #funit="ngModel" optionValue="code" optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+              <p class="info-message text-danger"
+                *ngIf="!average_data.quantity_of_fuel_consumed_from_backhaul_unit && fData.submitted">This is a
+                mandatory field</p>
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
+      <div *ngIf="!isView" class="col-2 col-md-2">
+        <div class="row">
+          <div class="col-2">
+            <button class="ml-1" type="button"
+              (click)="removeRow(downstreamTransportation.fule_based_method_data.backhaul_data,i)" pButton pRipple
+              icon="pi pi-minus" styleClass="p-button-warn"></button>
+          </div>
+          <div *ngIf="downstreamTransportation.fule_based_method_data.backhaul_data.length ==i + 1" class="col-2">
+            <button class="ml-1" type="button"
+              (click)="addNewDataObject(downstreamTransportationActivityDataDtoMethod.FUELBASEMETHOD,'backhaul')"
+              pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-template>

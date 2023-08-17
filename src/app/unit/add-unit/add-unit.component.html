@@ -1,0 +1,151 @@
+<div class="p-grid p-fluid col-md-9 col-sm-12">
+    <div class="row p-2">
+        <div class="col-12 col-md-6">
+            <div class="p-field">
+                <label>Name *</label>
+                <input
+                    [disabled]="!editing"
+                    type="text"
+                    name="fuelspd"
+                    [(ngModel)]="unit.name"
+                    class="form-control"
+                    placeholder="Enter Unit Name"
+                    required
+                />
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="p-field">
+                <label>Level Name</label>
+                <input
+                    [disabled]="!editing"
+                    type="text"
+                    name="fuelspd"
+                    [(ngModel)]="unit.levelName"
+                    class="form-control"
+                    placeholder="Enter Level Name"
+                    required
+                />
+            </div>
+        </div>      
+    </div>
+
+    <div class="row p-2">
+        <div class="col-12 col-md-6">
+            <div class="p-field">
+            <label>Country *</label>
+            <p-dropdown
+                [disabled]="!editing"
+                name="fuelspType"
+                [options]="countries"
+                [(ngModel)]="unit.country"
+                #fmonth="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                appendTo="body"
+                >
+                <ng-template let-country pTemplate="country">
+                    <div>{{country.name}} - {{country.code}}</div>
+                </ng-template>   
+            </p-dropdown>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="p-field">
+            <label>Industry *</label>
+            <p-dropdown
+                name="fuelspCountry"
+                [options]="industries"
+                [(ngModel)]="unit.industry"
+                #fmonth="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                appendTo="body"
+                [disabled]="!editing"
+                ></p-dropdown>
+            </div>
+        </div>      
+    </div>
+
+    <div class="row p-2">
+        <div class="col-12 col-md-6" *ngIf="parentUnit">
+            <div class="p-field">
+            <label>Parent Unit *</label>
+            <p-dropdown
+                name="fuelspType"
+                [disabled]="true"
+                [options]="units"
+                [(ngModel)]="unit.parentUnit"
+                #fmonth="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                appendTo="body"
+                >
+                <ng-template let-u pTemplate="unit">
+                    <div class="flex align-items-center operatingSystems-item">
+                        <div>
+                            {{u.name}} <span *ngIf="u.perfix"> - {{u.perfix}}</span>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            </div>
+        </div>  
+        <div class="col-12 col-md-6">
+            <div class="p-field">
+            <label>Unit Status*</label>
+            <p-dropdown
+                name="fuelspType"
+                [disabled]="!editing"
+                [options]="unitsStatusList"
+                [(ngModel)]="unit.unitStatus"
+                #fmonth="ngModel"
+                placeholder="Select .."              
+                appendTo="body"
+                ></p-dropdown>
+            </div>
+        </div>  
+    </div>
+
+    <div class="row p-2" *ngIf="isCSIUser">    
+        <div class="col-4" *ngIf="editing &&  !addingChild && appService.hasUserActionAccessTo(userActions.EDIT_HIERARCHY)">
+            <button class="btn btn-primary" type="button" (click)="openUnitModel()">
+                Add child unit
+            </button>
+        </div>
+        <!-- <div class="col-2"  *ngIf="editing">
+            <button class="btn btn-info " type="submit" (click)="infor()">
+                Info
+            </button>
+        </div> -->
+        <div class="col-2"  *ngIf="editing && appService.hasUserActionAccessTo(userActions.EDIT_HIERARCHY)">
+            <button class="btn btn-danger " type="submit" (click)="deleteUnit()">
+                Delete
+            </button>
+        </div>
+        <div class="col-2">
+            <button [disabled]="this.unit.id && !appService.hasUserActionAccessTo(userActions.EDIT_HIERARCHY)" class="btn btn-primary " type="submit" (click)="save()">
+                Save
+            </button>
+        </div>
+        <!-- <div class="col-4">
+            <button class="btn btn-primary " type="button" (click)="displayInfor=true">
+                information
+            </button>
+        </div> -->
+    </div>
+</div>
+
+
+
+<p-dialog header="Godfather I" [(visible)]="displayInfor" position="right" [modal]="false"
+    [draggable]="false">
+    <p>The story begins as Don Vito Corleone, the head of a New York Mafia family, oversees his daughter's wedding.
+        His beloved son Michael has just come home from the war, but does not intend to become part of his father's business.
+        Through Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family,
+        kind and benevolent to those who give respect,
+        but given to ruthless violence whenever anything stands against the good of the family.</p>
+        <ng-template pTemplate="footer">
+            <p-button icon="pi pi-check" (click)="displayInfor=false" label="Ok" styleClass="p-button-text"></p-button>
+        </ng-template>
+</p-dialog>

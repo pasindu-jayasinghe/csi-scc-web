@@ -1,0 +1,197 @@
+<p-toast></p-toast>
+
+<div class="container">
+    <h4 class="mt-4" *ngIf="isNewEntry">Add new Project</h4>
+    <h4 class="mt-4" *ngIf="!isNewEntry && !isView">Edit Project</h4>
+    <h4 class="mt-4" *ngIf="!isNewEntry && isView">View Project</h4>
+
+    <div class="p-grid p-fluid card">
+        <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+            <div id="basic" class="row">
+                <div class="col">
+                    <div class="p-field row container">
+                        <div class="col-3">
+                            <label for="firstname">Project Name *</label>
+                        </div>
+                        <div class="col-9">
+                            <input
+                                [disabled]="isView"
+                                [(ngModel)]="project.name"
+                                type="text"
+                                name="projectName"
+                                class="form-control"
+                                placeholder="Enter the project name"
+                                required
+                            />
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>     
+                    <div class="p-field row container">
+                        <div class="col-3">
+                            <label for="methodology">Methodology * </label>
+                        </div>
+                        <div class="col-9">
+                            <p-dropdown
+                                [disabled]="isView"
+                                [(ngModel)]="project.methodology"
+                                name="methodology"
+                                [options]="methodologies"
+                                placeholder="Select .."
+                                optionLabel="name"
+                                appendTo="body" 
+                            ></p-dropdown>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>                                  
+                </div>
+                <div class="col">
+                    <div class="p-field row container">
+                        <div class="col-3">
+                            <label for="firstname">Project Type *</label>
+                        </div>
+                        <div class="col-9">
+                            <p-dropdown
+                                [disabled]="isView"
+                                [(ngModel)]="project.projectType"
+                                name="projectType"
+                                [options]="projectTypes"
+                                placeholder="Select .."
+                                optionLabel="name"
+                                appendTo="body" 
+                            ></p-dropdown>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>       
+                                           
+                </div>                
+            </div>
+            <div id="basic" class="row">
+                <div class="col" style="margin-left: 10px;">                    
+                    <p-checkbox [disabled]="isView" name="isfy" [value]="true" [(ngModel)]="project.isFinancialYear"></p-checkbox>
+                    <label class="check-box-label" for="la">Is Financial Year</label>
+                </div> 
+            </div>
+            <div id="basic" class="row" *ngIf="!project.isFinancialYear">
+                <div class="col">
+                    <div class="p-field row container">
+                        <div class="col-3">
+                            <label for="year">Year *</label>
+                        </div>
+                        <div class="col-9">            
+                            <p-calendar [disabled]="isView" [(ngModel)]="year" view="year" dateFormat="yy" inputId="yearpicker"></p-calendar>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>
+                </div>   
+                <div class="col"></div>
+            </div>
+            <div id="basic" class="row" *ngIf="project.isFinancialYear">
+                <div class="col">
+                    <div class="p-field row container">
+                        <div class="col-3">
+                            <label for="firstname">Financial Year From *</label>
+                        </div>
+                        <div class="col-9">
+                            <p-calendar [placeholder]="fyFormat(project.fyFrom)" [disabled]="isView" [(ngModel)]="project.fyFrom"  inputId="fyFrom"></p-calendar>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="p-field row container">
+                        <div class="col-3">
+                            <label for="year">Financial Year To *</label>
+                        </div>
+                        <div class="col-9">            
+                            <p-calendar [placeholder]="fyFormat(project.fyTo)" [disabled]="isView" [(ngModel)]="project.fyTo" inputId="fyTo"></p-calendar>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>
+                </div>  
+            </div>
+            <div style="padding: 30px 30px 0 30px">
+                <h6>Assign Emission Sources</h6>
+            </div>
+
+            <div class="row" style="padding: 0px 0px 0px 30px;">
+                <div class="p-field check" *ngFor="let emissionSource of emissionSources">
+                    <div class="">
+                        <p-checkbox (onChange)="onChangeProjectES($event)" [disabled]="isView" name="emissionSource" [value]="emissionSource" [(ngModel)]="selectedProjectEmissionSource"></p-checkbox>
+                        <label class="check-box-label" for="la">{{emissionSource.name | titlecase}}</label>
+                    </div>                       
+                </div>                                    
+            </div>
+
+            <div style="padding: 40px 30px 0 30px;"> 
+                <h6>Assign Units</h6>
+            </div>
+
+            <ngx-org-chart style="margin-top: 30px;" direction="vertical" [nodes]="nodes" (itemClick)="openUnitModel($event)"></ngx-org-chart>
+
+        </div>
+
+        <div class="row justify-content-end">
+            <div class="d-flex col-1 ">
+              <button class="btn btn-secondary text-uppercase ml-15 btn-lg">
+                Back
+              </button>
+            </div>
+            <div class="col-2 d-flex">
+              <button (click)="save()" class="btn btn-primary text-uppercase btn-lg" type="submit">
+                Save
+              </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog (onHide)="clearDialogData()" [header]="header" [(visible)]="unitClicked" [style]="{width: '70vw'}">
+
+    <div class="row" style="padding: 0px 0px 0px 30px;">
+        <div class="p-field check">
+            <div class="">
+                <p-radioButton [disabled]="isView" name="isForChild" [value]="false" [(ngModel)]="isForChild" ></p-radioButton>
+                <label class="check-box-label" for="la">Asign to this Unit</label>
+            </div>                       
+        </div>     
+        
+        <div class="p-field check">
+            <div class="">
+                <p-radioButton [disabled]="isView" name="isForChild" [value]="true" [(ngModel)]="isForChild"></p-radioButton>
+                <label class="check-box-label" for="la">Asign to all children Units</label>
+            </div>                       
+        </div>        
+    </div>
+    <hr>
+
+    <div>
+        <h6>Assign Emission Sources to Unit</h6>
+    </div>
+
+    <div class="row" style="padding: 0px 0px 0px 30px;">
+        <div class="p-field" *ngFor="let emissionSource of selectedProjectEmissionSource">            
+            <div class="container">
+                <div class="row">
+                    <div class="col-4" style="margin-top: 10px">
+                        <p-checkbox (onChange)="onChangeProjectUnitES($event)" [disabled]="isView"[(ngModel)]="assignedEmissionSources" [name]="clickedUnit+'_emissionSources'" [value]="emissionSource"></p-checkbox>
+                        <label class="check-box-label" for="la">{{emissionSource.name | titlecase}}</label>       
+                    </div>
+                    <div class="col-8">
+                        <app-select-pues-data
+                            [pues]="getPUESBYEsFromClickedPU(emissionSource)"
+                            [isView]="isView" 
+                            (onChangeData)="onChangePUESData($event)"
+                            [emissionSource]="emissionSource">
+                        </app-select-pues-data>
+                    </div>                    
+                </div>
+            </div>
+            <hr style="color: #9d9d9df0">
+        </div>  
+    </div>
+    
+    <ng-template pTemplate="footer">
+        <p-button  (click)="reassign()" label="Remove" icon="pi pi-times" styleClass="p-button-danger"></p-button>
+        <p-button icon="pi pi-check" (click)="assign()" label="Asign" class="p-button-text"></p-button>
+    </ng-template>
+</p-dialog>

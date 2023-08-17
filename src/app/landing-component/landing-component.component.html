@@ -1,0 +1,371 @@
+<header  id="header"class="header d-flex align-items-center fixed-top" [ngStyle]="headerScrollStyle"   >
+    <div   class="container-fluid container-xl d-flex  justify-content-between">
+  
+      <a href="index.html" class="climatesi-logo">
+       <img src="assets/images/scc-logo.png">
+      </a>
+     <div></div>
+      
+  
+      <nav id="nav1" class="nav1" [ngStyle]="navbarstyle"   >
+       
+          <div><a (click)="scroll('home')" >Home</a></div>
+          <div><a  href='https://www.climatesi.com/index.php/home'>About Us</a></div>
+          
+  
+          <div><a  (click)="scroll('testmonial')">Feedback</a></div>
+          
+          <div><a  (click)="scroll('clients')">Our Clients</a></div>
+       
+
+          <div><a  (click)="scroll('contact')">Contact</a></div>
+          
+          <div><a  [routerLink]="['../auth/login']">Login</a></div>
+       
+      </nav>
+      <i   class="mobile-nav-button" [ngStyle]="moblieNavButtonStyle" [ngClass]="{' mobile-nav-close  bi bi-x' :isClickedMobileViweIcon, ' bi bi-list ':!isClickedMobileViweIcon}" (click)="clickMoblileViewIcon()"></i>
+
+    </div>
+
+
+  
+  </header>
+
+
+<section class="main-banner" id="home">
+    <div class="layer" style="margin-top: -24px;">
+       
+        <div class="container">
+            <div class="baner-info-w3layouts text-center">
+                <h3>​​​Smart Carbon Calculator</h3>
+                <h6 class="mx-auto mt-md-4 mt-3">Assess your Organizational Carbon Footprint</h6>
+                <!-- <button type="button" class="btn btn-lg btn-primary">Read more</button> -->
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+<section style="padding-top: 0 !important;" class="scc  py-lg-5 py-4" id="scc">
+    <div style="padding-top: 0 !important;" class="container py-sm-5 py-4">
+        <!---728x90--->
+
+        <div class="ab-grids row text-left pb-3">
+         
+            <div class="scc-details col-sm-12 col-lg-8">
+                <h1>
+                    Smart Carbon Calculator v2.0
+                </h1>
+                <div class="details">
+                    <p>
+                        The Smart Carbon Calculator is an online tool that can assess the organizational carbon 
+                        footprint as per ISO 14064 guidance. Currently, it includes 22 emission sources. 
+                        Further emission sources can be added if required. Direct, Indirect and other emissions 
+                        are calculated using the latest available national and international emission factors.
+                    </p>
+                </div>
+                <video controls style="width: 100%" poster="assets/thumbnail.png">
+                    <source src="https://ghgreport.s3.ap-south-1.amazonaws.com/SCC.mp4" type="video/mp4">
+                   
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="col-4 scc-foot-print">
+                <img src="assets/images/landing/footprint.png"  />
+            </div>
+            
+       
+        </div>
+    </div>
+</section>
+
+<section class="key-feature  py-lg-5 py-4" id="scc">
+    <div class="container py-sm-5 py-4">
+        <!---728x90--->
+
+        <div class="ab-grids row text-left pb-3">
+                <h1>
+                    SCC v2.0 Key Features
+                </h1>
+        </div>
+        <div class="ab-grids row text-left pb-3">
+          
+            <div class="key-feature-details col-sm-12 col-lg-4 ">
+                <div class="row" >
+                    <div class="col-2"><img src="assets/images/landing/keyFeatur1.svg" alt=""></div> <div class="col-9"><p>Use of Default/Country / industry-wise emission factors</p></div>
+                </div>
+                <div class="row">
+                    <div class="col-2"><img src="assets/images/landing/keyFeatur2.svg" alt=""></div> <div class="col-9"><p>Implementing any organizational hierarchy.</p></div>
+                </div>
+                <div class="row">
+                    <div class="col-2"><img src="assets/images/landing/keyFeatur3.svg" alt=""></div> <div  class="col-9"><p>Use of 22 emission sources Ability to add others Automated emission calculations</p></div>
+                </div>
+            </div>
+            <div class="key-feature-details col-sm-12 col-lg-4">
+                <img src="assets/images/landing/laptop.svg" alt="">
+            </div>
+            <div class="key-feature-details  col-sm-12 col-lg-4">
+                <div class="row flex-row-reverse" >
+                    <div class="col-2"><img src="assets/images/landing/keyFeatur4.svg" alt=""></div> <div class="col-9"><p class="text-right">Organization and branch/department/unit-wise emission summaries</p></div>
+                </div>
+                <div class="row flex-row-reverse">
+                    <div class="col-2"><img src="assets/images/landing/keyFeatur5.svg" alt=""></div> <div class="col-9"><p class="text-right">3rd party verification with an evidence collection system</p></div>
+                </div>
+                <div class="row flex-row-reverse">
+                    <div class="col-2"><img src="assets/images/landing/keyFeatur6.svg" alt=""></div> <div class="col-9"><p class="text-right">Automated CFP report generation</p></div>
+                </div>
+            </div>
+
+         </div>
+    </div>
+</section>
+
+
+
+
+<section class="testmonial py-lg-5 py-4" id="testmonial">    
+
+            <div class="container" >
+                <div class="ab-grids row text-left pb-3">
+                    <h1>
+                       What Our Clients Say
+                    </h1>
+            </div>
+          <div class="row justify-content-between">
+            <div class="col-sm-12 col-md-5  col-lg-3">
+                <div style="height: 400px;" class="testmonial-card">
+                 <div class="testmonial-card-header">
+                    <div><img style="margin-left: 30px"  src="assets/images/landing/testimonial.svg" alt=""></div>
+                    <img  src="assets/images/landing/logo/logo6.svg" alt="">
+                 </div>
+                 <div style="height:200px"  class="testmonial-card-body">
+                   <p>
+                    Very Comprehensive real time system, which always help us to predict the future.
+                   </p>
+                 </div>
+                 <div  style="height:80px; padding-top: 25px;" class="testmonial-card-footer">
+                  <h6>THILAN WIJESINGHE</h6>
+                  <p>
+                    Manager Information Systems
+                   </p>
+                 </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-5  col-lg-3">
+                <div style="height: 400px;" class="testmonial-card">
+                    <div style="height:120px" class="testmonial-card-header">
+                       <div><img style="margin-left: 30px"  src="assets/images/landing/testimonial.svg" alt=""></div>
+                       <img style="width: 50%;height: auto;" src="assets/images/landing/hnb.png" alt="">
+                    </div>
+                    <div style="height:200px"  class="testmonial-card-body">
+                      <p>
+                        User friendliness in accumulating data with the use of the Smart Carbon Calculator, where we can frequently monitor our internal verticals to help and keep track of our carbon footprint. The platform being complied of a cloud format has made things easier to access and has lessen the burden of our employees where we are ensured secure and reliable data transmission having consistent support by the ClimateSI team.
+                      </p>
+                    </div>
+                    <div style="height:80px; padding-top: 25px;" class="testmonial-card-footer">
+                     <h6>SHANEL PERERA
+                      </h6>
+                     <p>
+                        Executive - Sustainable Business
+                      </p>
+                    </div>
+                   </div>
+            </div>
+            <div class="col-sm-12 col-md-5 col-lg-3">
+                <div style="height: 400px;" class="testmonial-card">
+                    <div class="testmonial-card-header">
+                       <div><img style="margin-left: 30px"  src="assets/images/landing/testimonial.svg" alt=""></div>
+                       <img  style="width: 50%;height: auto;" src="assets/images/landing/slt.png" alt="">
+                    </div>
+                    <div style="height:200px"  class="testmonial-card-body">
+                      <p>
+                        The online carbon footprint calculator has helped in our journey towards a paperless digital world. The CFP report provided valuable input for developing roadmap to carbon neutrality.
+                      </p>
+                    </div>
+                    <div  style="height:80px; padding-top: 25px;" class="testmonial-card-footer">
+                     <h6>VAJIRA HAPUHINNA</h6>
+                     <p>
+                        Senior Executive Assistant Manager
+                      </p>
+                    </div>
+                   </div>
+            </div>
+          </div>               
+
+              
+
+                
+            </div>
+
+</section>
+
+
+
+
+
+
+    <section class="clients py-lg-5 py-4" id="clients" #clients>
+        <div class="container py-sm-4 py-4">
+            <!---728x90--->
+            <div class="header-client py-lg-5 py-3 " style="    padding: 0 !important;">
+                <h3  class="tittle mb-lg-3 mb-3">Clients of SCC</h3>
+            </div>
+            <!---728x90--->
+            <div class="feature-grids row text-left">
+                <div class="col-lg-4">
+                    <div class="bottom-gd p-lg-5 p-3">
+                        <img width="300" style="width: 100%; margin: auto; "  src="assets/images/landing/hayleys.png" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="bottom-gd2-active p-lg-5 p-3">
+                        <img width="300" style="width: 100%; "  src="assets/images/landing/logo/logo2.svg" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div  class="bottom-gd p-lg-5 p-3">
+                        <img style="width: 60%;height: auto;"  height="200"  src="assets/images/landing/logo/logo3.svg" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="bottom-gd p-lg-5 p-3">
+                        <img style="width: 100%;margin-top: 20px"  height="170"  src="assets/images/landing/boc.png" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="bottom-gd p-lg-5 p-3">
+                        <img style="width: 100%;"   height="200" src="assets/images/landing/logo/logo5.svg" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div  class="bottom-gd p-lg-5 p-3">
+                        <img style="width: 100%;"  height="200" src="assets/images/landing/logo/logo6.svg" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="bottom-gd p-lg-5 p-3">
+                        <img style="width: 75%;height: auto;"  height="200" src="assets/images/landing/softlogic.png" alt="">
+                    </div>
+                </div>
+              
+                <div class="col-lg-4">
+                    <div class="bottom-gd p-lg-5 p-3">
+                        <img style="width: 100%;height: auto;"  height="200" src="assets/images/landing/slt.png" alt=""> 
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="bottom-gd p-lg-5 p-3">
+                        <img style="width: 90%;height: auto;"  height="200" src="assets/images/landing/99x.png" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="bottom-gd p-lg-5 p-3">
+                        <img style="width: 100%;height: auto;"  height="200" src="assets/images/landing/hnb.png" alt="">
+                    </div>
+                </div>
+              
+                <div class="col-lg-4">
+                    <div class="bottom-gd p-lg-5 p-3">
+                        <img style="width: 125%;height: auto;"  height="200" src="assets/images/landing/lbfinance.png" alt="">
+                    </div>
+                </div>
+
+            
+
+             
+
+            </div>
+
+
+        </div>
+    </section>
+
+
+
+
+
+    <section class="contact py-5" id="contact" >
+        <div class="container" style="padding-bottom: 40px">
+            <div class="header-wthree py-lg-5 py-4 text-center">
+                <h3 class="tittle mb-lg-3 mb-3"> Get In Touch</h3>
+            </div>
+            <div class="contact-form mx-auto text-left">
+                <form name="contactform" id="contactform" method="post" novalidate="novalidate">
+                    <div class="row">
+                        <div class="col-lg-4 con-gd">
+                            <div class="form-group" data-aos="fade-up">
+                                <label>Name *</label>
+                                <input [(ngModel)]="name" type="text" class="form-control" id="name" placeholder="" name="name">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 con-gd">
+                            <div class="form-group" data-aos="fade-up">
+                                <label>Email *</label>
+                                <input  [(ngModel)]="email" type="email" class="form-control" id="email" placeholder="" name="email">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 con-gd">
+                            <div class="form-group" data-aos="fade-up">
+                                <label>Phone No. *</label>
+                                <input  [(ngModel)]="phone" type="text" class="form-control" id="phone" placeholder="" name="phone">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group mb-5">
+                        <label>How can we help?</label>
+                        <textarea  [(ngModel)]="message" name="issues" class="form-control" id="iq" placeholder=""></textarea>
+                    </div>
+
+                    <div class="title contact-page text-center" *ngIf="isSent">
+                        <h3 class="mb-lg-3 mb-3" style="color: rgb(115, 255, 115)"> Message sent</h3>
+                    </div>
+
+                    <div class="title contact-page text-center" *ngIf="isError">
+                        <h4 class="mb-lg-3 mb-3" style="color: rgb(245, 103, 85)">Please fill all fields</h4>
+                    </div>
+
+                    <div class="form-group mb-5">
+                        <label>Copy to me</label>
+                        <input style="width: 22px;height: 22px;margin-left: 20px;" type="checkbox" [(ngModel)]="coppyToMe" name="Copy to me">
+                    </div>
+                    
+                    <div class="contact-page text-right">
+
+                        <button (click)="submit()" style="float: right;" type="submit" class="btn btn-default">Submit</button>
+                    </div>
+                </form>
+            </div>            
+        </div>
+
+    </section>
+
+
+
+
+
+    <footer class="footer-new  " >
+        <div class="container py-xl-5 py-lg-3">
+            <div class="row justify-content-between">
+                <div class="col-sm-12 col-lg-3 col-3 footer-companylogo"> 
+                    <img src="assets/images/landing/climatsilogo.svg" alt="">
+                   <p class="">@ 2023 ClimateSI. All Rights Reserved</p>
+            </div>
+                <div class="footer-contact col-sm-12 col-lg-4 ">
+                    <div class="footer-head">Location</div>
+                    <div class="footer-content">Climate Smart Initiatives (Pvt) Ltd.</div>
+                    <div class="footer-head">Email</div>
+                    <div class="footer-content">info@climatesi.com</div>
+                    <div class="footer-head">Phone Number</div>
+                    <div class="footer-content">+94 112 075 264</div>
+                </div>
+            </div>
+        </div>
+    </footer>

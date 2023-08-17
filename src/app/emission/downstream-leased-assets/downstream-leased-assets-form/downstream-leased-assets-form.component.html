@@ -1,0 +1,1005 @@
+<div class="container pl-25 pr-25">
+  <div class="mb-12">
+    <h4 class="mt-4">
+      {{ isNewEntry ? "Add" : isView ? "View" : "Edit" }} Downstream Leased Assets
+    </h4>
+  </div>
+  <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+    <div class="card">
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Unit *</label>
+              <app-unit-select
+                [isView]="isView"
+                [unit]="selectedUnit"
+                (onUpdateUnit)="onUpdateUnit($event)"
+              ></app-unit-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Project *</label>
+              <app-project-select
+                [isView]="isView"
+                [unit]="selectedUnit"
+                [project]="downstream_leased_assets.project"
+                (onUpdateProject)="onChangeProject($event)"
+                [data]="fData"
+              ></app-project-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Year *</label>
+
+              <input
+                [disabled]="true"
+                type="text"
+                name="year"
+                [(ngModel)]="downstream_leased_assets.year"
+                class="form-control"
+                placeholder="Enter Year"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Month *</label>
+              <p-dropdown
+                [disabled]="isView"
+                name="institution"
+                [options]="months"
+                [(ngModel)]="month"
+                (onChange)="monthCgange()"
+                #fmonth="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                [required]="true"
+                appendTo="body"
+              ></p-dropdown>
+              <p
+                class="info-message text-danger"
+                *ngIf="
+                  !month && (fData.submitted || fmonth.touched || fmonth.dirty)
+                "
+              >
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-grid p-fluid col-md-6 col-sm-6">
+        <label for="year">Method * <i pTooltip="Please remove unfilled data row by clicking '-' button in right side before save." class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+        <div class="col-9">
+          <p-dropdown
+            (onChange)="onSelectMethod($event)"
+            [disabled]="isView ||!isNewEntry"
+            name="method"
+            [required]="true"
+            [options]="methods_downstream_leased_assets"
+            [(ngModel)]="downstream_leased_assets.method"
+            #fmethod="ngModel"
+            placeholder="Select .."
+            optionLabel="name"
+            optionValue="value"
+            appendTo="body"
+          ></p-dropdown>
+        </div>
+        <p class="info-message text-danger" *ngIf="!downstream_leased_assets.method &&  (fData.submitted || fmethod.touched || fmethod.dirty)">
+          This is a mandatory field
+        </p>
+      </div>
+
+      <div
+        *ngIf="
+          downstream_leased_assets.method ==
+          downstreamLeasedAssetsActivityDataDtoMethod.Asset_specific_method_data
+        "
+        class="p-grid p-fluid"
+      >
+      <div style="background-color: rgb(217, 246, 246); margin: 2% 0 5% 0">
+        <div
+          *ngFor="
+            let fuel of downstream_leased_assets.asset_specific_method_data.fuel_data;
+            let i = index
+          "
+          class="row p-2"
+        >
+          <div class="col-6 col-md-4">
+            <div class="p-field">
+              <label>Fuel Type</label>
+           
+              <!-- <p-dropdown
+              [disabled]="isView"
+              [name]="'fuelType' + i"
+              [options]="fuel_types"
+              [(ngModel)]="fuel.fuel_type"
+              placeholder="Select .."
+              optionLabel="name"
+              optionValue="code"
+              [filter]="true"
+              filterBy="name"
+              appendTo="body"
+              class="col-4"
+              #fuel_type="ngModel"
+
+            >
+            </p-dropdown> -->
+            <app-fuel-select 
+                *ngIf="selectedUnit"
+                (onUpdateFuel)="onUpdateFuel($event,fuel)"
+                [year]="downstream_leased_assets.year" 
+                [countryCode]="selectedUnit.country.code"
+                [es]="sourceName.Downstream_leased_assets"
+                [fuel]="fuel.fuel_type"
+                [isView]="isView"
+                >
+              </app-fuel-select>  
+          
+              <p
+                class="info-message text-danger"
+                *ngIf="!fuel.fuel_type && fData.submitted"
+              >
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="p-field">
+              <label>Quantity of Fuel Consumed (liters)</label>
+              <input
+                [disabled]="isView"
+                type="number"
+                [name]="'fuelQuntity' + i"
+                class="form-control"
+                [(ngModel)]="fuel.fuel_quntity"
+                placeholder="Enter Quantity "
+                #fuel_quntity="ngModel"
+                required
+                 step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+              />
+
+              <p
+                class="info-message text-danger"
+                *ngIf="!fuel.fuel_quntity && (  fuel_quntity.touched || fuel_quntity.dirty)"
+              >
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+          <div class="col-6 col-md-2">
+            <div class="p-field">
+              <label>Fuel unit </label>
+              <p-dropdown
+                [disabled]="isView"
+                [name]="'fuel_quntity_unit' + i"
+                [options]="units.consumptions"
+                [(ngModel)]="fuel.fuel_quntity_unit"
+                optionValue="code"
+                #fuel_quntity_unit="ngModel"
+
+                optionLabel="label"
+                class="col-4"
+                appendTo="body"
+              ></p-dropdown>
+              <p
+                class="info-message text-danger"
+                *ngIf="!fuel.fuel_quntity_unit && (  fuel_quntity_unit.touched || fuel_quntity_unit.dirty)"
+              >
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+          <div class="col-2 col-md-2">
+            <div *ngIf="!isView" class="row">
+              <div class="col-3">
+                <button
+                  class="ml-1"
+                  type="button"
+                  (click)="
+                    removeRow(
+                      downstream_leased_assets.asset_specific_method_data.fuel_data,
+                      i
+                    )
+                  "
+                  pButton
+                  pRipple
+                  icon="pi pi-minus"
+                  styleClass="p-button-warn"
+                ></button>
+              </div>
+              <div
+                *ngIf="
+                downstream_leased_assets.asset_specific_method_data.fuel_data
+                    .length ==
+                  i + 1
+                "
+                class="col-3"
+              >
+                <button
+                  class="ml-1"
+                  type="button"
+                  (click)="addNewDataObject('fuel')"
+                  pButton
+                  pRipple
+                  icon="pi pi-plus"
+                  styleClass="p-button-warn"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="background-color: rgb(217, 246, 246); margin: 2% 0 5% 0">
+        <div
+          *ngFor="
+            let ref of downstream_leased_assets.asset_specific_method_data.refrigerant_data;
+            let i = index
+          "
+          class="row p-2"
+        >
+        <div class="col-10 col-md-10">
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Refrigerant</label>
+                <!-- <input
+                  [disabled]="isView"
+                  type="text"
+                  [name]="'refrigerant' + i"
+                  [(ngModel)]="ref.refrigerant_type"
+                  class="form-control"
+                  placeholder="Enter Refrigerant"
+                  required
+                /> -->
+                <p-dropdown
+                [disabled]="isView"
+                [name]="'refrigerant' + i"
+                [options]="refTypes"
+                [(ngModel)]="ref.refrigerant_type"
+                placeholder="Select .."
+                optionLabel="name"
+                #refrigerant_type="ngModel"
+  
+                optionValue="name"
+                [filter]="true"
+                filterBy="name"
+                appendTo="body"
+                class="col-4"
+               
+              ></p-dropdown>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!ref.refrigerant_type && (  refrigerant_type.touched || refrigerant_type.dirty)"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Quantity of Refrigerant Leakage </label>
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'leackege' + i"
+                  class="form-control"
+                  #refrigerant_quntity="ngModel"
+                  [(ngModel)]="ref.refrigerant_quntity"
+                  placeholder="Enter Quantity"
+                  required
+                   step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                />
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!ref.refrigerant_quntity && (  refrigerant_quntity.touched || refrigerant_quntity.dirty)"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Refrigerant Leakage Unit</label>
+                <p-dropdown
+                [disabled]="isView"
+                [name]="'refrigerant_quntity_unit' + i"
+                [options]="units.consume_ref"
+                [(ngModel)]="ref.refrigerant_quntity_unit"
+                optionValue="code"
+                #refrigerant_quntity_unit="ngModel"
+
+                optionLabel="label"
+                class="col-4"
+                appendTo="body"
+              ></p-dropdown>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!ref.refrigerant_quntity_unit && (  refrigerant_quntity_unit.touched || refrigerant_quntity_unit.dirty)"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Quantity of Process Emission </label>
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'process_emission' + i"
+                  class="form-control"
+                  #process_emission="ngModel"
+                  [(ngModel)]="ref.process_emission"
+                  placeholder="Enter Value"
+                  required
+                   step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                />
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!ref.process_emission && (  process_emission.touched || process_emission.dirty)"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Process Emission Unit </label>
+                <p-dropdown
+                [disabled]="isView"
+                [name]="'process_emission_unit' + i"
+                [options]="units.emission"
+                [(ngModel)]="ref.process_emission_unit"
+                #process_emission_unit="ngModel"
+                optionValue="code"
+                optionLabel="label"
+                class="col-4"
+                appendTo="body"
+              ></p-dropdown>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!ref.process_emission_unit && (  process_emission_unit.touched || process_emission_unit.dirty)"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+         
+          <!-- <div class="col-6 col-md-2">
+          <div class="p-field">
+            <label>unit </label>
+            <p-dropdown
+            [disabled]="isView"
+            [name]="'reftUnit'+i"
+            [options]="units.consumption"
+            [(ngModel)]="ref.refrigerant_quntity_unit"
+            
+            optionLabel="label"
+            class=" col-4"
+            appendTo="body"
+          ></p-dropdown>
+            <p
+                class="info-message text-danger" *ngIf="!ref.refrigerant_quntity_unit && (fData.submitted)">
+                This is a mandatory field
+              </p>
+          </div>
+        </div> -->
+
+          <div *ngIf="!isView" class="col-2 col-md-2">
+            <div class="row">
+              <div class="col-3">
+                <button
+                  class="ml-1"
+                  type="button"
+                  (click)="
+                    removeRow(
+                      downstream_leased_assets.asset_specific_method_data.refrigerant_data,
+                      i
+                    )
+                  "
+                  pButton
+                  pRipple
+                  icon="pi pi-minus"
+                  styleClass="p-button-warn"
+                ></button>
+              </div>
+              <div
+                *ngIf="
+                downstream_leased_assets.asset_specific_method_data.refrigerant_data
+                    .length ==
+                  i + 1
+                "
+                class="col-3"
+              >
+                <button
+                  class="ml-1"
+                  type="button"
+                  (click)="addNewDataObject('ref')"
+                  pButton
+                  pRipple
+                  icon="pi pi-plus"
+                  styleClass="p-button-warn"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div
+        *ngIf="
+          downstream_leased_assets.method ==
+          downstreamLeasedAssetsActivityDataDtoMethod.Lessor_specific_method_data
+        "
+        class="p-grid p-fluid"
+      >
+        <div style="background-color: rgb(217, 246, 246); margin: 2% 0 5% 0">
+          <div
+            *ngFor="
+              let lessor of downstream_leased_assets.lessor_specific_method_data.lessor_data;
+              let i = index
+            "
+            class="row p-2"
+          >
+            <div class="col-10 col-md-10">
+              <div class="row">
+                <div class="col-3 col-md-3">
+                  <div class="p-field">
+                    <label>Lessor Type*</label>
+
+                    <input
+                    [disabled]="isView"
+                    type="text"
+                    [name]="'lessorType' + i"               
+                    [(ngModel)]="lessor.lessor_type"
+                    class="form-control"
+                    #lessor_type="ngModel"
+                    placeholder="Enter lessor type"
+                    required
+                  />
+                    <p
+                      class="info-message text-danger"
+                      *ngIf="!lessor.lessor_type && (  lessor_type.touched || lessor_type.dirty)"
+                    >
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+                <div class="col-3 col-md-3">
+                  <div class="p-field">
+                    <label>Scopes Emissions Lessor*</label>
+                  <input
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'investeeCompanyTotalRevenue' + i"               
+                    [(ngModel)]="lessor.scp1scp2_emissions_lessor"
+                    class="form-control"
+                    #scp1scp2emissionslessor="ngModel"
+                    required
+                     step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                  />
+                    <p
+                      class="info-message text-danger"
+                      *ngIf="!lessor.scp1scp2_emissions_lessor && (  scp1scp2emissionslessor.touched || scp1scp2emissionslessor.dirty)"
+                    >
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+               
+                <div class="col-3 col-md-3">
+                  <div class="p-field">
+                    <label>Scope Emmission Lessor Unit</label>
+                    <p-dropdown
+                    [disabled]="isView"
+                    [name]="'scp1scp2_emissions_lessor_unit' + i"               
+                    class=" col-4"
+                    [options]="units.emission"
+                    [(ngModel)]="lessor.scp1scp2_emissions_lessor_unit"
+                    #scp1scp2_emissions_lessor_unit="ngModel"
+                    [autoDisplayFirst]="true"
+                    optionLabel="label"
+                    optionValue="code"
+                  ></p-dropdown>
+                    <p
+                      class="info-message text-danger"
+                      *ngIf="!lessor.scp1scp2_emissions_lessor_unit && (  scp1scp2_emissions_lessor_unit.touched || scp1scp2_emissions_lessor_unit.dirty)"
+                    >
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+                <div class="col-2 col-md-2">
+                  <div class="p-field">
+                    <label>Lease Assests Ratio*</label>
+
+                      <input
+                      [disabled]="isView"
+                      type="number"
+                      [name]="'lease_assests_ratio' + i"               
+                      [(ngModel)]="lessor.lease_assests_ratio"
+                      class="form-control"
+                      placeholder="Enter Value"
+                      #lease_assests_ratio="ngModel"
+                      required
+                      step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+
+                    />
+                    <p
+                      class="info-message text-danger"
+                      *ngIf="
+                      !lessor.lease_assests_ratio  && (  lease_assests_ratio.touched || lease_assests_ratio.dirty)
+                      "
+                    >
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+                
+              </div>
+              
+            </div>
+            <div *ngIf="!isView" class="col-3 col-md-2">
+              <div class="row">
+                <div class="col-6">
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="
+                      removeRow(
+                        downstream_leased_assets.lessor_specific_method_data.lessor_data,
+                        i
+                      )
+                    "
+                    pButton
+                    pRipple
+                    icon="pi pi-minus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+                <div
+                  *ngIf="
+                  downstream_leased_assets.lessor_specific_method_data.lessor_data
+                      .length ==
+                    i + 1
+                  "
+                  class="col-6"
+                >
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="addNewDataObject('lessor')"
+                    pButton
+                    pRipple
+                    icon="pi pi-plus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="
+          downstream_leased_assets.method ==
+          downstreamLeasedAssetsActivityDataDtoMethod.Leased_buildings_method_data
+        "
+        class="p-grid p-fluid"
+      >
+        <div style="background-color: rgb(217, 246, 246); margin: 2% 0 5% 0">
+          <div
+            *ngFor="
+              let leased of downstream_leased_assets.leased_buildings_method_data.leased_data ;
+              let i = index
+            "
+            class="row p-2"
+          >
+            <div class="col-6 col-md-10">
+              <div class="row">
+                <div class="col-6 col-md-4">
+                  <div class="p-field">
+                    <label>Total Floor Space*</label>
+                     
+  
+                    <input
+                      [disabled]="isView"
+                      type="number"
+                      [name]="'total_floor_space' + i"               
+                      [(ngModel)]="leased.total_floor_space"
+                      class="form-control"
+                      #total_floor_space="ngModel"
+                      placeholder="Enter Value"
+                      required
+                       step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                    />
+                    <p
+                      class="info-message text-danger"
+                      *ngIf="!leased.total_floor_space && (  total_floor_space.touched || total_floor_space.dirty)"
+                    >
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+                <div class="col-6 col-md-4">
+                  <div class="p-field">
+                    <label>Total Floor Space unit * </label>
+                    <p-dropdown
+                    [disabled]="isView"
+                    [name]="'total_floor_space_unit' + i"               
+                    class=" col-4"
+                    [options]="units.area"
+                    [(ngModel)]="leased.total_floor_space_unit"
+                    #total_floor_space_unit="ngModel"
+                    [autoDisplayFirst]="true"
+                    optionLabel="label"
+                    optionValue="code"
+                  ></p-dropdown>
+                    <p
+                      class="info-message text-danger"
+                      *ngIf="!leased.total_floor_space_unit && (  total_floor_space_unit.touched || total_floor_space_unit.dirty)"
+                    >
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+                <div class="col-6 col-md-4">
+                  <div class="p-field">
+                    <label>Building Type*</label>
+
+                  <p-dropdown
+                  [disabled]="isView"
+                  [name]="'building_type' + i"               
+                  class=" col-4"
+                  [options]="building_types"
+                  [(ngModel)]="leased.building_type"
+                  #building_type="ngModel"
+                  [autoDisplayFirst]="true"
+                  optionLabel="name"
+                  optionValue="code"
+                ></p-dropdown>
+                    <p
+                      class="info-message text-danger"
+                      *ngIf="!leased.building_type && (  building_type.touched || building_type.dirty)"
+                    >
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6 col-md-4">
+                <div class="p-field">
+                  <label>Emission Factor(kg CO2 e/m2 /year)*<i pTooltip="Entered Emission  factor will override system Emission Factors" class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+
+                  <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'building_type_user_input_ef' + i"               
+                  [(ngModel)]="leased.user_input_ef"
+                  class="form-control"
+                  placeholder="Enter Value"
+                  step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+
+                  
+                />
+                 
+                </div>
+              </div>
+            
+              
+              </div>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-1">
+              <div class="row">
+                <div class="col-6">
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="
+                      removeRow(
+                        downstream_leased_assets.leased_buildings_method_data.leased_data ,
+                        i
+                      )
+                    "
+                    pButton
+                    pRipple
+                    icon="pi pi-minus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+                <div
+                  *ngIf="
+                  downstream_leased_assets.leased_buildings_method_data.leased_data .length ==
+                    i + 1
+                  "
+                  class="col-6"
+                >
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="addNewDataObject('build')"
+                    pButton
+                    pRipple
+                    icon="pi pi-plus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+      *ngIf="
+        downstream_leased_assets.method ==
+        downstreamLeasedAssetsActivityDataDtoMethod.Leased_assets_method_data
+      "
+      class="p-grid p-fluid"
+    >
+      <div style="background-color: rgb(217, 246, 246); margin: 2% 0 5% 0">
+        <div
+          *ngFor="
+            let lessor of downstream_leased_assets.leased_assets_method_data.leased_data;
+            let i = index
+          "
+          class="row p-2"
+        >
+        <div class="col-10 col-md-10">
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Number Of Assets*</label>
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'number_of_assets' + i"               
+                  [(ngModel)]="lessor.number_of_assets"
+                  class="form-control"
+                  #number_of_assets="ngModel"
+                  placeholder="Enter Value"
+                  required
+                  step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                />
+  
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!lessor.number_of_assets && (  number_of_assets.touched || number_of_assets.dirty)"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+             
+              <div class="col-6 col-md-4">
+                <div class="p-field">
+                  <label>Asset Type*</label>
+                  <p-dropdown
+                  [disabled]="isView"
+                  [name]="'asset_type' + i"               
+                  class=" col-4"
+                  [options]="building_types"
+                  [(ngModel)]="lessor.asset_type"
+                  #asset_type="ngModel"
+                  [autoDisplayFirst]="true"
+                  optionLabel="name"
+                  optionValue="code"
+                ></p-dropdown>
+  
+                  <p
+                    class="info-message text-danger"
+                    *ngIf="!lessor.asset_type && (  number_of_assets.touched || number_of_assets.dirty)"
+                  >
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="p-field">
+                  <label>Emission Factor(kg CO2 e/year)*<i pTooltip="Entered Emission  factor will override system Emission Factors" class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+
+                  <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'asset_typeuserInputEF' + i"               
+                  [(ngModel)]="lessor.user_input_ef"
+                  class="form-control"
+                  placeholder="Enter value"
+                  required
+                  step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+
+                />
+                
+                </div>
+              </div>
+  
+          
+          
+          </div>
+        </div>
+        
+
+    
+          <div class="col-2 col-md-2">
+            <div *ngIf="!isView" class="row">
+              <div class="col-3">
+                <button
+                  class="ml-1"
+                  type="button"
+                  (click)="
+                    removeRow(
+                      downstream_leased_assets.leased_assets_method_data.leased_data,
+                      i
+                    )
+                  "
+                  pButton
+                  pRipple
+                  icon="pi pi-minus"
+                  styleClass="p-button-warn"
+                ></button>
+              </div>
+              <div
+                *ngIf="
+                downstream_leased_assets.leased_assets_method_data.leased_data.length ==
+                  i + 1
+                "
+                class="col-3"
+              >
+                <button
+                  class="ml-1"
+                  type="button"
+                  (click)="addNewDataObject('assets')"
+                  pButton
+                  pRipple
+                  icon="pi pi-plus"
+                  styleClass="p-button-warn"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <div
+        id="basic"
+        class="row"
+        *ngIf="
+          puesData &&
+          puesData.sourceType &&
+          puesData.sourceType.toString() === 'B'
+        "
+      >
+        <div class="col-1" style="margin-left: 10px">
+          <p-radioButton
+            (onClick)="isMobileChange()"
+            [(ngModel)]="isMobile"
+            class="radio-b"
+            name="groupname"
+            [value]="true"
+          ></p-radioButton>
+          <label class="radio-l">Mobile</label>
+        </div>
+
+        <div class="col-2" style="margin-left: 10px">
+          <p-radioButton
+            (onClick)="isMobileChange()"
+            [(ngModel)]="isMobile"
+            class="radio-b"
+            name="groupname"
+            [value]="false"
+          ></p-radioButton>
+          <label class="radio-l">Stationary</label>
+        </div>
+        <div class="col-9" style="margin-left: 10px"></div>
+        <br />
+      </div>
+
+      <div
+        class="p-grid p-fluid col-md-9 col-sm-12"
+        *ngIf="puesData && !puesData.clasification"
+      >
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Ownership *</label>
+              <p-dropdown
+                [disabled]="isView"
+                name="ownership"
+                [options]="ownerships"
+                [(ngModel)]="downstream_leased_assets.ownership"
+                #fOwnership="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                optionValue="name"
+                appendTo="body"
+                [required]="true"
+              ></p-dropdown>
+            </div>
+          </div>
+          <p
+            class="info-message text-danger"
+            *ngIf="!downstream_leased_assets.ownership && fData.submitted"
+          >
+            This is a mandatory field
+          </p>
+        </div>
+        <br />
+      </div>
+
+      <div>
+        <p
+          class="info-message text-danger ml-5 col-6"
+          *ngIf="fData.submitted && !fData.valid"
+        >
+          all mandatory fields should be filled before save action.
+        </p>
+      </div>
+      <br />
+
+      <div class="row p-grid p-fluid col-md-6 col-sm-6">
+        <div
+          class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2"
+        >
+          <button
+            class="btn btn-secondary text-uppercase"
+            (click)="onBackClick()"
+          >
+            Back
+          </button>
+        </div>
+        <div
+          class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2"
+        >
+          <button
+            *ngIf="!isNewEntry && deletable && !isView"
+            class="btn btn-danger text-uppercase"
+            type="button"
+            (click)="onDeleteClick()"
+          >
+            Delete
+          </button>
+        </div>
+        <div
+          class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2"
+        >
+          <button
+            [disabled]="creating || !puesAssigned || isDuplicated"
+            class="btn btn-primary text-uppercase"
+            type="submit"
+            *ngIf="!isView"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+      <div class="row"></div>
+    </div>
+  </form>
+</div>
+
+<!-- <p-toast position="top-right"></p-toast> -->
+<!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->

@@ -1,0 +1,125 @@
+<div class="container">
+    <h4 class="mt-4">Net Zero Business Travel <span (click)="watchVideo()" pTooltip="Click to watch guidance video"  class="infor-video"><i class="pi pi-video"></i></span> </h4>
+    <div class="p-grid p-fluid card">
+      <div class="row">
+        <div class="col-4"  *ngIf="!isAuditor">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">Unit</label>
+            </div>
+            <div class="col-8">
+              <app-unit-select [isView]="!isAnyAdmin" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>   
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">Project</label>
+            </div>
+            <div class="col-8">
+              <app-project-select   [project]="selectedProject" [isView]="false" (onUpdateProject)="onChangeProject($event)"></app-project-select>               
+            </div>
+          </div>
+        </div>
+        <!-- <div class="col-2"  *ngIf="!isAuditor && creatable  && excellUploadable ">
+          <button                                                    
+              class="ml-4"
+              type="button"
+              (click)="uploadExcell()"
+              pButton
+              pRipple       
+              style="width: 150px;margin-left: 4px;"                   
+              styleClass="p-button-warn"
+              > Upload Excel
+          </button>
+        </div> -->
+        <!-- <div class="col-2" *ngIf="downloadable">
+          <button class="ml-4" type="button" (click)="downloadExcel()" pButton pRipple
+          style="width: 150px;margin-left: 4px;" styleClass="p-button-warn"> Download Excel
+          </button>
+        </div> -->
+      </div>
+    </div>
+
+    <div class="p-grid p-fluid card table-card">
+      
+  
+      <p-table
+      dataKey="acData_groupNo"
+      (selection)="selected"
+      selectionMode="multiple" 
+      [rowSelectable]="isRowSelectable"
+      (selectAllChange)="onSelectAllChange($event)"
+      (selectionChange)="onSelectionChange($event)"
+      paginatorDropdownAppendTo="body"        
+       [value]="netZeroBusinessTravelData"
+       [lazy]="true"
+       (onLazyLoad)="load($event)"
+       [paginator]="true"
+       [rows]="rows"
+       [showCurrentPageReport]="true"
+       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+       [rowsPerPageOptions]="[10,25,50]"
+       [totalRecords]="totalRecords"
+       [loading]="loading"       
+       >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th>
+              <div class="row">
+                <div class="col">
+                  <button *ngIf="creatable" class="ml-4" type="button" (click)="new()" pButton pRipple icon="pi pi-plus"
+                    styleClass="p-button-warn"></button>
+                </div>
+                <div pTooltip="Delete selected all records" class="col" *ngIf="selected.length > 0 && deletable">
+                  <button class="ml-4" icon="pi pi-times" class="p-button p-button-danger p-button-outlined" type="button" (click)="deleteAllNetZero(netZeroBusinessTravelActivityDataControllerServiceProxy)" pButton></button>
+                </div>
+              </div>
+            </th>
+            <th>Project</th>
+            <th>Method</th>
+            <th>Unit</th>
+            
+            <th pSortableColumn="year">Year<p-sortIcon field="year"></p-sortIcon></th>
+            <th pSortableColumn="month">Month<p-sortIcon field="month"></p-sortIcon></th>
+            
+            <th>Emission (tCO<sub>2</sub>)</th>
+  
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-genData>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="genData" ></p-tableCheckbox>
+            </td>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button *ngIf="viewable" (click)="view(genData.acData_groupNo)" pButton pRipple type="button" icon="pi pi-eye" class="p-button p-button-success p-button-outlined"></button>
+                <button *ngIf="editable" (click)="edit(genData.acData_groupNo)" pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-button-warning p-button-outlined"></button>
+                <button *ngIf="deletable" (click)="onDeleteClick(genData.acData_groupNo)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+                <button *ngIf="isAuditor && requestable" (click)="onCheck(genData, esCode)" pButton pRipple type="button"
+                  icon="pi pi-check-circle" class="p-button p-button-success p-button-outlined"></button>
+              </div>
+            </td>
+  
+  
+            <td>{{ genData.project_name }}</td>  
+            <td>{{ genData.acData_method}}</td>
+            
+            <td>{{ genData.unit_name }}</td>
+            <td>{{ genData.acData_year }}</td>
+            <td>{{ getMonth(genData.acData_month) }}</td>
+            
+            <td>{{ genData.sum | number:'1.4-4'}}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  
+    <!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+  

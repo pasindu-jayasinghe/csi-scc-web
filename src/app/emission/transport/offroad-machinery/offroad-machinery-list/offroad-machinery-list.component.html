@@ -1,0 +1,20 @@
+
+
+  <div class="container">
+    <h4 class="mt-4">Off-Road Machinery</h4>
+    <div class="p-grid p-fluid card">
+        <div class="row">
+           
+      
+          <p-tabView [scrollable]="true" style="width: 97%;">
+            
+            <p-tabPanel header="Off-Road"  *ngIf="isCSIUser || accessESList.includes(puesDataReqDtoSourceName.Offroad_machinery_offroad)">
+              <ng-container><app-offroad-transport-list></app-offroad-transport-list></ng-container>
+            </p-tabPanel>
+      
+          </p-tabView>
+        </div>
+
+
+</div>
+  </div>

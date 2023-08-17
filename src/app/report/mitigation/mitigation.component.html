@@ -1,0 +1,177 @@
+
+<div class="container">
+    <h4 class="mt-4">Add mitigation actions</h4>
+
+    <div class="p-grid p-fluid card">
+        <div class="row">
+          <div class="col-6">
+            <div class="row">
+              <div class="col-2">
+                <label style="padding-top: 8px">Unit</label>
+              </div>
+              <div class="col-8">
+                <app-unit-select [isView]="!isAnyAdmin" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>   
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="row">
+              <div class="col-2">
+                <label style="padding-top: 8px">Project</label>
+              </div>
+              <div class="col-8">
+                <app-project-select [isView]="false" (onUpdateProject)="onChangeProject($event)"></app-project-select>               
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+
+    <div class="p-grid p-fluid card">
+        <p-table
+      paginatorDropdownAppendTo="body"
+            
+            [value]="mitigationData"
+            [lazy]="true"
+            (onLazyLoad)="load($event)"
+            [paginator]="true"
+            [rows]="rows"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [rowsPerPageOptions]="[10,25,50]"
+            [totalRecords]="totalRecords"
+            [loading]="loading"
+            >
+            <ng-template pTemplate="header">
+                <tr>
+                <th>
+                    <div class="col-sm-2" style="width: 30%">
+                   
+    
+                    <button
+                        class="ml-4"
+                        type="button"
+                        (click)="new()"
+                        pButton
+                        pRipple
+                        icon="pi pi-plus"
+                        styleClass="p-button-warn"
+                    ></button>
+    
+    
+                    </div>
+                </th>
+                <th>Tittle</th>
+                <th>Description</th>
+        
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-mitigationsData>
+                <tr>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button (click)="view(mitigationsData.id)" pButton pRipple type="button" icon="pi pi-eye" class="p-button p-button-success p-button-outlined"></button>
+                            <button (click)="edit(mitigationsData.id)" pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-button-warning p-button-outlined"></button>
+                            <button (click)="onDeleteClick(mitigationsData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+                        </div>
+                    </td>
+                    
+                    <td>{{ mitigationsData.title }}</td>
+                    <td>{{ mitigationsData.descryption }}</td>
+                    
+    
+    
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+
+<!-- <p-toast position="top-right"></p-toast>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+
+
+
+
+<p-dialog header="Add New Mitigation" [(visible)]="display" [style]="{width: '50vw' }">
+    <form #mitigationsData="ngForm" (ngSubmit)="save(mitigationsData)" novalidate>
+     
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+
+          <div class="p-field">
+            <label for="institution">Unit *</label>
+            <app-unit-select [isView]="isView" [unit]="selectedUnit" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>                
+          
+          </div>
+
+
+          <div class="p-field">
+            <label for="institution">Project *</label>
+            <app-project-select [isView]="isView" [unit]="selectedUnit" [project]="mitigation.project" (onUpdateProject)="onChangeProject($event)" [data]="mitigationsData"></app-project-select>               
+          </div>
+      </div>
+
+
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="p-field">
+          <label>Title *</label>
+          <input
+            [disabled]="isView"
+            [disabled]="false"
+            type="text"
+            name="title"
+            [(ngModel)]="mitigation.title"
+
+            class="form-control"
+            placeholder="Enter Title"
+            required
+          />
+        </div>
+ 
+        
+          <div class="p-field">
+            <label>Description</label>
+            <textarea 
+              pInputTextarea 
+              rows="5" 
+              cols="100"
+              [disabled]="isView"
+              [disabled]="false"
+              type="text"
+              name="descryption"
+              [(ngModel)]="mitigation.descryption"
+              class="form-control"
+              placeholder="Enter Description"
+              maxlength="500"
+              required>
+            </textarea>
+              
+          </div>
+          
+        
+        
+  
+      </div>
+  
+      <div class="row p-grid p-fluid col-md-6 col-sm-6">
+  
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+          <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+            Back
+          </button>
+        </div>
+  
+        <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10" *ngIf="!isView">
+          <button pButton type="submit" label="Save" ></button>
+      </div> 
+  
+      </div>
+  </form>
+  </p-dialog>
+
+
+
+

@@ -1,0 +1,208 @@
+<div class="container">
+  <div class="row">
+    <h4 class="mt-4 col-5">Water Freight <span (click)="watchVideo()" pTooltip="Click to watch guidance video"  class="infor-video"><i class="pi pi-video"></i></span> </h4>
+    <div class="row">
+      <div class="col">
+        <button *ngIf="creatable" class="ml-4" type="button" (click)="newFreightWater()" pButton pRipple icon="pi pi-plus"
+          styleClass="p-button-warn"></button>
+      </div>
+      <div pTooltip="Delete selected all records" class="col" *ngIf="selected.length > 0 && deletable">
+        <button class="ml-4" icon="pi pi-times" class="p-button p-button-danger p-button-outlined" type="button" (click)="deleteAll(esCode.toString())" pButton></button>
+      </div>
+    </div>
+    <!-- <button
+      *ngIf="creatable"
+      class="col-6"
+      type="button"
+      (click)="newFreightWater()"
+      pButton
+      pRipple
+      icon="pi pi-plus"
+      styleClass="p-button-warn"
+      style="height: fit-content; margin-top:2.5%"
+    ></button> -->
+  </div>
+    <div class="p-grid p-fluid card">
+      <div class="row">
+        <div class="col-5" *ngIf="!isAuditor">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">Unit</label>
+            </div>
+            <div class="col-8">
+              <app-unit-select [isView]="!isAnyAdmin" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>   
+            </div>
+          </div>
+        </div>
+        <div class="col-5">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">Project</label>
+            </div>
+            <div class="col-8">
+              <app-project-select   [project]="selectedProject" [isView]="false" (onUpdateProject)="onChangeProject($event)"></app-project-select>               
+            </div>
+          </div>
+        </div>
+        <div class="col-2" *ngIf=" downloadable">
+          <button class="ml-4" type="button" (click)="downloadExcel()" pButton pRipple
+          style="width: 150px;margin-left: 4px;" styleClass="p-button-warn"> Download Excel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-fluid card">
+
+  
+      <p-table
+      dataKey="id"
+      (selection)="selected"
+      selectionMode="multiple" 
+      [rowSelectable]="isRowSelectable"
+      (selectAllChange)="onSelectAllChange($event)"
+      (selectionChange)="onSelectionChange($event)"
+      paginatorDropdownAppendTo="body"
+       [value]="freightWaterData"
+       [lazy]="true"
+       (onLazyLoad)="load($event)"
+       [paginator]="true"
+       [rows]="rows"
+       [showCurrentPageReport]="true"
+       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+       [rowsPerPageOptions]="[10,25,50]"
+       [totalRecords]="totalRecords"
+       [loading]="loading"
+       >
+        <ng-template pTemplate="header">
+          <tr>
+                       
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>       
+            <th></th>
+            <th>Project</th>
+            <th>Vehicle No</th>
+            <th>Method</th>
+            <th>Domestic/International</th>
+            <th>Cargo Type</th>
+            <th>Departure Country OneWay</th> 
+            <th>Destination Country OneWay</th>   
+            <th>Departure Country TwoWay</th> 
+            <th>Destination Country TwoWay</th>            
+            <th>First transist oneWay</th> 
+            <th>Second transist oneWay</th> 
+            <th>Third transist oneWay</th> 
+            <th>First transist TwoWay</th> 
+            <th>Second transist TwoWay</th> 
+            <th>Third transist TwoWay</th> 
+            <th>Ownership</th>
+            <th>OneWay/TwoWay</th>
+            <th>Departure Port OneWay</th>
+            <th>Destination Port OneWay</th> 
+            <th>Departure Port TwoWay</th>
+            <th>Destination Port TwoWay</th> 
+            <th>No of Trips</th>
+            <th pSortableColumn="month">Month<p-sortIcon field="month"></p-sortIcon></th>  
+            <th pSortableColumn="year">Year<p-sortIcon field="year"></p-sortIcon></th>           
+            <th>Up Distance Unit</th> 
+            <th>Down Distance Unit</th>
+            <th>Up Distance</th>
+            <th>Down Distance</th>
+            <th>Up Weight</th> 
+            <th>Down Weight</th>  
+            <th>Up Weight Unit</th> 
+            <th>Down Weight Unit</th>            
+            <th>Up Cost</th> 
+            <th>Down Cost</th>
+            <th>Up Cost Per KM</th>
+            <th>Down Cost Per KM</th>
+            <th>Activity</th>
+            <th>Size</th>
+            <th>Type</th>
+            <th>Vezel</th> 
+            <th>Fuel Type</th>  
+            <th>Fuel Consumption</th>           
+            <th>Fuel Unit</th> 
+            <!-- <th>Emission</th> -->
+            <th>Emission (CO<sub>2</sub>)</th>
+            <th>Emission (CH<sub>4</sub>)</th>
+            <th>Emission (N<sub>2</sub>O)</th>
+            <th>Total Emission</th>
+  
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-freightWater>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="freightWater" ></p-tableCheckbox>
+            </td>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button *ngIf="viewable" (click)="view(freightWater.id)" pButton pRipple type="button" icon="pi pi-eye" class="p-button p-button-success p-button-outlined"></button>
+                <button *ngIf="editable" (click)="edit(freightWater.id)" pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-button-warning p-button-outlined"></button>
+                <button *ngIf="deletable" (click)="onDeleteClick(freightWater.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+                <button *ngIf="isAuditor && requestable" (click)="onCheck(freightWater, esCode)" pButton pRipple type="button"
+                  icon="pi pi-check-circle" class="p-button p-button-success p-button-outlined"></button>
+              </div>
+            </td>
+
+            <td>{{ freightWater.project.name }}</td>
+            <td>{{ freightWater.vehicleNo }}</td>
+            <td>{{ freightWater.method }}</td>
+            <td>{{ getdomOrInt(freightWater.domOrInt) }}</td>
+            <td>{{ getCargoType(freightWater.cargoType) }}</td>
+            <td>{{ freightWater.departureCountryOneWay?.name }}</td>
+            <td>{{ freightWater.destinationCountryOneWay?.name }}</td>
+            <td>{{ freightWater.departureCountryTwoWay?.name }}</td>
+            <td>{{ freightWater.destinationCountryTwoWay?.name }}</td>
+            <td>{{ freightWater.transist_oneWay_1?.name }}</td>
+            <td>{{ freightWater.transist_oneWay_2?.name}}</td>
+            <td>{{ freightWater.transist_oneWay_3?.name }}</td>
+            <td>{{ freightWater.transist_twoWay_1?.name }}</td>
+            <td>{{ freightWater.transist_twoWay_2?.name }}</td>
+            <td>{{ freightWater.transist_twoWay_3?.name }}</td>
+            <td>{{ freightWater.ownership }}</td>
+            <td>{{ getOption(freightWater.option) }}</td>
+            <td>{{ freightWater.departurePortOneWay?.name }}</td>
+            <td>{{ freightWater.destinationPortOneWay?.name }}</td>
+            <td>{{ freightWater.departurePortTwoWay?.name }}</td>
+            <td>{{ freightWater.destinationPortTwoWay?.name }}</td>
+            <td>{{ freightWater.noOfTrips }}</td>
+            <td>{{ getMonth(freightWater.month) }}</td>
+            <td>{{ freightWater.year }}</td>
+            <td>{{ parameterUnits && parameterUnits[freightWater.upDistance_unit] ? parameterUnits[freightWater.upDistance_unit].label: '-' }}</td>
+            <td>{{ parameterUnits && parameterUnits[freightWater.downDistance_unit] ? parameterUnits[freightWater.downDistance_unit].label: '-' }}</td>
+            <td>{{ freightWater.upDistance | number:'1.2-5'}}</td>
+            <td>{{ freightWater.downDistance | number:'1.2-5' }}</td>
+            <td>{{ freightWater.upWeight | number:'1.2-5' }}</td>
+            <td>{{ freightWater.downWeight | number:'1.2-5' }}</td>
+            <td>{{ parameterUnits && parameterUnits[freightWater.upWeight_unit] ? parameterUnits[freightWater.upWeight_unit].label: '-' }}</td>
+            <td>{{ parameterUnits && parameterUnits[freightWater.downWeight_unit] ? parameterUnits[freightWater.downWeight_unit].label: '-' }}</td>
+            <td>{{ freightWater.upCost | number:'1.2-5' }}</td>
+            <td>{{ freightWater.downCost | number:'1.2-5' }}</td>
+            <td>{{ freightWater.upCostPerKM | number:'1.2-5' }}</td>
+            <td>{{ freightWater.downCostPerKM | number:'1.2-5' }}</td>
+            <td>{{ getActivity(freightWater.activity) }}</td>
+            <td>{{ getSize(freightWater.size) }}</td>
+            <td>{{ getType(freightWater.type) }}</td>
+            <td>{{ freightWater.vezel }}</td>
+            <td>{{ getFuelName(freightWater.fuelType) }}</td>
+            <td>{{ freightWater.fuelConsumption }}</td>
+            <td>{{ parameterUnits && parameterUnits[freightWater.fuel_unit] ? parameterUnits[freightWater.fuel_unit].label: '-' }}</td>
+            <!-- <td>{{ freightWater.emission }}</td> -->
+            <td>{{ freightWater.e_sc_co2 | number:'1.4-4'}}</td>
+            <td>{{ freightWater.e_sc_ch4 | number:'1.4-4'}}</td>
+            <td>{{ freightWater.e_sc_n2o | number:'1.4-4'}}</td>
+            <td>{{ freightWater.e_sc | number:'1.4-4'}}</td>
+  
+  
+  
+  
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  
+

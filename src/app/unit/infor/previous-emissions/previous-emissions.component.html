@@ -1,0 +1,36 @@
+
+<div class="row">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-3">
+                <label for="institution">Project Type *</label>
+            </div>
+            <div class="col-9">
+                <p-dropdown
+                    (onChange)="projectTypeChange()"
+                    [(ngModel)]="projectType"
+                    name="projectType"
+                    [options]="projectTypes"
+                    placeholder="Select .."
+                    optionLabel="name"
+                    appendTo="body" 
+                ></p-dropdown>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        
+    </div>
+</div>
+
+<br>
+
+<p-tabView *ngIf="projectType && esList.length>0">
+    <p-tabPanel *ngIf="!baseYearFromCSI && baseYear" [header]="baseYear.toString() + ' - Base Year'">
+        <app-one-year-emission [selectedUnit]="selectedUnit" [projectType]="projectType" [esList]="esList" [year]="baseYear"></app-one-year-emission>
+    </p-tabPanel>
+
+    <p-tabPanel *ngFor="let year of dataGadaringYears" [header]="year.toString()">
+        <app-one-year-emission [selectedUnit]="selectedUnit" [projectType]="projectType" [esList]="esList" [year]="year"></app-one-year-emission>
+    </p-tabPanel>
+</p-tabView>

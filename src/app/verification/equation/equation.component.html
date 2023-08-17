@@ -1,0 +1,21 @@
+
+<div class="p-grid p-fluid card">
+    <div class="row" style="margin-left: 3px;">
+      <div  class="row" *ngIf="equations !== undefined">
+        <!-- <h6>Equation</h6> -->
+        <div *ngFor="let eq of equations" class="flex justify-content-center">
+            <h6 [innerHTML]="eq.header1"></h6>
+            <strong [innerHTML]="eq.header2"></strong>
+            <i><p [innerHTML]="eq.equation"></p></i>
+            <!-- <h6>Parameters</h6> -->
+            <div *ngFor="let para of eq.parameters">
+                <p [innerHTML]="para"></p>
+            </div>
+            <br>
+        </div>
+      </div>
+      <div class="row" *ngIf="equations === undefined">
+        <p>No equation found</p>
+      </div>
+    </div>
+</div>

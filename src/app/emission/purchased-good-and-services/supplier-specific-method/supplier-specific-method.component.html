@@ -1,0 +1,58 @@
+<div class="row" style="margin-bottom: 10px;margin-left: 4px;">
+    <div id="basic" class="row">
+        <div class="col">
+            <div class="p-field row container">
+                <div class="col-9 p-2">
+                    <label for="institution">Good Purchased *</label>
+                    <input [disabled]="isView" type="text" name="type" [(ngModel)]="entity.supplierType" class="form-control"
+                        placeholder="Enter the last name" required (change)="onValueChange()" />
+                </div>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="p-field row container">
+                <label for="year">Quantity of good purchased * </label>
+                <div class="col-10 row pr-0">
+                    <div class="col-8 pr-0">
+                        <p-inputNumber [disabled]="isView" type="number" name="amount" [(ngModel)]="entity.supplierQuantity" class=""
+                            placeholder="Enter Distance" mode="decimal" [minFractionDigits]="2"
+                            [maxFractionDigits]="5"></p-inputNumber>
+                    </div>
+                    <div class="col-4 pr-0">
+                        <p-dropdown [disabled]="isView" name="distance_unit" [options]="units.amount"
+                            [(ngModel)]="entity.supplierQuantity_unit" #fdistance_unit="ngModel" [autoDisplayFirst]="true"
+                            optionLabel="label" optionValue="code" class=" col-md-3" appendTo="body">
+                        </p-dropdown>
+                    </div>
+                    <p class="info-message text-danger" *ngIf=" !entity.supplierQuantity_unit">
+                        This is a mandatory field
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="p-field row container">
+                <label for="year">supplier-specific product emission factor of purchased good or service * </label>
+                <div class="col-12 row pr-0">
+                    <div class="col-8 pr-0">
+                        <p-inputNumber [disabled]="isView" type="number" name="ef" [(ngModel)]="entity.supplierEF" class=""
+                            placeholder="Enter Distance" mode="decimal" [minFractionDigits]="2"
+                            [maxFractionDigits]="5"></p-inputNumber>
+                    </div>
+                    <div class="col-4 pr-0">
+                        <p-dropdown [disabled]="isView" name="distance_unit" [options]="units.ef" [(ngModel)]="entity.supplierEF_unit"
+                            #fdistance_unit="ngModel" [autoDisplayFirst]="true" optionLabel="label" optionValue="code"
+                            class=" col-md-3" appendTo="body">
+                        </p-dropdown>
+                    </div>
+                    <p class="info-message text-danger" *ngIf=" !entity.supplierEF_unit ">
+                        This is a mandatory field
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

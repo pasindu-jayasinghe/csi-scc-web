@@ -1,0 +1,143 @@
+<p-toast></p-toast>
+
+<div class="container">
+    <h4 class="mt-4">Units jnj</h4>
+    <div class="p-grid p-fluid card">
+        <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+            <button
+              [disabled]="newEntry"
+              class="ml-4"
+              type="button"
+              (click)="new($event)"
+              pButton
+              pRipple
+              icon="pi pi-plus"
+              styleClass="p-button-warn"
+            ></button>
+            <button                                                    
+              class="ml-4"
+              type="button"
+              (click)="addMultiple()"
+              pButton
+              pRipple       
+              style="width: 150px;margin-left: 4px;"                   
+              styleClass="p-button-warn"
+            >Upload Units</button>
+          </div>
+        <p-table
+      paginatorDropdownAppendTo="body" #table [value]="units" dataKey="id" editMode="row">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Unit Name</th>
+                    <th>Level</th>
+                    <th>Industry</th>
+                    <th>Level Name</th>
+                    <th>Country</th>
+                    <th>Parent Unit</th>
+                    <th>Action</th>
+                    <th style="width:8rem"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-unit let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="unit">
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="unit.name">
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{unit.name}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-dropdown [options]="levels" optionLabel="name"
+                                [(ngModel)]="unit.level" [style]="{'width':'100%'}"></p-dropdown>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{unit?.level?.name}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-dropdown [options]="industries" optionLabel="name"
+                                [(ngModel)]="unit.industry" [style]="{'width':'100%'}"></p-dropdown>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{unit?.industry?.name}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="unit.levelName">
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{unit.levelName}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-dropdown [options]="countries" optionLabel="name"
+                                [(ngModel)]="unit.country" [style]="{'width':'100%'}"></p-dropdown>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{unit?.country?.name}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-dropdown [options]="units" optionLabel="name"
+                                    [(ngModel)]="unit.parentUnit" [style]="{'width':'100%'}">
+                                    <ng-template let-u pTemplate="unit">
+                                        <div class="flex align-items-center operatingSystems-item">
+                                            <div>
+                                                {{u.name}} <span *ngIf="u.perfix"> - {{u.perfix}}</span>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{unit?.parentUnit?.name}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td style="text-align:center">
+                        <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(unit)" class="p-button-rounded p-button-text"></button>
+                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(unit)" class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                        <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(unit, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<p-dialog header="Upload Excel File to Generate Units" [(visible)]="addMultipleDialog" [style]="{width: '30vw'}" [baseZIndex]="10000">
+        
+    <app-file-uploader
+        [addable]="true"
+        *ngIf="!isCreatignMultipleUnits"
+        [multiple]="false"
+        (onChangeFile)="onAddFile($event)"
+        (onDeleteFile)="onRemoveFile($event)"
+    ></app-file-uploader>
+
+    <!-- <p-progressSpinner *ngIf="isCreatignMultipleUnits" [style]="{width: '50px', height: '50px'}" styleClass="custom-spinner" strokeWidth="8" fill="#EEEEEE" animationDuration=".5s"></p-progressSpinner> -->
+
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="onUpload($event)" label="Yes" styleClass="p-button-text"></p-button>
+        <p-button icon="pi pi-times" (click)="onUpload($event)" label="No"></p-button>
+    </ng-template>
+</p-dialog>

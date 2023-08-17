@@ -1,0 +1,15 @@
+p-dropdown{
+    min-height: 500px;
+}
+
+p-checkbox{
+    margin-bottom: 5px;
+}
+
+.check-box-label{
+    margin-left: 10px;
+}
+
+.check{
+    max-width: 250px;
+}

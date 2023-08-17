@@ -1,0 +1,64 @@
+<div class="container">
+
+    <h4 class="mt-4">User Actions</h4>
+
+    <div class="p-grid p-fluid card">      
+      <p-table
+      paginatorDropdownAppendTo="body"
+       [value]="userActionList"
+       [lazy]="true"
+       (onLazyLoad)="load($event)"
+       [paginator]="true"
+       [rows]="rows"
+       [showCurrentPageReport]="true"      
+       [rowsPerPageOptions]="[10,25,50]"
+       [totalRecords]="totalRecords"
+       [loading]="loading"
+       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+       >
+        <ng-template pTemplate="header">
+          <tr>  
+            <th></th>          
+            <th>Name</th>
+            <th>Code</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-userAction>
+          <tr>     
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <!-- <button pTooltip="See creatable roles" (click)="viewCreatbele(role)" pButton pRipple type="button" icon="pi pi-eye" class="p-button p-button-success p-button-outlined"></button>
+                <button pTooltip="Add creatable roles" (click)="createCreatbele(role)" pButton pRipple type="button" icon="pi pi-plus" class="p-button p-button-success p-button-outlined"></button> -->
+              </div>
+            </td>       
+            <td>{{userAction.name | titlecase}}</td>
+            <td>{{userAction.code}}</td>
+            <td>            
+            </td>  
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+</div>
+
+
+<!-- <p-dialog [header]="createHeader" [(visible)]="selectedRole && isCreateCreatbele">
+    <div class="col-8">
+        <div class="p-field">
+            <p-dropdown
+                [filter]="true" filterBy="name" [showClear]="true"
+                name="selectUnit"
+                [(ngModel)]="createdCode"
+                [options]="function"
+                placeholder="Select .."
+                optionLabel="name"
+                optionValue="code"   
+                appendTo="body"                    
+            >          
+          </p-dropdown>
+        </div>            
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button icon="pi pi-check" (click)="saveFunction()" label="Ok" styleClass="p-button-text"></p-button>
+    </ng-template>
+  </p-dialog> -->

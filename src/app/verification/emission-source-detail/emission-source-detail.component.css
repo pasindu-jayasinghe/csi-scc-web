@@ -1,0 +1,13 @@
+.card-text{
+    font-size: 14px;
+    line-height:2;
+    font-family: Inter;
+}
+
+.evidence-approved{
+    color: blue;
+}
+
+.evidence-pending{
+    color: brown;
+}

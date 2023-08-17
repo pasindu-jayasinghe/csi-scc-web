@@ -1,0 +1,85 @@
+<div class="container">
+    <h4 class="mt-4">Emission Category</h4>
+    <div class="p-grid p-fluid card">
+        <p-table paginatorDropdownAppendTo="body" [value]="emissionCategoryData" [lazy]="true"
+            (onLazyLoad)="load($event)" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [rowsPerPageOptions]="[10,25,50]" [totalRecords]="totalRecords" [loading]="loading">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>
+                        <div class="col-sm-2" style="width: 30%">
+
+
+                            <button class="ml-4" type="button" (click)="new()" pButton pRipple icon="pi pi-plus"
+                                styleClass="p-button-warn"></button>
+
+
+                        </div>
+                    </th>
+                    <th>Name</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-emissionCategoryData>
+                <tr>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button (click)="view(emissionCategoryData.id)" pButton pRipple type="button"
+                                icon="pi pi-eye" class="p-button p-button-success p-button-outlined"></button>
+                            <button (click)="edit(emissionCategoryData.id)" pButton pRipple type="button"
+                                icon="pi pi-pencil" class="p-button p-button-warning p-button-outlined"></button>
+                            <button (click)="onDeleteClick(emissionCategoryData.id)" pButton pRipple type="button"
+                                icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+                        </div>
+                    </td>
+
+                    <td>{{ emissionCategoryData.name }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+
+<!-- <p-toast position="top-right"></p-toast>
+  <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+
+
+
+
+<p-dialog header="Add New EmissionCategory" [(visible)]="display" [style]="{width: '50vw' }">
+    <p *ngIf="!isView" style="color: red;">Please enter category code as CAT_ + number (Eg: CAT_1)</p>
+    <form #emissionCategorysData="ngForm" (ngSubmit)="save(emissionCategorysData)" novalidate>
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="p-field">
+                <label>Category code *</label>
+                <input [disabled]="isView" [disabled]="false" type="text" name="code"
+                    [(ngModel)]="emissionCategory.code" class="form-control" placeholder="Enter code" required />
+                <label>Category name *</label>
+                <input [disabled]="isView" [disabled]="false" type="text" name="title"
+                    [(ngModel)]="emissionCategory.name" class="form-control" placeholder="Enter name" required />
+            </div>
+
+
+
+
+        </div>
+
+        <div class="row p-grid p-fluid col-md-6 col-sm-6">
+
+            <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+                <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+                    Back
+                </button>
+            </div>
+
+            <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10" *ngIf="!isView">
+                <button pButton type="submit" label="Save"></button>
+            </div>
+
+        </div>
+    </form>
+</p-dialog>
+
+<p-toast key="emc" position="center"></p-toast>

@@ -1,0 +1,486 @@
+
+<div class="container pl-20 pr-20">
+    <div class="mb-12">
+      <h4 *ngIf="projectType ===  projectTypesEnum.GHG"class="mt-4">{{ isNewEntry ? "Add" : isView ? "View": "Edit"  }} Refrigerant Gas</h4>
+      <h4 *ngIf="projectType ===  projectTypesEnum.SBT" class="mt-4">{{ isNewEntry ? "Add" : isView ? "View": "Edit"  }} Refrigerent And Air Condition</h4>
+    </div>
+    <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+      <div class="card">
+  
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Unit *</label>
+                <app-unit-select [isView]="isView" [unit]="selectedUnit" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>                
+              </div>
+            </div>
+          </div>
+        </div>
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Project *</label>
+                <app-project-select [isView]="isView" [unit]="selectedUnit"  [project]="selectedProject" (onUpdateProject)="onChangeProject($event)" [data]="fData"></app-project-select>               
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Year *</label>
+                <input
+                
+                [disabled]="true"
+                type="text"
+                name="year"
+                [(ngModel)]="refrigerant.year"
+                class="form-control"
+                placeholder="Enter Year"
+                required
+              />
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Month *</label>
+                
+              <p-dropdown
+                appendTo="body"
+                [disabled]="isView"
+                [required]="true"
+                name="month"
+                [options]="months"
+                [(ngModel)]="month"
+                  (onChange)="monthCgange()"
+                #fmonth="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                
+
+              ></p-dropdown>
+              <p 
+              class="info-message text-danger"
+              *ngIf="
+                !month &&
+                (fData.submitted ||
+                fmonth.touched ||
+                fmonth.dirty)
+              "
+              >
+                This is a mandatory field
+              </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+          <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="firstname">Refrigerant Type *</label>
+                  <p-dropdown
+                  [disabled]="isView"
+                  name="gWP_RG"
+                  [options]="gWP_RGs"
+                  [required]="true"
+                  [(ngModel)]="gWP_RG"
+                  #fgWP_RGs="ngModel"
+                  placeholder="Select Refrigerant Type.."
+                  optionLabel="name"
+                  
+                ></p-dropdown>
+                  <p
+                    class="info-message text-danger" *ngIf="!gWP_RG && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="p-grid p-fluid col-md-9 col-sm-12"  *ngIf=" projectType == 'Smart Net Zero'">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="firstname">Activity Type*</label>
+                  <p-dropdown
+                  [disabled]="isView"
+                  name="redAct"
+                  [options]="refActivityTypes"
+                  [required]="true"
+                  [(ngModel)]="refrigerant.activityType"
+                  #fgWP_RGs="ngModel"
+                  placeholder="Select Activity Type.."
+                  optionLabel="name"
+                  optionValue="code"
+
+                  
+                ></p-dropdown>
+                  <p
+                    class="info-message text-danger" *ngIf="!refrigerant.activityType && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="lastname">Consumption</label>
+    
+                  <div class="row">
+                    <p-inputNumber
+                    [min]="0"
+
+                      [disabled]="isView"
+                      type="number"
+                      name="w_RG"
+                      [(ngModel)]="refrigerant.w_RG"
+                      class="col-8"
+                      placeholder="Enter consumption value"
+                      style="width: 64%;"
+                      mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                      [required]="true"
+                    ></p-inputNumber>
+                    <p-dropdown
+                      [disabled]="isView"
+                      name="wrgunits"
+                      [options]="units.wrg"
+                      [(ngModel)]="wrgunit"
+                      #funit="ngModel"
+                      optionLabel="label"
+                      class=" col-4"
+                    ></p-dropdown>
+                  </div>
+                  <p class="info-message text-danger" *ngIf=" !refrigerant.w_RG && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+              </div>
+            </div>
+<!--NetZeroo-->
+            <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="refrigerant.activityType == 'INSTALL'">
+              <div class="row p-2">
+                <div class="col-12 col-md-8">
+                  <div class="p-field">
+                    <label for="lastname">Assembly losses factor</label>
+      
+                    <div class="row">
+                      <p-inputNumber
+                      [min]="0"
+  
+                        [disabled]="isView"
+                        type="number"
+                        name="assembly_Lf"
+                        [(ngModel)]="refrigerant.assembly_Lf"
+                        class="col-8"
+                        placeholder="Enter Factor"
+                        style="width: 64%;"
+                        mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                        [required]="true"
+                      ></p-inputNumber>
+                      <!-- <p-dropdown
+                        [disabled]="isView"
+                        name="wrgunits"
+                        [options]="units.wrg"
+                        [(ngModel)]="wrgunit"
+                        #funit="ngModel"
+                        optionLabel="label"
+                        class=" col-4"
+                      ></p-dropdown> -->
+                    </div>
+                    <p class="info-message text-danger" *ngIf=" !refrigerant.w_RG && (fData.submitted)">
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </div>
+                </div>
+              </div>
+
+              <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="refrigerant.activityType == 'OPERATION'"> 
+                <div class="row p-2">
+                  <div class="col-12 col-md-8">
+                    <div class="p-field">
+                      <label for="lastname">Annual leak Rate</label>
+        
+                      <div class="row">
+                        <p-inputNumber
+                        [min]="0"
+    
+                          [disabled]="isView"
+                          type="number"
+                          name="annual_lR"
+                          [(ngModel)]="refrigerant.annual_lR"
+                          class="col-8"
+                          placeholder="Enter Annual Leak Rate"
+                          style="width: 64%;"
+                          mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                          [required]="true"
+
+                        ></p-inputNumber>
+                        <!-- <p-dropdown
+                          [disabled]="isView"
+                          name="wrgunits"
+                          [options]="units.wrg"
+                          [(ngModel)]="wrgunit"
+                          #funit="ngModel"
+                          optionLabel="label"
+                          class=" col-4"
+                        ></p-dropdown> -->
+                      </div>
+                      <p class="info-message text-danger" *ngIf=" !refrigerant.w_RG && (fData.submitted)">
+                        This is a mandatory field
+                      </p>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+
+                <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="refrigerant.activityType == 'OPERATION'">
+                  <div class="row p-2">
+                    <div class="col-12 col-md-8">
+                      <div class="p-field">
+                        <label for="lastname">Time in years</label>
+          
+                        <div class="row">
+                          <p-inputNumber
+                          [min]="0"
+      
+                            [disabled]="isView"
+                            type="number"
+                            name="time_R"
+                            [(ngModel)]="refrigerant.time_R"
+                            class="col-8"
+                            placeholder="Enter Time In Years"
+                            style="width: 64%;"
+                            mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                            [required]="true"
+
+                          ></p-inputNumber>
+                          <!-- <p-dropdown
+                            [disabled]="isView"
+                            name="wrgunits"
+                            [options]="units.wrg"
+                            [(ngModel)]="wrgunit"
+                            #funit="ngModel"
+                            optionLabel="label"
+                            class=" col-4"
+                          ></p-dropdown> -->
+                        </div>
+                        <p class="info-message text-danger" *ngIf=" !refrigerant.w_RG && (fData.submitted)">
+                          This is a mandatory field
+                        </p>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+
+                  <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="refrigerant.activityType == 'DISPOSAL'">
+                    <div class="row p-2">
+                      <div class="col-12 col-md-8">
+                        <div class="p-field">
+                          <label for="lastname">Percent of the capacity remaining at disposal</label>
+            
+                          <div class="row">
+                            <p-inputNumber
+                            [min]="0"
+        
+                              [disabled]="isView"
+                              type="number"
+                              name="p_capacity"
+                              [(ngModel)]="refrigerant.p_capacity"
+                              class="col-8"
+                              placeholder="Enter % Capacity Remaining"
+                              style="width: 64%;"
+                              mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                              [required]="true"
+
+                            ></p-inputNumber>
+                            <!-- <p-dropdown
+                              [disabled]="isView"
+                              name="wrgunits"
+                              [options]="units.wrg"
+                              [(ngModel)]="wrgunit"
+                              #funit="ngModel"
+                              optionLabel="label"
+                              class=" col-4"
+                            ></p-dropdown> -->
+                          </div>
+                          <p class="info-message text-danger" *ngIf=" !refrigerant.w_RG && (fData.submitted)">
+                            This is a mandatory field
+                          </p>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+
+                    <div class="p-grid p-fluid col-md-9 col-sm-12"  *ngIf="refrigerant.activityType == 'DISPOSAL'">
+                      <div class="row p-2">
+                        <div class="col-12 col-md-8">
+                          <div class="p-field">
+                            <label for="lastname">Percent of refrigerant recovered</label>
+              
+                            <div class="row">
+                              <p-inputNumber
+                              [min]="0"
+          
+                                [disabled]="isView"
+                                type="number"
+                                name="p_r_recover"
+                                [(ngModel)]="refrigerant.p_r_recover"
+                                class="col-8"
+                                placeholder="Enter % Recovered"
+                                style="width: 64%;"
+                                mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                                [required]="true"
+
+                              ></p-inputNumber>
+                              <!-- <p-dropdown
+                                [disabled]="isView"
+                                name="wrgunits"
+                                [options]="units.wrg"
+                                [(ngModel)]="wrgunit"
+                                #funit="ngModel"
+                                optionLabel="label"
+                                class=" col-4"
+                              ></p-dropdown> -->
+                            </div>
+                            <p class="info-message text-danger" *ngIf=" !refrigerant.w_RG && (fData.submitted)">
+                              This is a mandatory field
+                            </p>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+  
+
+              <!--NetZeroo-->
+
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isView || !isNewEntry">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label>GHG Emission *</label>
+                <input
+                  [disabled]="true"
+                  type="text"
+                  name="e_RL"
+                  [(ngModel)]="refrigerant.e_sc"
+                  class="form-control"
+                  placeholder="Enter Emission"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="basic" class="row" *ngIf="puesData && puesData.sourceType && puesData.sourceType.toString() === 'B'">
+          <div class="col-1" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="true"></p-radioButton>
+            <label class="radio-l">Mobile</label>
+          </div> 
+  
+          <div class="col-2" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="false"></p-radioButton>
+            <label class="radio-l">Stationary</label>
+          </div> 
+          <div class="col-9" style="margin-left: 10px;"> </div>
+          <br>
+        </div>
+  
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="puesData && !puesData.clasification">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Ownership *</label>
+                <p-dropdown
+                  [disabled]="isView"
+                  name="ownership"
+                  [options]="ownerships"
+                  [(ngModel)]="refrigerant.ownership"
+                  #fOwnership="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  optionValue="name"
+                  appendTo="body"
+                  ></p-dropdown>           
+              </div>
+            </div>
+            <p class="info-message text-danger" *ngIf=" !refrigerant.ownership && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+          <br>
+        </div>
+
+
+        <div>
+          <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+            One or more mandatory fields should be filled before save action.
+          </p>
+        </div>
+        <br>
+
+
+        <div class="row p-grid p-fluid col-md-6 col-sm-6">
+          <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+            <button class="btn btn-secondary text-uppercase" (click)="onBackClick()">
+              Back
+            </button>
+          </div>
+          <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2" *ngIf="!isView"> 
+            <button *ngIf="!isNewEntry  && deletable" class="btn btn-danger text-uppercase" type="button"
+              (click)="onDeleteClick()">
+              Delete
+            </button>
+          </div>
+          <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+            <button [disabled]="creating || !puesAssigned || isDuplicated" class="btn btn-primary text-uppercase" type="submit" *ngIf="!isView">
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="row">
+          <div *ngIf="creating" class="d-flex col-6 justify-content-end">
+            <p class="info-message text-warning mt-2" *ngIf="true">
+              please wait a moment...
+            </p>
+          </div>
+        </div>
+    </div>
+
+  </form>
+</div>
+ <!-- <p-toast position="top-right"></p-toast> -->
+  <!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+
+
+  
+        
+  
+  

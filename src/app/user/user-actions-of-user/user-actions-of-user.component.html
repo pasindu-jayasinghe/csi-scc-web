@@ -1,0 +1,82 @@
+<div class="container">
+    <h4 class="mt-4">Manage user's actions</h4>
+    <div class="p-grid p-fluid card">
+      <div class="row">
+        <div class="col-6">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">Unit</label>
+            </div>
+            <div class="col-8">
+                <app-unit-select [isView]="false" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">User</label>
+            </div>
+            <div class="col-8">
+                <p-dropdown
+                    (onChange)="onUpdateUser($event)"
+                    [filter]="true" filterBy="email" [showClear]="true"
+                    name="userActionList"
+                    [(ngModel)]="selectedUser"
+                    [options]="userList"
+                    placeholder="Select .."
+                    optionLabel="email"
+                    appendTo="body"                    
+                >
+                <ng-template let-u pTemplate="user">
+                    <div class="flex align-items-center operatingSystems-item">
+                        <div>{{u.email}}</div>
+                    </div>
+                </ng-template>
+                </p-dropdown>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-fluid card" *ngIf="selectedUser">
+        <div class="row">
+            <div class="col-1">
+                <label>Roles : </label>
+            </div>
+            <div class="col-9">
+                <span style="margin-right: 20px;" *ngFor="let role of userRoles">{{role.name}}</span>
+            </div>
+            <div class="col-2">
+              <button pTooltip="Allowd defaluts of roles" (click)="allowDefaluts()" pButton pRipple type="button" class="p-button p-button-success p-button-outlined">
+                Allow Defalut Actions
+              </button>
+            </div>
+        </div>
+    </div>     
+    
+    <div class="p-grid p-fluid card" *ngIf="selectedUser">
+        <div class="row">
+            <p-pickList [dragdrop]="true" sourceHeader="Not Assigned Actions" targetHeader="Assigned Actions" [source]="userActionList" [target]="selectedUserActionList">
+                <ng-template let-userAction pTemplate="userAction">
+                    <div>
+                        <div>{{userAction.name}}</div>
+                    </div>
+                </ng-template>
+            </p-pickList>
+        </div>
+    </div>
+
+    <div class="p-grid p-fluid card">
+      <div class="row">
+        <div class="col-10">          
+        </div>
+        <div class="col-2">
+          <button pTooltip="Save assigned actions" (click)="save()" pButton pRipple type="button" class="btn btn-primary text-uppercase">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+</div>

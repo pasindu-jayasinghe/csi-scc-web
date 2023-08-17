@@ -1,0 +1,35 @@
+<div class="p-grid p-fluid card" *ngIf="selectedProject && selectedUnit">
+    <p-accordion>
+        <p-accordionTab header="Basic details">
+           <app-report-basic-info [selectedUnit]="selectedUnit" [selectedProject]="selectedProject" (savedId)="onSave($event)"></app-report-basic-info>
+        </p-accordionTab>
+        <p-accordionTab header="Data sources of emission sources"  *ngIf="parentId !==undefined">
+            <app-report-es-datasource [selectedUnit]="selectedUnit" [selectedProject]="selectedProject" [parentId]="parentId"></app-report-es-datasource>
+        </p-accordionTab>
+        <p-accordionTab header="Excluded emission sources" *ngIf="parentId !==undefined">
+            <app-report-es-excluded [selectedUnit]="selectedUnit" [selectedProject]="selectedProject" [parentId]="parentId"></app-report-es-excluded>   
+        </p-accordionTab>
+        <p-accordionTab header="Uncertainty of emission sources" *ngIf="parentId !==undefined">
+            <app-uncertainty [reportData]="reportData" [selectedUnit]="selectedUnit" [selectedProject]="selectedProject" [parentId]="parentId"></app-uncertainty>
+        </p-accordionTab>
+        <!-- <p-accordionTab header="Previous emissions" *ngIf="parentId !==undefined">
+            <app-previous-emissions [reportData]="reportData" [selectedUnit]="selectedUnit" [selectedProject]="selectedProject" [parentId]="parentId"></app-previous-emissions>
+        </p-accordionTab> -->
+
+
+        <p-accordionTab header="Standard and approach" *ngIf="parentId !==undefined">
+            <app-capproach-des [selectedUnit]="selectedUnit" [selectedProject]="selectedProject" [parentId]="parentId"></app-capproach-des>   
+        </p-accordionTab>
+
+        <div class="row col-4" style="margin-top: 2%;" *ngIf="parentId !==undefined">
+            <div class="col-1">
+                <p-checkbox (onChange)="onUpdateCheck($event)"  [(ngModel)]="reportData.allowClientGenerate" [binary]="true" name="isAllowed" class="col-4">
+                </p-checkbox>
+            </div>
+            <div class="col-10">
+                <label class="" for="isAllowed">Allow report generation to client</label>
+            </div>
+        </div>
+       
+    </p-accordion>  
+</div>  

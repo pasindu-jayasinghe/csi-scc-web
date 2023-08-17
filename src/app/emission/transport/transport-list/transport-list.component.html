@@ -1,0 +1,18 @@
+
+  <div class="container">
+    <p-tabView [scrollable]="true" [activeIndex]="index" *ngIf="isCSIUser || accessESList.length > 0">
+      
+      <p-tabPanel [header]="(projectType ===  projectTypesEnum.SBT ? 'Net Zero ':'' )+'Freight Transport'"   *ngIf="isCSIUser || freight" >
+        <app-freight-transport-list  [indexCode]="subPassgerIndexCode"  [isCSIUser]="isCSIUser" [accessESList]="accessESList" [index]="subIndex"></app-freight-transport-list>
+      </p-tabPanel>
+
+      <p-tabPanel [header]="(projectType ===  projectTypesEnum.SBT ? 'Net Zero ':'') +'Passenger Transport'" *ngIf="isCSIUser || passenger">
+        <app-passenger-transport-list [indexCode]="subPassgerIndexCode" [isCSIUser]="isCSIUser" [accessESList]="accessESList" [index]="subIndex"></app-passenger-transport-list>      
+      </p-tabPanel>
+
+      <p-tabPanel [header]="(projectType ===  projectTypesEnum.SBT ? 'Net Zero ':'') +'Off-Road Machinery'"  *ngIf="isCSIUser || offroad">
+        <app-offroad-machinery-list [isCSIUser]="isCSIUser" [accessESList]="accessESList" [index]="subIndex"></app-offroad-machinery-list>
+      </p-tabPanel>
+    </p-tabView>
+</div>
+    

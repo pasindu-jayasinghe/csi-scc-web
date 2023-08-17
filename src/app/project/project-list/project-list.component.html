@@ -1,0 +1,221 @@
+<div class="container">
+
+    <h4 class="mt-4">Projects</h4>
+    <div class="card">
+      <div class="row">
+          <div class="p-grid p-fluid col-md-9 col-sm-9"> 
+              <div class="row">
+                  <div class="col-2">
+                      <label for="selectUnit" style="padding-top: 10px">Select Unit</label>
+                  </div>
+                  <div class="col-8">
+                    <!-- <app-unit-select [isView]="false" (onUpdateUnit)="onChangeUnit($event)"></app-unit-select> -->
+                      <div class="p-field">
+                          <p-dropdown
+                              [filter]="true" filterBy="name" [showClear]="true"
+                              (onChange)="onChangeUnit($event)"
+                              name="selectUnit"
+                              [options]="parentUnits"
+                              [(ngModel)]="selectUnit"
+                              placeholder="Select .."
+                              optionLabel="name"       
+                              appendTo="body"                    
+                          >
+                          <ng-template let-u pTemplate="unit">
+                            <div class="flex align-items-center operatingSystems-item">
+                                <div>
+                                    {{u.name}} <span *ngIf="u.perfix"> - {{u.perfix}}</span>
+                                </div>
+                            </div>
+                          </ng-template>
+                        </p-dropdown>
+                      </div>            
+                  </div>
+                  <!-- <div  class="col-2">
+                    <p-checkbox (onChange)="check()" [(ngModel)]="isAllData" [binary]="true" name="Alldata" class="col-2">
+                    </p-checkbox>
+                    <label>Show all projects</label>
+                  </div> -->
+              </div>       
+          </div>
+      </div>
+  </div>
+    <div class="p-grid p-fluid card" style="margin-bottom: 30px">
+      <!-- <div class="row mb-3">
+        <div class="col-md-6">
+          <div class="p-inputgroup pt-4">
+            <input
+              placeholder="Type Your Keyword"
+              type="text"
+              name="nameInstitution"
+              class="p-inputtext"
+              pInputText
+            />
+            <button
+              type="button"
+              pButton
+              pRipple
+              label="Search"
+            ></button>
+          </div>
+          <div class="col-4 d-flex align-items-center">
+            <label class="font-weight-bold">First Name</label>
+          </div>
+          <div class="col">
+            <input
+              class="form-control"
+              type="text"
+              pInputText
+              placeholder="search by first name"
+            />
+          </div>
+        </div>
+  
+      </div> -->
+  
+      <p-table
+       paginatorDropdownAppendTo="body"
+       [value]="projectDataList"
+       [lazy]="true"
+       (onLazyLoad)="load($event)"
+       [paginator]="true"
+       [rows]="rows"
+       [showCurrentPageReport]="true"
+       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+       [rowsPerPageOptions]="[10,25,50]"
+       [totalRecords]="totalRecords"
+       [loading]="loading"
+       >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <div class="col-sm-2" style="width: 70.666667%">
+                <button
+                  *ngIf="appService.hasUserActionAccessTo(userActions.CREATE_PROJECT)"
+                  class="ml-4"
+                  type="button"
+                  (click)="new()"
+                  pButton
+                  pRipple
+                  icon="pi pi-plus"
+                  styleClass="p-button-warn"
+                ></button>
+              </div>
+            </th>
+            <!-- <th>Main Company</th> -->
+            <th>Name</th>
+            <th>Type</th>
+            <th>Methodology</th>
+            <th>Year</th>  
+            <th>Status</th>  
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-projectData>
+          <tr>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button *ngIf="appService.hasUserActionAccessTo(userActions.PROJECT_SUMMARY)"  (click)="summary(projectData.id)" pButton pRipple type="button" icon="pi pi-bars" class="p-button p-button-success p-button-outlined"></button>
+                <button (click)="view(projectData.id)" pButton pRipple type="button" icon="pi pi-eye" class="p-button p-button-success p-button-outlined"></button>
+                <button *ngIf="appService.hasUserActionAccessTo(userActions.EDIT_PROJECT)" (click)="edit(projectData.id)" pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-button-warning p-button-outlined"></button>
+                <button *ngIf="appService.hasUserActionAccessTo(userActions.DELETE_PROJECT)" (click)="onDeleteClick(projectData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+              </div>
+            </td>
+            <!-- <td>Test Company</td> -->
+  
+            <td>{{projectData.name}}</td>
+            <td>{{projectData.projectType.name}}</td>
+            <td>{{projectData.methodology.name}}</td>
+            <td>{{projectData.year}}</td>
+            <td style="width: 200px;">
+              <p-button *ngIf="isFM" (onClick)="addPaymentInfo(projectData)" label="Add Payment Info" styleClass="p-button-success"></p-button>
+
+
+              <div class="row" *ngIf="!isFM">
+                <p-button pTooltip="Financial manager should change to payment completed state" *ngIf="projectData.projectStatus === 'Payment Pending'" icon="pi pi-info-circle" styleClass="p-button-rounded p-button-text"></p-button>
+
+                <p-dropdown
+                  [disabled]="!appService.hasUserActionAccessTo(userActions.PROJECT_STATUS_CHANGE)"
+                  class="col-10"     
+                  (onChange)="onChangeStatus(projectData, $event, false)"             
+                  name="projectStatus"
+                  [options]="projectStatusList"
+                  [(ngModel)]="projectData.projectStatus"
+                  #fmonth="ngModel"
+                  placeholder="Select .."              
+                  appendTo="body"                  
+                  [disabled]="projectData.projectStatus === 'Payment Pending'"
+                >       
+              </p-dropdown>
+                <button *ngIf="projectData.projectStatus === 'Verification Pending'" (click)="editVerifier(projectData)" 
+                pButton pRipple type="button" icon="pi pi-pencil" 
+                class="p-button p-button-warning p-button-outlined col-2"></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  
+  <!--   <!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> --> 
+   <!-- <p-toast position="top-right"></p-toast> -->
+    <!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+
+  <p-dialog [header]="header" [(visible)]="display" [closable]="false">
+    <div class="p-grid p-fluid card">
+      <div class="row" style="margin-top: 10px">
+        <label>Select a verifier</label>
+        <p-dropdown
+          name="auditor"
+          [options]="auditors"
+          [(ngModel)]="auditor"
+          placeholder="Select .."              
+          appendTo="body"
+          optionLabel="firstName"
+        >
+          <ng-template let-auditors pTemplate="item">
+            <div class="flex align-items-center auditors-item">
+            <div>{{auditors.firstName}} {{auditors.lastName}}</div>                        
+            </div>
+          </ng-template>
+        </p-dropdown>
+
+        <div class="row p-grid p-fluid col-md-12 col-sm-6 justify-content-end" >
+          <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10">
+            <button pButton type="submit" label="Save" (click)="saveAuditor()"></button>
+          </div>
+          <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+            <button class="btn btn-secondary " type="button" (click)="cancel()">Cancel
+            </button>
+          </div>
+    
+          
+        </div> 
+      </div>
+    </div>
+
+  </p-dialog>
+
+  <p-dialog [header]="'Add Payment Information'" [(visible)]="displayAddPaymentInfo" [closable]="true">
+    <div class="p-grid p-fluid card">
+      <div class="row" style="margin-top: 10px">
+        <label>Referance Number</label>    
+
+        <input
+            type="text"
+            [(ngModel)]="refNo"
+            name="ref"
+            class="form-control"
+            placeholder="Enter referance number"
+            required
+        />
+        <div class="row p-grid p-fluid col-md-12 col-sm-10 justify-content-end" >
+          <div class="d-flex col-8 justify-content-end p-button-vertical pt-8 pl-10">
+            <button pButton type="submit" label="Save" (click)="saveReferance()"></button>
+          </div>
+        </div> 
+      </div>
+    </div>
+
+  </p-dialog>
+  

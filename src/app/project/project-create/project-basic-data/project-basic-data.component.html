@@ -1,0 +1,401 @@
+<div class="container">
+    <h4 class="mt-4" *ngIf="isNewEntry">Add new Project</h4>
+    <h4 class="mt-4" *ngIf="!isNewEntry && !isView">Edit Project</h4>
+    <h4 class="mt-4" *ngIf="!isNewEntry && isView">View Project</h4>
+
+
+    <div class="p-grid p-fluid card" *ngIf="project">
+        <div class="row">
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="institution">Unit</label>
+                        </div>
+                        <div class="col-9" *ngIf="editEntryId && isSetOwnerUnit">
+                            <p-dropdown
+                                [filter]="true" filterBy="name" [showClear]="true"
+                                (onChange)="change()"
+                                [options]="parentUnits"
+                                [(ngModel)]="project.ownerUnit"
+                                placeholder="Select .."
+                                optionLabel="name"        
+                                appendTo="body"   
+                                [disabled]="project.projectStatus.toString() !== 'Initial'"         
+                            >
+                            <ng-template let-u pTemplate="unit">
+                                <div class="flex align-items-center operatingSystems-item">
+                                    <div>
+                                        {{u.name}} <span *ngIf="u.perfix"> - {{u.perfix}}</span>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                        </div>
+                        <div class="col-9" *ngIf="!editEntryId">
+                            <p-dropdown
+                                [filter]="true" filterBy="name" [showClear]="true"
+                                (onChange)="change()"
+                                [options]="parentUnits"
+                                [(ngModel)]="project.ownerUnit"
+                                placeholder="Select .."
+                                optionLabel="name"        
+                                appendTo="body"            
+                            >
+                            <ng-template let-u pTemplate="unit">
+                                <div class="flex align-items-center operatingSystems-item">
+                                    <div>
+                                        {{u.name}} <span *ngIf="u.perfix"> - {{u.perfix}}</span>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="methodology">Guidance * </label>
+                        </div>
+                        <div class="col-9">
+                            <p-dropdown
+                                (onChange)="change()"
+                                [disabled]="isView"
+                                [(ngModel)]="project.methodology"
+                                name="methodology"
+                                [options]="methodologies"
+                                placeholder="Select .."
+                                optionLabel="name"
+                                appendTo="body" 
+                            ></p-dropdown>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>   
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="col" style="margin-left: 10px;">                    
+                        <p-checkbox  (onChange)="change()"  [disabled]="isView" name="isfy" [value]="true" [(ngModel)]="project.isFinancialYear" [binary]="true"></p-checkbox>
+                        <label class="check-box-label" for="la">Use Financial Year</label>
+                    </div> 
+                </div>
+            </div>
+            <div class="row"  *ngIf="!project.isFinancialYear">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="year">Year *</label>
+                        </div>
+                        <div class="col-9">            
+                            <p-calendar (onClose)="change()" appendTo="body"  [disabled]="isView" [(ngModel)]="year" view="year" dateFormat="yy" inputId="yearpicker"></p-calendar>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                            <p class="info-message text-danger" *ngIf="!project.isFinancialYear && isInFuture()">Year should not be a future value</p>  
+                        </div>                    
+                    </div>
+                </div>   
+                <div class="col"></div>
+            </div>
+            <div class="row"  *ngIf="project.isFinancialYear">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="firstname">Financial Year Start From *</label>
+                        </div>
+                        <div class="col-9">
+                            <p-calendar [maxDate]="maxDateVal" (onClose)="fyStartChaange()" appendTo="body" [disabled]="isView" [(ngModel)]="project.fyFrom"  inputId="fyFrom"></p-calendar>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p> 
+                        </div>                    
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="year">Financial Year End *</label>
+                        </div>
+                        <div class="col-9">            
+                            <p-calendar (onClose)="change()" appendTo="body" [disabled]="true" [(ngModel)]="project.fyTo" inputId="fyTo"></p-calendar>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p> 
+                        </div>                    
+                    </div>
+                </div> 
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="institution">Project Type *</label>
+                        </div>
+                        <div class="col-9">
+                            <p-dropdown
+                                (onChange)="change()"
+                                [disabled]="isView"
+                                [(ngModel)]="project.projectType"
+                                name="projectType"
+                                [options]="projectTypes"
+                                placeholder="Select .."
+                                optionLabel="name"
+                                appendTo="body" 
+                            ></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="firstname">Responsible person *</label>
+                        </div>
+                        <div class="col-9">
+                            <p-dropdown
+                                [disabled]="isView"
+                                (onChange)="setUser($event)"
+                                [(ngModel)]="project.responsiblePerson"
+                                name="responsiblePerson"
+                                [options]="responsibleUsers"
+                                placeholder="Select .."
+                                optionLabel="firstName"
+                                appendTo="body" 
+                            >
+                                <ng-template let-responsibleUsers pTemplate="item">
+                                    <div class="flex align-items-center responsibleUsers-item">
+                                    <div>{{responsibleUsers.firstName}} {{responsibleUsers.lastName}}</div>                        
+                                    </div>
+                                </ng-template>
+                            </p-dropdown>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                     
+                    </div>  
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="firstname">Organizational Boundary</label>
+                        </div>
+                        <div class="col-9">
+                            <p-dropdown
+                            (onChange)="change()"
+                            [disabled]="isView"
+                            [(ngModel)]="project.organizationalBoundary"
+                            name="orgBoundary"
+                            [options]="orgBoundaries"
+                            placeholder="Select .."
+                            appendTo="body" 
+                            optionLabel="name"
+                            optionValue="code"
+                        ></p-dropdown>
+                        </div>                     
+                    </div>  
+                </div>
+                <div class="col-6" *ngIf="project.organizationalBoundary === 'CONTROL_APPROACH'">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="firstname">Control Approach</label>
+                        </div>
+                        <div class="col-9">
+                            <p-dropdown
+                            (onChange)="change()"
+                            [disabled]="isView"
+                            [(ngModel)]="project.controlApproach"
+                            name="orgBoundary"
+                            [options]="controlApproaches"
+                            placeholder="Select .."
+                            appendTo="body" 
+                            optionLabel="name"
+                            optionValue="code"
+                        ></p-dropdown>
+                        </div>                     
+                    </div>  
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-2">
+                            <label for="firstname">Project Name *</label>
+                        </div>
+                        <div class="col-8">
+                            <input
+                                style="margin-left: -50px;"
+                                (change)="change()"
+                                [disabled]="isView"
+                                [(ngModel)]="project.name"
+                                type="text"
+                                name="projectName"
+                                class="form-control"
+                                placeholder="Enter the project name"
+                                required
+                            />
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p> 
+                            <!-- <p class="info-message text-danger" *ngIf="nameExist">
+                                Project name already exist
+                            </p>  -->
+                        </div>                     
+                    </div>  
+                </div>
+            </div>
+            
+
+
+
+            <div class="row">            
+                <!-- <div class="col">
+                    <div class="p-field row container">
+                        <div class="col-3">
+                            <label for="firstname">Project Name *</label>
+                        </div>
+                        <div class="col-9">
+                            <input
+                                (change)="change()"
+                                [disabled]="isView"
+                                [(ngModel)]="project.name"
+                                type="text"
+                                name="projectName"
+                                class="form-control"
+                                placeholder="Enter the project name"
+                                required
+                            />
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>     
+                    <div class="p-field row container">
+                        <div class="col-3">
+                            <label for="methodology">Methodology * </label>
+                        </div>
+                        <div class="col-9">
+                            <p-dropdown
+                                (onChange)="change()"
+                                [disabled]="isView"
+                                [(ngModel)]="project.methodology"
+                                name="methodology"
+                                [options]="methodologies"
+                                placeholder="Select .."
+                                optionLabel="name"
+                                appendTo="body" 
+                            ></p-dropdown>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>   
+                    <div class="p-field row container">
+                        <div class="col-3">
+                            <label for="methodology">Responsible person * </label>
+                        </div>
+                        <div class="col-9">
+                            <p-dropdown
+                                [disabled]="isView"
+                                (onChange)="setUser($event)"
+                                [(ngModel)]="selectedUser"
+                                name="responsiblePerson"
+                                [options]="responsibleUsers"
+                                placeholder="Select .."
+                                optionLabel="firstName"
+                                appendTo="body" 
+                            >
+                                <ng-template let-responsibleUsers pTemplate="item">
+                                    <div class="flex align-items-center responsibleUsers-item">
+                                    <div>{{responsibleUsers.firstName}} {{responsibleUsers.lastName}}</div>
+                        
+                                    </div>
+                                </ng-template>
+                            </p-dropdown>
+                           <p>{{selectedUser}}</p> 
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>                                
+                </div>
+                <div class="col">
+                    <div class="p-field row container">
+                        <div class="col-3">
+                            <label for="firstname">Project Type *</label>
+                        </div>
+                        <div class="col-9">
+                            <p-dropdown
+                                (onChange)="change()"
+                                [disabled]="isView"
+                                [(ngModel)]="project.projectType"
+                                name="projectType"
+                                [options]="projectTypes"
+                                placeholder="Select .."
+                                optionLabel="name"
+                                appendTo="body" 
+                            ></p-dropdown>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>   
+                    <div class="p-field row container">
+                        <div class="col-3">
+                            <label for="methodology">Auditor * </label>
+                        </div>
+                        <div class="col-9">
+                            <p-dropdown
+                                (onChange)="change()"
+                                [disabled]="isView"
+                                [(ngModel)]="project.verifier"
+                                name="verifier"
+                                [options]="auditors"
+                                placeholder="Select .."
+                                optionLabel="email"
+                                appendTo="body" 
+                            ></p-dropdown>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>            
+                                           
+                </div>                 -->
+            </div>
+            <!-- <div id="basic" class="row">
+                <div class="col" style="margin-left: 10px;">                    
+                    <p-checkbox  (onChange)="fyChange()" [disabled]="isView" name="isfy" [value]="true" [(ngModel)]="isFinancialYear"></p-checkbox>
+                    <label class="check-box-label" for="la">Use Financial Year</label>
+                </div> 
+            </div>
+            <div id="basic" class="row" *ngIf="!project.isFinancialYear">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="year">Year *</label>
+                        </div>
+                        <div class="col-9">            
+                            <p-calendar (onClose)="change()" appendTo="body"  [disabled]="isView" [(ngModel)]="year" view="year" dateFormat="yy" inputId="yearpicker"></p-calendar>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>  
+                        </div>                    
+                    </div>
+                </div>   
+                <div class="col"></div>
+            </div>
+            <div id="basic" class="row" *ngIf="project.isFinancialYear">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="firstname">Financial Year Start From *</label>
+                        </div>
+                        <div class="col-9">
+                            <p-calendar (onClose)="change()" appendTo="body" [disabled]="isView" [(ngModel)]="project.fyFrom"  inputId="fyFrom"></p-calendar>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p> 
+                        </div>                    
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="year">Financial Year End *</label>
+                        </div>
+                        <div class="col-9">            
+                            <p-calendar   (onClose)="change()" appendTo="body" [disabled]="isView" [(ngModel)]="project.fyTo" inputId="fyTo"></p-calendar>
+                            <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p> 
+                        </div>                    
+                    </div>
+                </div>  
+            </div>         -->
+        </div>
+    </div>
+</div>
+
+<!-- (onYearChange)="change()" (onMonthChange)="change()" -->

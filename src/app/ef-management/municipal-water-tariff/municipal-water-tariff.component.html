@@ -1,0 +1,1018 @@
+<div class="container">
+  <h4 class="mt-4">Municipal Water Tariff</h4>
+  <div class="card">
+      <div class="ui-fluid formgrid grid">
+
+        <div class="p-grid p-fluid card">
+          <div class="col-3">
+            
+            <div class="col-9">
+              <button                                                    
+              class="ml-4"
+              type="button"
+              (click)="uploadExcell()"
+    
+              pButton
+              pRipple       
+              style="width: 150px;margin-left: 4px;"                   
+              styleClass="p-button-warn"
+              > Upload Excel
+          </button>         
+            </div>
+          </div>
+        </div>
+          <p-table [scrollable]="true" 
+              paginatorDropdownAppendTo="body" [value]="municipalWaterTariffFacData" [lazy]="true" (onLazyLoad)="loadEF($event)" [paginator]="true" [rows]="rows"
+              [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [rowsPerPageOptions]="[10,25,50]" [totalRecords]="totalRecords" [loading]="loading">
+              <ng-template pTemplate="header" >
+                  <tr>
+                      <th>
+                      <div class="col-sm-2" style="width: 30%">  
+                              <button class="ml-4" type="button" (click)="newEF()" pButton pRipple icon="pi pi-plus"
+                              styleClass="p-button-warn"></button> 
+                      </div>
+                      </th>
+                      <th>Category</th>
+                      <th>Year</th>
+                      <th>VAT</th>
+                      <th>Usage Charge</th>
+                      <th>Lower Level 1</th>
+                      <th>Upper Level 1</th>
+                      <th>Monthly Service Charge 1</th>
+                      <th>Lower Level 2</th>
+                      <th>Upper Level 2</th>
+                      <th>Monthly Service Charge 2</th>
+                      <th>Lower Level 3</th>
+                      <th>Upper Level 3</th>
+                      <th>Monthly Service Charge 3</th>
+                      <th>Lower Level 4</th>
+                      <th>Upper Level 4</th>
+                      <th>Monthly Service Charge 4</th>
+                      <th>Lower Level 5</th>
+                      <th>Upper Level 5</th>
+                      <th>Monthly Service Charge 5</th>
+                      <th>Lower Level 6</th>
+                      <th>Upper Level 6</th>
+                      <th>Monthly Service Charge 6</th>
+                      <th>Lower Level 7</th>
+                      <th>Upper Level 7</th>
+                      <th>Monthly Service Charge 7</th>
+                      <th>Lower Level 8</th>
+                      <th>Upper Level 8</th>
+                      <th>Monthly Service Charge 8</th>
+                      <th>Lower Level 9</th>
+                      <th>Upper Level 9</th>
+                      <th>Monthly Service Charge 9</th>
+                      <th>Lower Level 10</th>
+                      <th>Upper Level 10</th>
+                      <th>Monthly Service Charge 10</th>
+                      <th>Lower Level 11</th>
+                      <th>Upper Level 11</th>
+                      <th>Monthly Service Charge 11</th>
+                      <th>Lower Level 12</th>
+                      <th>Upper Level 12</th>
+                      <th>Monthly Service Charge 12</th>
+                      <th>Lower Level 13</th>
+                      <th>Upper Level 13</th>
+                      <th>Monthly Service Charge 13</th>
+                      <!-- <th>Lower Level 14</th>
+                      <th>Upper Level 14</th>
+                      <th>Monthly Service Charge 14</th>
+                      <th>Lower Level 15</th>
+                      <th>Upper Level 15</th>
+                      <th>Monthly Service Charge 15</th>
+                      <th>Lower Level 16</th>
+                      <th>Upper Level 16</th>
+                      <th>Monthly Service Charge 16</th>
+                      <th>Lower Level 17</th>
+                      <th>Upper Level 17</th>
+                      <th>Monthly Service Charge 17</th>
+                      <th>Lower Level 18</th>
+                      <th>Upper Level 18</th>
+                      <th>Monthly Service Charge 18</th>
+                      <th>Lower Level 19</th>
+                      <th>Upper Level 19</th>
+                      <th>Monthly Service Charge 19</th>
+                      <th>Lower Level 20</th>
+                      <th>Upper Level 20</th>
+                      <th>Monthly Service Charge 20</th>
+                       -->
+                      
+                      
+                      
+
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-mwtData>
+                  <tr>
+                      <td>
+                      <div class="btn-group" role="group" aria-label="Basic example">
+                          <button (click)="viewEF(mwtData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                          class="p-button p-button-success p-button-outlined"></button>
+                          <button (click)="editEF(mwtData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                          class="p-button p-button-warning p-button-outlined"></button>
+                          <button (click)="onDeleteClick(mwtData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+                      </div>
+                      </td>
+          
+                      <td>{{ mwtData.category }}</td>
+                      <td>{{ mwtData.year }}</td>
+                      <td>{{ mwtData.vat }}</td>
+                      <td>{{ mwtData.usageCharge }}</td>
+                      <td>{{ mwtData.lowerLevel_1 }}</td>
+                      <td>{{ mwtData.upperLevel_1 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_1 }}</td>
+                      <td>{{ mwtData.lowerLevel_2 }}</td>
+                      <td>{{ mwtData.upperLevel_2 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_2 }}</td>
+                      <td>{{ mwtData.lowerLevel_3 }}</td>
+                      <td>{{ mwtData.upperLevel_3 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_3 }}</td>
+                      <td>{{ mwtData.lowerLevel_4 }}</td>
+                      <td>{{ mwtData.upperLevel_4 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_4 }}</td>
+                      <td>{{ mwtData.lowerLevel_5 }}</td>
+                      <td>{{ mwtData.upperLevel_5 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_5 }}</td>
+                      <td>{{ mwtData.lowerLevel_6 }}</td>
+                      <td>{{ mwtData.upperLevel_6 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_6 }}</td>
+                      <td>{{ mwtData.lowerLevel_7 }}</td>
+                      <td>{{ mwtData.upperLevel_7 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_7 }}</td>
+                      <td>{{ mwtData.lowerLevel_8 }}</td>
+                      <td>{{ mwtData.upperLevel_8 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_8 }}</td>
+                      <td>{{ mwtData.lowerLevel_9 }}</td>
+                      <td>{{ mwtData.upperLevel_9 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_9 }}</td>
+                      <td>{{ mwtData.lowerLevel_10 }}</td>
+                      <td>{{ mwtData.upperLevel_10 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_10 }}</td>
+                      <td>{{ mwtData.lowerLevel_11 }}</td>
+                      <td>{{ mwtData.upperLevel_11 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_11 }}</td>
+                      <td>{{ mwtData.lowerLevel_12 }}</td>
+                      <td>{{ mwtData.upperLevel_12 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_12 }}</td>
+                      <td>{{ mwtData.lowerLevel_13 }}</td>
+                      <td>{{ mwtData.upperLevel_13 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_13 }}</td>
+                      <!-- <td>{{ mwtData.lowerLevel_14 }}</td>
+                      <td>{{ mwtData.upperLevel_14 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_14 }}</td>
+                      <td>{{ mwtData.lowerLevel_15 }}</td>
+                      <td>{{ mwtData.upperLevel_15 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_15 }}</td>
+                      <td>{{ mwtData.lowerLevel_16 }}</td>
+                      <td>{{ mwtData.upperLevel_16 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_16 }}</td>
+                      <td>{{ mwtData.lowerLevel_17 }}</td>
+                      <td>{{ mwtData.upperLevel_17 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_17 }}</td>
+                      <td>{{ mwtData.lowerLevel_18 }}</td>
+                      <td>{{ mwtData.upperLevel_18 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_18 }}</td>
+                      <td>{{ mwtData.lowerLevel_19 }}</td>
+                      <td>{{ mwtData.upperLevel_19 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_19 }}</td>
+                      <td>{{ mwtData.lowerLevel_20 }}</td>
+                      <td>{{ mwtData.upperLevel_20 }}</td>
+                      <td>{{ mwtData.monthlyServiceCharge_20 }}</td>
+           -->
+          
+          
+                  </tr>
+              </ng-template>
+          </p-table>
+      </div>
+  </div>
+</div>
+
+<p-dialog header="Municipal Water Tariff" [(visible)]="display" [style]="{width: '60vw' }">
+  <form #municipalWaterTariffFacsData="ngForm" (ngSubmit)="saveMunicipalWaterTariffFac(municipalWaterTariffFacsData)" novalidate>
+
+    <div class="p-grid p-fluid col-md-11 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-6">
+          <div class="p-field">
+            <label>Category *</label>
+            <p-dropdown [disabled]="isView" name="category" [(ngModel)]="municipalWaterTariffFac.category" [options]="categories"
+              placeholder="Select .." [required]="true" optionLabel="name" optionValue="code"></p-dropdown>
+              <p class="info-message text-danger" *ngIf=" !municipalWaterTariffFac.category && (municipalWaterTariffFacsData.submitted)">
+                This is a mandatory field
+              </p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="p-field">
+            <label>Year*</label>
+            <p-dropdown [disabled]="isView" name="year" [(ngModel)]="municipalWaterTariffFac.year" [options]="years"
+              placeholder="Select .." [required]="true" #fyear="ngModel" ></p-dropdown>
+              <p class="info-message text-danger" *ngIf=" !municipalWaterTariffFac.year && (municipalWaterTariffFacsData.submitted)">
+                This is a mandatory field
+              </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="p-grid p-fluid col-md-11 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-6">
+          <div class="p-field">
+            <label>Vat *</label>
+            <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.vat" type="number" name="vat"
+              class="form-control" placeholder="Enter Value" required />
+              <p class="info-message text-danger" *ngIf=" !municipalWaterTariffFac.vat && (municipalWaterTariffFacsData.submitted)">
+                This is a mandatory field
+              </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="p-field">
+            <label>Usage Charge *</label>
+            <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.usageCharge" type="number" name="usageCharge"
+              class="form-control" placeholder="Enter Value" required />
+              <p class="info-message text-danger" *ngIf=" !municipalWaterTariffFac.usageCharge && (municipalWaterTariffFacsData.submitted)">
+                This is a mandatory field
+              </p>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+
+    <div class="p-grid p-fluid col-md-11 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-4">
+          <div class="p-field row container">
+            <label>Lower Level 1 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_1" type="number"
+                name="lowerLevel_1" class="form-control" placeholder="Enter Value" />
+            
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Upper Level 1 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_1" type="number"
+                name="upperLevel_1" class="form-control" placeholder="Enter Value" />
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field row container">
+            <label>Monthly Service Charge 1</label>
+            <div class="col-9">
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_1" type="number" name="monthlyServiceCharge_1"
+              class="form-control" placeholder="Enter Value" />
+            </div>
+            <ng-container *ngIf="isMsc_2 === false;">
+              <div class="col-1">
+                <button [disabled]="isView" type="button" (click)="onClickMSC_1()" pButton pRipple
+                  icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+              </div>
+            </ng-container>
+            
+            
+          </div>
+        </div>
+        
+      </div>    
+    </div>
+    <ng-container *ngIf="isMsc_2 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-4">
+              <div class="p-field">
+                <label>Lower Level 2 (LKR)</label>
+                <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_2" type="number"
+                  name="lowerLevel_2" class="form-control" placeholder="Enter Value" />
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="p-field">
+                <label>Upper Level 2 (LKR)</label>
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_2" type="number"
+                  name="upperLevel_2" class="form-control" placeholder="Enter Value" />
+              </div>
+            </div>
+    
+            <div class="col-12 col-md-4">
+              <div class="p-field row container">
+                <label>Monthly Service Charge 2</label>
+                <div class="col-9">
+                  <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_2" type="number" name="monthlyServiceCharge_2"
+                    class="form-control" placeholder="Enter Value" />
+                </div>
+                <ng-container *ngIf="isMsc_3 === false;">
+                  <div class="col-1">
+                    <button [disabled]="isView" type="button" (click)="onClickMSC_2()" pButton pRipple
+                      icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                  </div>
+                </ng-container>
+                
+              </div>
+            </div>
+          </div>  
+        </div>
+    </ng-container>
+    
+    <ng-container *ngIf="isMsc_3 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Lower Level 3 (LKR)</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_3" type="number"
+              name="lowerLevel_3" class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Upper Level 3 (LKR)</label>
+            <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_3" type="number"
+              name="upperLevel_3" class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field row container">
+            <label>Monthly Service Charge 3</label>
+            <div class="col-9">
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_3" type="number" name="monthlyServiceCharge_3"
+                class="form-control" placeholder="Enter Value" />
+            </div>
+            <ng-container *ngIf="isMsc_4 === false;">
+              <div class="col-1">
+                <button [disabled]="isView" type="button" (click)="onClickMSC_3()" pButton pRipple
+                  icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+              </div>
+            </ng-container>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    </ng-container>
+    
+    <ng-container *ngIf="isMsc_4 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 4 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_4" type="number"
+                name="lowerLevel_4" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 4 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_4" type="number"
+                name="upperLevel_4" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 4</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_4" type="number" name="monthlyServiceCharge_4"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_5 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_4()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    
+    <ng-container *ngIf="isMsc_5 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 5 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_5" type="number"
+                name="lowerLevel_5" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 5 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_5" type="number"
+                name="upperLevel_5" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 5</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_5" type="number" name="monthlyServiceCharge_5"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_6 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_5()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>    
+      </div>
+    </ng-container>
+    
+    <ng-container *ngIf="isMsc_6 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Lower Level 6 (LKR)</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_6" type="number"
+              name="lowerLevel_6" class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Upper Level 6 (LKR)</label>
+            <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_6" type="number"
+              name="upperLevel_6" class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field row container">
+            <label>Monthly Service Charge 6</label>
+            <div class="col-9">
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_6" type="number" name="monthlyServiceCharge_6"
+                class="form-control" placeholder="Enter Value" />
+            </div>
+            <ng-container *ngIf="isMsc_7 === false;">
+              <div class="col-1">
+                <button [disabled]="isView" type="button" (click)="onClickMSC_6()" pButton pRipple
+                  icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>    
+    </div>
+    </ng-container>
+
+    <ng-container *ngIf="isMsc_7 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Lower Level 7 (LKR)</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_7" type="number"
+              name="lowerLevel_7" class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Upper Level 7 (LKR)</label>
+            <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_7" type="number"
+              name="upperLevel_7" class="form-control" placeholder="Enter Value" />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field row container">
+            <label>Monthly Service Charge 7</label>
+            <div class="col-9">
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_7" type="number" name="monthlyServiceCharge_7"
+                class="form-control" placeholder="Enter Value" />
+            </div>
+            <ng-container *ngIf="isMsc_8 === false;">
+              <div class="col-1">
+                <button [disabled]="isView" type="button" (click)="onClickMSC_7()" pButton pRipple
+                  icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>    
+    </div>
+    </ng-container>
+    
+    <ng-container *ngIf="isMsc_8 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 8 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_8" type="number"
+                name="lowerLevel_8" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 8 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_8" type="number"
+                name="upperLevel_8" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 8</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_8" type="number" name="monthlyServiceCharge_8"
+                class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_9 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_8()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>    
+      </div>
+    </ng-container>
+
+    
+    <ng-container *ngIf="isMsc_9 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 9 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_9" type="number"
+                name="lowerLevel_9" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 9 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_9" type="number"
+                name="upperLevel_9" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 9</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_9" type="number" name="monthlyServiceCharge_9"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_10 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_9()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>    
+      </div>
+    </ng-container>
+
+    
+    <ng-container *ngIf="isMsc_10 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 10 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_10" type="number"
+                name="lowerLevel_10" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 10 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_10" type="number"
+                name="upperLevel_10" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 10</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_10" type="number" name="monthlyServiceCharge_10"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_11 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_10()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>    
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isMsc_11 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 11 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_11" type="number"
+                name="lowerLevel_11" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 11 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_11" type="number"
+                name="upperLevel_11" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 11</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_11" type="number" name="monthlyServiceCharge_11"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_12 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_11()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>    
+      </div>
+
+    </ng-container>
+
+    <ng-container *ngIf="isMsc_12 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 12 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_12" type="number"
+                name="lowerLevel_12" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 12 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_12" type="number"
+                name="upperLevel_12" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 12</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_12" type="number" name="monthlyServiceCharge_12"
+                class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_13 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_12()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>  
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isMsc_13 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 13 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_13" type="number"
+                name="lowerLevel_13" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 13 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_13" type="number"
+                name="upperLevel_13" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 13</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_13" type="number" name="monthlyServiceCharge_13"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_14 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_13()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isMsc_14 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 14 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_14" type="number"
+                name="lowerLevel_14" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 14 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_14" type="number"
+                name="upperLevel_14" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 14</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_14" type="number" name="monthlyServiceCharge_14"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_15 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_14()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isMsc_15 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 15 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_15" type="number"
+                name="lowerLevel_15" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 15 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_15" type="number"
+                name="upperLevel_15" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 15</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_15" type="number" name="monthlyServiceCharge_15"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_16 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_15()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>    
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isMsc_16 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 16 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.lowerLevel_16" type="number"
+                name="lowerLevel_16" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 16 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_16" type="number"
+                name="upperLevel_16" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 16</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_16" type="number" name="monthlyServiceCharge_16"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_17 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_16()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+              
+            </div>
+          </div>
+        </div>    
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isMsc_17 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 17 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_17" type="number"
+                name="lowerLevel_17" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 17 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_17" type="number"
+                name="upperLevel_17" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 17</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_17" type="number" name="monthlyServiceCharge_17"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_18 === false;">
+              <div class="col-1">
+                <button [disabled]="isView" type="button" (click)="onClickMSC_17()" pButton pRipple
+                  icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+              </div>
+            </ng-container>
+            </div>
+          </div>
+        </div>    
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isMsc_18 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 18 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_18" type="number"
+                name="lowerLevel_18" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 18 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_18" type="number"
+                name="upperLevel_18" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 18</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_18" type="number" name="monthlyServiceCharge_18"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_19 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_18()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>    
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isMsc_19 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 19 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_19" type="number"
+                name="lowerLevel_19" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 19 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_19" type="number"
+                name="upperLevel_19" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 19</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_19" type="number" name="monthlyServiceCharge_19"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <ng-container *ngIf="isMsc_20 === false;">
+                <div class="col-1">
+                  <button [disabled]="isView" type="button" (click)="onClickMSC_19()" pButton pRipple
+                    icon="pi pi-plus-circle" class="p-button-rounded p-button-text"></button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>    
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isMsc_20 === true;">
+      <div class="p-grid p-fluid col-md-11 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Lower Level 20 (LKR)</label>
+              <input [disabled]="isView" [disabled]="false" [(ngModel)]="municipalWaterTariffFac.lowerLevel_20" type="number"
+                name="lowerLevel_20" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Upper Level 20 (LKR)</label>
+              <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.upperLevel_20" type="number"
+                name="upperLevel_20" class="form-control" placeholder="Enter Value" />
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field row container">
+              <label>Monthly Service Charge 20</label>
+              <div class="col-9">
+                <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.monthlyServiceCharge_20" type="number" name="monthlyServiceCharge_20"
+                  class="form-control" placeholder="Enter Value" />
+              </div>
+              <div class="col-1">
+
+              </div>
+            </div>
+          </div>
+        </div>    
+      </div>
+    </ng-container>
+    <div class="col-12 col-md-4">
+      <div class="p-field">
+        <label>Default Monthly Service Charge</label>
+        <input [disabled]="isView" [(ngModel)]="municipalWaterTariffFac.defaultMonthlyServiceCharge" type="number" name="defaultMonthlyServiceCharge"
+          class="form-control" placeholder="Enter Value" />
+      </div>
+    </div>
+
+    <div class="row p-grid p-fluid col-md-6 col-sm-6">
+
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+        <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+          Back
+        </button>
+      </div>
+
+      <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10">
+        <button pButton type="submit" label="Save"></button>
+      </div>
+
+    </div>
+  </form>
+</p-dialog>

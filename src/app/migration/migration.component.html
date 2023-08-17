@@ -1,0 +1,99 @@
+
+<div class="container" style="min-height: 500px">
+    <h4 class="mt-4">Migration</h4>
+
+    <div class="card">
+        <div class="row">
+            <div class="p-grid p-fluid col-md-6 col-sm-6"> 
+                <div class="row">
+                    <div class="col-2">
+                        <label for="selectUnit" style="padding-top: 10px">Project</label>
+                    </div>
+                    <div class="col-8">
+                        <div class="p-field">
+                            <p-dropdown
+                                [filter]="true" filterBy="name" [showClear]="true"
+                                name="selectUnit"
+                                [options]="projects"
+                                [(ngModel)]="selectProject"
+                                placeholder="Select .."
+                                optionLabel="name"       
+                                appendTo="body"                     
+                            ></p-dropdown>
+                        </div>            
+                    </div>
+                </div>       
+            </div>
+            <div class="p-grid p-fluid col-md-6 col-sm-6"> 
+                <div class="row">
+                    <div class="col-2">
+                        <label for="selectUnit" style="padding-top: 10px">Emission Source</label>
+                    </div>
+                    <div class="col-8">
+                        <div class="p-field">
+                            <p-dropdown
+                                [filter]="true" filterBy="name" [showClear]="true"
+                                name="selectUnit"
+                                [options]="esList"
+                                [(ngModel)]="es"
+                                placeholder="Select .."
+                                optionLabel="name"       
+                                appendTo="body"                     
+                            ></p-dropdown>
+                        </div>            
+                    </div>
+                </div>       
+            </div>            
+        </div>
+        <div class="row">
+            <div class="p-grid p-fluid col-md-6 col-sm-6">
+                <div class="col-2">
+                    <label for="selectUnit" style="padding-top: 10px">Excel</label>
+                </div>
+                <app-file-uploader
+                    [addable]="true"
+                    [multiple]="false"
+                    (onChangeFile)="onAddFile($event)"
+                    (onDeleteFile)="onRemoveFile($event)"
+                    ></app-file-uploader>
+            </div>
+            <!-- <div class="p-grid p-fluid col-md-3 col-sm-3">
+                <button            
+                    (click)="upload()"        
+                    class="ml-4"
+                    type="button"
+                    pButton
+                    pRipple       
+                    style="width: 150px;margin-left: 4px;margin-top: 30%;"                   
+                    styleClass="p-button-warn"
+                    >Upload
+                </button>
+            </div> -->
+        </div>
+        <div class="row">
+            <div class="p-grid p-fluid col-md-6 col-sm-6" *ngIf="es?.code === 'passenger_air' || es?.code === 'freight_road'">
+                <div class="col-2">
+                    <label for="selectUnit" style="padding-top: 10px">Airport Codes</label>
+                </div>
+                <app-file-uploader
+                    [addable]="true"
+                    [multiple]="false"
+                    (onChangeFile)="onAddAirportFile($event)"
+                    (onDeleteFile)="onRemoveAirportFile($event)"
+                    ></app-file-uploader>
+            </div>
+            <div class="p-grid p-fluid col-md-3 col-sm-3">
+                <button            
+                    (click)="upload()"        
+                    class="ml-4"
+                    type="button"
+                    pButton
+                    pRipple       
+                    style="width: 150px;margin-left: 4px;margin-top: 30%;"                   
+                    styleClass="p-button-warn"
+                    >Upload
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

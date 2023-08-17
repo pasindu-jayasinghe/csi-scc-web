@@ -1,0 +1,79 @@
+.card-text{
+    font-size: 14px;
+    line-height:2;
+    font-family: Inter;
+}
+
+.head-record{
+    border-right: 3px solid #CACACA;
+    text-align: center;
+}
+
+.head-record p {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+    text-align: center;
+    color: #5F5F5F;
+}
+
+.head-record h4{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 58px;
+    /* identical to box height */
+
+}
+
+.last{
+    border-right: none
+}
+
+.one{
+    color: #BD6363 !important;
+}
+
+.two{
+    color: #3F72AF !important;
+}
+
+.three{
+    color: #C06C84 !important;   
+}
+
+.four{
+    color: #FD841F !important;
+}
+
+.bello-card{
+    background: #FFFFFF;
+    border: 1px solid #C2C2C2;
+    box-shadow: 3px 6px 6px 2px rgba(0, 0, 0, 0.25);
+    border-radius: 18px;
+    width: 49%;
+}
+
+.up-card{
+    border: 1px solid #000000;
+    filter: drop-shadow(5px 7px 5px rgba(0, 0, 0, 0.25));
+    border-radius: 31px;
+}
+
+.down-row{
+    justify-content: space-between;
+    margin: 0px;
+}
+
+
+.top-details{
+    background: #FFFFFF;
+    border: 1px solid #C2C2C2;
+    box-shadow: 4px 9px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 18px;
+}

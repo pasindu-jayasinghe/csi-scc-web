@@ -1,0 +1,35 @@
+<div class="container">
+
+    <div class="p-grid p-fluid card">
+        <div class="row">
+      
+          <p-tabView [scrollable]="true" style="width: 97%;" [activeIndex]="index">
+            
+            <p-tabPanel header="Air" *ngIf="isCSIUser ||  accessESList.includes(puesDataReqDtoSourceName.Freight_air)">
+            <ng-container><app-freight-air-list></app-freight-air-list></ng-container>
+            </p-tabPanel>
+            
+            <p-tabPanel header="Off-Road" *ngIf="isCSIUser ||  accessESList.includes(puesDataReqDtoSourceName.Freight_offroad)">
+              <ng-container><app-freight-offroad-list></app-freight-offroad-list></ng-container>
+            </p-tabPanel>
+            
+            <p-tabPanel header="Rail" *ngIf="isCSIUser ||  accessESList.includes(puesDataReqDtoSourceName.Freight_rail)">
+              <ng-container><app-freight-rail-list></app-freight-rail-list></ng-container>
+            </p-tabPanel>
+
+            <p-tabPanel header="Road" *ngIf="isCSIUser ||  accessESList.includes(puesDataReqDtoSourceName.Freight_road)">
+              <ng-container><app-freight-road-list></app-freight-road-list></ng-container>
+            </p-tabPanel>
+      
+            <p-tabPanel header="Water" *ngIf="isCSIUser ||  accessESList.includes(puesDataReqDtoSourceName.Freight_water)">
+              <ng-container><app-freight-water-list></app-freight-water-list></ng-container>
+            </p-tabPanel>
+      
+      
+      
+          </p-tabView>
+        </div>
+
+
+</div>
+  </div>

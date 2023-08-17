@@ -1,0 +1,85 @@
+<div class="container">
+    <h4 class="mt-4">{{title}}</h4>
+    <h6 class="mt-4">{{sourceName | titlecase}} </h6>
+    <div class="p-grid p-fluid card">
+        <div class="row">
+            <div class="col-9">
+                <h5 class="mt-4">Emission Factors</h5>
+                <div id="basic" class="row">
+                    <div class="p-field row container" *ngFor="let detail of card1">
+                        <div class="col-6" >
+                            <p class = "card-text"><strong>{{detail.title}}</strong> </p>
+                        </div> 
+                        <div class="col-6">
+                            <p class = "card-text">{{detail.value}}</p>
+                        </div>                 
+                    </div>  
+                </div>
+            </div>
+            <!-- <div class="col-3">
+                <button class="btn btn-primary btn-md" (click)="onEmissionClick(sourceName)" >
+                    Show Equation
+                </button>
+            </div> -->
+        </div>
+    </div>
+    <div class="p-grid p-fluid card">
+        <div *ngIf="sourceDtails.length === 0">
+            <p>No result found</p>
+        </div>
+        <ng-container *ngFor="let unit of sourceDtails">
+            <h6 [style.cursor]="setCursor('eqn')" (click)="onEmissionClick(esCode)">{{unit.unit}} - {{unit.total}} tCO₂e</h6>
+            <p-table
+                paginatorDropdownAppendTo="body" [columns]="cols" [value]="unit.data" responsiveLayout="scroll">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th></th>
+                        <th *ngFor="let col of unit.columns">
+                            {{col.header | titlecase}}
+                        </th>
+                        <!-- <th>Parameter</th>
+                        <th>Jan</th>
+                        <th>Feb</th> -->
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <!-- <tr *ngFor="let para of parameters">
+                        <td *ngFor="let col of unit.columns">
+                            <span *ngIf="col.field === 'parameter'">{{para.name}}</span>
+                            <span *ngIf="col.field !== 'parameter'" (click)="onValueClick(rowData[col.field], unit.unit, para)" 
+                            [ngClass]="evidenceCss(rowData[col.field], para)" [style.cursor]="setCursor()">{{getValue(rowData[col.field], para.code)}}</span>
+                        </td>
+                    </tr> -->
+                    <tr >
+                        <td>Emission (tCO₂e)</td>
+                        <td *ngFor="let col of unit.columns">
+                            <span *ngIf="col.field !== 'parameter'" (click)="onValueClick(rowData[col.field], unit.unit)" 
+                           [style.cursor]="setCursor()">{{getValue(rowData[col.field])}}</span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <br>
+        </ng-container>
+    </div>
+    <div class="row" >
+        <div class="d-flex col-1 justify-content-start" style="float: right;">
+            <button class="btn btn-secondary text-uppercase ml-15 btn-lg" (click)="onBackClick()">
+            Back
+            </button>
+        </div>
+        <!-- <div class="d-flex col-1 justify-content-start" style="float: right;" *ngIf="type === 'verification'">
+            <button class="btn btn-primary text-uppercase btn-lg" (click)="verify()" [disabled]="isVerified">
+            Verify
+            </button>
+        </div>
+        <div class="d-flex col-1 justify-content-start" style="float: right;" *ngIf="type === 'verification'">
+            <button class="btn btn-primary text-uppercase btn-lg" (click)="reject()" [disabled]="isVerified">
+            Reject
+            </button>
+        </div> -->
+    </div>
+    <br>
+    
+</div>
+

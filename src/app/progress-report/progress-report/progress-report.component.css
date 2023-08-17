@@ -1,0 +1,32 @@
+.rectangle{
+    width:20%; 
+    height: 15px; 
+    margin: 0 10px 0 10px;
+    float: left;
+}
+
+.complete{
+    background: #25933D;
+}
+
+.partial{
+    background: #F0B61F;
+}
+
+.noData{
+    background: #FF1616;
+}
+
+.notAssigned{
+    background: #747478;
+}
+
+.card-text{
+    font-size: 14px;
+    line-height:1;
+    font-family: Inter;
+}
+
+.es-data{
+    min-width: 100px
+}

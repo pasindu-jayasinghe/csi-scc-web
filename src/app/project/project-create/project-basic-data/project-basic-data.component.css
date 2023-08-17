@@ -1,0 +1,40 @@
+.p-field{
+    margin-top: 10px;
+}
+
+#basic label{
+    margin-top: 8px;
+}
+
+p-dropdown{
+    min-height: 500px;
+}
+
+p-checkbox{
+    margin-bottom: 5px;
+}
+
+.check-box-label{
+    margin-left: 10px;
+}
+
+.check{
+    max-width: 250px;
+}
+
+.added-unit{
+    margin-left: 30px;
+    border: 1px solid lightgray;
+    min-height: 30px;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.added-unit-span{
+    max-width: 250px;
+}
+
+
+.row{
+    margin-top: 5px;
+}

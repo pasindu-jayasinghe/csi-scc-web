@@ -1,0 +1,38 @@
+<app-project-basic-data 
+    [editEntryId]="editEntryId"
+    [isNewEntry]="isNewEntry"
+    [isView]="isView"
+    (onSaveBasicProject)="onSaveBasicProject($event)"
+    (onChangeOwnerUnit)="onChangeOwnerUnit($event)"
+></app-project-basic-data>
+
+<app-project-es
+    [editEntryId]="editEntryId"
+    [isNewEntry]="isNewEntry"
+    [isView]="isView || isNewEntry"
+></app-project-es>
+<app-project-unit
+    [editEntryId]="editEntryId"
+    [isNewEntry]="isNewEntry"
+    [isView]="isView || isNewEntry"
+    [project]="project"
+    [parentUnit]="project.ownerUnit"
+></app-project-unit>
+
+
+<div class="container">
+    <div class="p-grid p-fluid card" *ngIf="project">
+        <div class="row">
+            <div class="col-10 d-flex">
+                <button class="btn btn-secondary text-uppercase" (click)="onBackClick()">
+                    Back
+                  </button>
+            </div>
+            <div class="col-2 d-flex">
+                <button *ngIf="project && project.projectStatus && project.projectStatus.toString() === 'Initial'" (click)="save()" class="btn btn-primary text-uppercase btn-lg" type="submit">
+                  Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

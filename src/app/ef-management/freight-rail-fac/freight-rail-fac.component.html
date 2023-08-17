@@ -1,0 +1,188 @@
+<div class="container">
+    <h4 class="mt-4">Freight Rail</h4>
+    <div class="ui-fluid formgrid grid">
+
+      <div class="p-grid p-fluid card">
+        <div class="col-3">
+          
+          <div class="col-9">
+            <button                                                    
+            class="ml-4"
+            type="button"
+            (click)="uploadExcell()"
+  
+            pButton
+            pRipple       
+            style="width: 150px;margin-left: 4px;"                   
+            styleClass="p-button-warn"
+            > Upload Excel
+        </button>         
+          </div>
+        </div>
+      </div>
+  
+      <p-table
+        paginatorDropdownAppendTo="body" 
+        [value]="freightRailFacs" 
+        [lazy]="true" 
+        (onLazyLoad)="loadEF($event)" 
+        [paginator]="true" 
+        [rows]="rows"
+        [showCurrentPageReport]="true" 
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10,25,50]" 
+        [totalRecords]="totalRecords" 
+        [loading]="loading">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <div class="col-sm-2" style="width: 30%">
+                <!-- <button type="button" (click)="showDialog()" icon="pi pi-info-circle" label="Show"></button> -->
+  
+                <button class="ml-4" type="button" (click)="new()" pButton pRipple icon="pi pi-plus"
+                  styleClass="p-button-warn"></button>
+  
+  
+              </div>
+            </th>
+            <th>Activity</th>
+            <th>Type</th>
+            <th pSortableColumn="year">Year<p-sortIcon field="year"></p-sortIcon></th>
+            <th>kg CO₂e</th>
+            <th>kg CO₂</th>
+            <th>kg CH₄</th>
+            <th>kg N₂o</th>
+  
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-efData>
+          <tr>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button (click)="view(efData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                  class="p-button p-button-success p-button-outlined"></button>
+                <button (click)="edit(efData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                  class="p-button p-button-warning p-button-outlined"></button>
+                <!-- <button (click)="onDeleteClick(elecData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button> -->
+              </div>
+            </td>
+  
+            <td>{{ efData.activity }}</td>
+            <td>{{ efData.type }}</td>
+            <td>{{ efData.year }}</td>
+            <td>{{ efData.kgco2e }}</td>
+            <td>{{ efData.kgco2 }}</td>
+            <td>{{ efData.kgch4 }}</td>
+            <td>{{ efData.kgn2o }}</td>
+  
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  
+  <p-dialog header="Freight Rail" [(visible)]="isDisplay" [style]="{width: '50vw' ,height: '30vw'}">
+    <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+  
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Activity *</label>
+              <p-dropdown name="gasTypes" [disabled]="isView" [options]="activities" [(ngModel)]="freightRailFac.activity"
+                placeholder="Select .." optionValue="code" optionLabel="name" >
+              </p-dropdown>
+            </div>
+          </div>
+  
+          <div class="col-12 col-md-4">
+            <div class="p-field">
+              <label>Type*</label>
+              <p-dropdown [disabled]="isView" name="type" [(ngModel)]="freightRailFac.type" [options]="types"
+                placeholder="Select .." optionLabel="name" optionValue="code" >
+              </p-dropdown>
+            </div>
+          </div>
+  
+        </div>
+  
+      </div>
+  
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-3">
+            <div class="p-field">
+              <label>kg CO₂e*</label>
+              <input [disabled]="isView" min="0" [(ngModel)]="freightRailFac.kgco2e" [disabled]="false" type="number" name="kgco2e"
+                class="form-control" placeholder="Enter kg CO2e" required />
+              <p class="info-message text-danger" *ngIf="!freightRailFac.kgco2e && (fData.submitted)">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+          <div class="col-12 col-md-3">
+            <div class="p-field">
+              <label>kg CO₂*</label>
+              <input [disabled]="isView" min="0" [(ngModel)]="freightRailFac.kgco2" [disabled]="false" type="number" name="kgco2"
+                class="form-control" placeholder="Enter kg CO2" required />
+              <p class="info-message text-danger" *ngIf="!freightRailFac.kgco2 && (fData.submitted)">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+          <div class="col-12 col-md-3">
+            <div class="p-field">
+              <label>kg CH₄*</label>
+              <input [disabled]="isView" min="0" [(ngModel)]="freightRailFac.kgch4" [disabled]="false" type="number" name="khch4"
+                class="form-control" placeholder="Enter kg CH4" required />
+              <p class="info-message text-danger" *ngIf="!freightRailFac.kgch4 && (fData.submitted)">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+          <div class="col-12 col-md-3">
+            <div class="p-field">
+              <label>KgN₂O*</label>
+              <input [disabled]="isView" min="0" [(ngModel)]="freightRailFac.kgn2o" [disabled]="false" type="number" name="kgn2o"
+                class="form-control" placeholder="Enter KgN2O" required />
+              <p class="info-message text-danger" *ngIf="!freightRailFac.kgn2o && (fData.submitted)">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+  
+  
+        </div>
+      </div>
+  
+  
+  
+  
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-6">
+            <div class="p-field">
+              <label>Year</label>
+              <p-dropdown name="year" [options]="years" placeholder="Select .." [(ngModel)]="freightRailFac.year">
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row p-grid p-fluid col-md-6 col-sm-6">
+  
+  
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+          <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+            Back
+          </button>
+        </div>
+  
+        <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10" *ngIf="!isView">
+          <button pButton type="submit" label="Save"></button>
+        </div>
+  
+      </div>
+    </form>
+  </p-dialog>

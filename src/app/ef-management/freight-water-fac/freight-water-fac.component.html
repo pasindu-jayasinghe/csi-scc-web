@@ -1,0 +1,188 @@
+<div class="container">
+  <h4 class="mt-4">Freight Water</h4>
+  <div class="ui-fluid formgrid grid">
+
+    <div class="p-grid p-fluid card">
+      <div class="col-3">
+        
+        <div class="col-9">
+          <button                                                    
+          class="ml-4"
+          type="button"
+          (click)="uploadExcell()"
+
+          pButton
+          pRipple       
+          style="width: 150px;margin-left: 4px;"                   
+          styleClass="p-button-warn"
+          > Upload Excel
+      </button>         
+        </div>
+      </div>
+    </div>
+
+    <p-table
+      paginatorDropdownAppendTo="body" [value]="freightWFacs" [lazy]="true" (onLazyLoad)="loadEF($event)" [paginator]="true" [rows]="rows"
+      [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rowsPerPageOptions]="[10,25,50]" [totalRecords]="totalRecords" [loading]="loading">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>
+            <div class="col-sm-2" style="width: 30%">
+              <!-- <button type="button" (click)="showDialog()" icon="pi pi-info-circle" label="Show"></button> -->
+
+              <button class="ml-4" type="button" (click)="newEF()" pButton pRipple icon="pi pi-plus"
+                styleClass="p-button-warn"></button>
+
+
+            </div>
+          </th>
+          <th>Activity</th>
+          <th>Type</th>
+          <th>Size</th>
+
+          <th pSortableColumn="year">Year<p-sortIcon field="year"></p-sortIcon></th>
+
+          <th>Value</th>
+
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-efData>
+        <tr>
+          <td>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button (click)="viewEF(efData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                class="p-button p-button-success p-button-outlined"></button>
+              <button (click)="editEF(efData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                class="p-button p-button-warning p-button-outlined"></button>
+              <!-- <button (click)="onDeleteClick(elecData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button> -->
+            </div>
+          </td>
+
+          <td>{{ efData.activity }}</td>
+          <td>{{ efData.type }}</td>
+          <td>{{ efData.size }}</td>
+          <td>{{ efData.year }}</td>
+          <td>KgCO2e:{{ efData.kgco2e ? efData.kgco2e:" N/A" }} | KgCO2: {{ efData.kgco2e ? efData.kgco2e:" N/A" }} |
+            KgCH4: {{ efData.kgch4 ? efData.kgch4:" N/A" }} | KgN2O: {{ efData.kgn20 ? efData.kgn20:" N/A" }} </td>
+
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-dialog header="Freight Water" [(visible)]="displayFuel" [style]="{width: '50vw' ,height: '30vw'}">
+  <form #wasteFacData="ngForm" (ngSubmit)="saveWasteFac(wasteFacData)" novalidate>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Activity *</label>
+            <p-dropdown name="gasTypes" [disabled]="isView" [options]="activities" [(ngModel)]="freightWFac.activity"
+              placeholder="Select .." optionValue="code" optionLabel="name" (onChange)="onChangeAct($event.value)">
+            </p-dropdown>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Type*</label>
+            <p-dropdown [disabled]="isView" name="type" [(ngModel)]="freightWFac.type" [options]="fwTypes"
+              placeholder="Select .." optionLabel="name" optionValue="code" (onChange)="onChangeType($event.value)">
+            </p-dropdown>
+          </div>
+        </div>
+
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Size*</label>
+            <p-dropdown [disabled]="isView" name="size" [(ngModel)]="freightWFac.size" [options]="fwSizes"
+              placeholder="Select .." optionValue="code" optionLabel="name"></p-dropdown>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>kg CO2e*</label>
+            <input [disabled]="isView" min="0" [(ngModel)]="freightWFac.kgco2e" [disabled]="false" type="number" name="kgc02e"
+              class="form-control" placeholder="Enter kg CO2e" required />
+            <p class="info-message text-danger" *ngIf="!freightWFac.kgco2e && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>kg CO2*</label>
+            <input [disabled]="isView" min="0" [(ngModel)]="freightWFac.kgco2" [disabled]="false" type="number" name="kgco2"
+              class="form-control" placeholder="Enter kg CO2" required />
+            <p class="info-message text-danger" *ngIf="!freightWFac.kgco2 && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>kg CH4*</label>
+            <input [disabled]="isView"min="0" [(ngModel)]="freightWFac.kgch4" [disabled]="false" type="number" name="khch4"
+              class="form-control" placeholder="Enter kg CH4" required />
+            <p class="info-message text-danger" *ngIf="!freightWFac.kgch4 && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>KgN2O*</label>
+            <input [disabled]="isView"min="0" [(ngModel)]="freightWFac.kgn20" [disabled]="false" type="number" name="kgn2o"
+              class="form-control" placeholder="Enter KgN2O" required />
+            <p class="info-message text-danger" *ngIf="!freightWFac.kgn20 && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+
+
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-6">
+          <div class="p-field">
+            <label>Year</label>
+            <p-dropdown name="year" [options]="years" placeholder="Select .." [(ngModel)]="freightWFac.year">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row p-grid p-fluid col-md-6 col-sm-6">
+
+
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+        <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+          Back
+        </button>
+      </div>
+
+      <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10" *ngIf="!isView">
+        <button pButton type="submit" label="Save"></button>
+      </div>
+
+    </div>
+  </form>
+</p-dialog>

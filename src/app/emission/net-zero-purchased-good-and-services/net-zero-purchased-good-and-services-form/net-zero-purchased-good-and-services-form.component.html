@@ -1,0 +1,1066 @@
+<div class="container pl-25 pr-25">
+    <div class="mb-12">
+        <h4 class="mt-4">
+            {{ isNewEntry ? "Add" : isView ? "View" : "Edit" }} Purchased Goods and Services
+        </h4>
+    </div>
+    <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+        <div class="card">
+            <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+                <div class="row p-2">
+                    <div class="col-12 col-md-8">
+                        <div class="p-field">
+                            <label for="institution">Unit *</label>
+                            <app-unit-select [isView]="isView" [unit]="selectedUnit"
+                                (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+                <div class="row p-2">
+                    <div class="col-12 col-md-8">
+                        <div class="p-field">
+                            <label for="institution">Project *</label>
+                            <app-project-select [isView]="isView" [unit]="selectedUnit"
+                                [project]="purchasedGoodAndServices.project" (onUpdateProject)="onChangeProject($event)"
+                                [data]="fData"></app-project-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-grid p-fluid col-md-9 col-sm-12">
+                <div class="row p-2">
+                    <div class="col-12 col-md-8">
+                        <div class="p-field">
+                            <label for="institution">Year *</label>
+
+                            <input [disabled]="true" type="text" name="year" [(ngModel)]="purchasedGoodAndServices.year"
+                                class="form-control" placeholder="Enter Year" required />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-grid p-fluid col-md-9 col-sm-12">
+                <div class="row p-2">
+                    <div class="col-12 col-md-8">
+                        <div class="p-field">
+                            <label for="institution">Month *</label>
+                            <p-dropdown [disabled]="isView" name="institution" [options]="months" [(ngModel)]="month"
+                                (onChange)="monthCgange()" #fmonth="ngModel" placeholder="Select .." optionLabel="name"
+                                [required]="true" appendTo="body"></p-dropdown>
+                            <p class="info-message text-danger" *ngIf="
+                    !month && (fData.submitted || fmonth.touched || fmonth.dirty)
+                  ">
+                                This is a mandatory field
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-grid p-fluid col-md-9 col-sm-12">
+                <div class="row p-2">
+                    <div class="col-12 col-md-8">
+                        <div class="p-field">
+                            <label for="institution">Method * <i pTooltip="Please remove unfilled data row by clicking '-' button in right side before save." class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+                            <p-dropdown (onChange)="onSelectMethod($event)" [disabled]="isView || !isNewEntry"
+                                name="method" [required]="true" [options]="methods_purchased_good_and_services"
+                                [(ngModel)]="purchasedGoodAndServices.method" #fmethod="ngModel" placeholder="Select .."
+                                optionLabel="name" optionValue="code" appendTo="body"></p-dropdown>
+                            <p class="info-message text-danger"
+                                *ngIf="!purchasedGoodAndServices.method && (fData.submitted || fmethod.touched || fmethod.dirty)">
+                                This is a mandatory field
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                *ngIf="purchasedGoodAndServices.method == createPurchasedGoodsAndServiceDtoMethod.Supplier_Specific_Method">
+                <!-- <ng-container [ngTemplateOutlet]="SUPPLIER_SPECIFIC_METHOD"></ng-container> -->
+                <div *ngIf="purchasedGoodAndServices.supplierSpecificMethod.supplierData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Supplier_Specific_Method)"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2"
+                        *ngFor="let supplierData of purchasedGoodAndServices.supplierSpecificMethod.supplierData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Good purchased *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'supplierType' + i"
+                                            placeholder="Enter Type" [options]="supplier_specific_products"
+                                            [(ngModel)]="supplierData.supplierType" optionValue="code"
+                                            optionLabel="name" class="col-4" appendTo="body" [required]=true
+                                            #supplierType="ngModel"
+                                            [ngModelOptions]="{ standalone: true }"></p-dropdown>
+                                        <p class="info-message text-danger"
+                                            *ngIf="!supplierType.valid && (fData.submitted || supplierType.touched)">
+                                            This is a mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Quantity of good purchased *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'supplierQuantity' + i" [(ngModel)]="supplierData.supplierQuantity"
+                                            class="form-control" placeholder="Enter Quantity" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!supplierData.supplierQuantity && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit *</label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'average_emissions_of_building_unit' + i"
+                                            [options]="units.supplier_quantity"
+                                            [(ngModel)]="supplierData.supplierQuantity_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                        <p class="info-message text-danger"
+                                            *ngIf="!supplierData.supplierQuantity_unit && fData.submitted">This is a
+                                            mandatory field
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-8 col-md-8">
+                                    <div class="p-field">
+                                        <label>Supplier-specific product emission factor of purchased good or service <i
+                                                pTooltip="Entered Emission  factor will override system Emission Factors"
+                                                class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'supplierEF' + i" [(ngModel)]="supplierData.supplierEF"
+                                            class="form-control" placeholder="Enter Emission Factor" />
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'average_emissions_of_building_unit' + i"
+                                            [options]="units.supplier_ef" [(ngModel)]="supplierData.supplierEF_unit"
+                                            #funit="ngModel" optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(purchasedGoodAndServices.supplierSpecificMethod.supplierData, i)"
+                                        pButton pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="purchasedGoodAndServices.supplierSpecificMethod.supplierData.length ==i + 1"
+                                    class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Supplier_Specific_Method)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="purchasedGoodAndServices.method == createPurchasedGoodsAndServiceDtoMethod.Hybrid_Method">
+                <!-- <ng-container *ngTemplateOutlet="HYBRID_METHOD"></ng-container> -->
+                <!-- hybrid - purchased -->
+                <p>Sum across purchased goods and services</p>
+                <div *ngIf="purchasedGoodAndServices.hybridMethod.purchaseData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Hybrid_Method, 'purchase')"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row"
+                    *ngIf="purchasedGoodAndServices.hybridMethod.purchaseData.length > 0">
+                    <div class="row p-2"
+                        *ngFor="let purchaseData of purchasedGoodAndServices.hybridMethod.purchaseData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Purchased good or service *</label>
+                                        <input [disabled]="isView" type="text" [name]="'purchaseType' + i"
+                                            [(ngModel)]="purchaseData.purchaseType" class="form-control"
+                                            placeholder="Enter Type" />
+                                        <p class="info-message text-danger"
+                                        *ngIf="!purchaseData.purchaseType && fData.submitted">This is a
+                                        mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Scope 1 and scope 2 emissions of tier 1 supplier *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'purchaseEmission' + i" [(ngModel)]="purchaseData.purchaseEmission"
+                                            class="form-control" placeholder="Enter Emission" />
+                                            <p class="info-message text-danger"
+                                            *ngIf="!purchaseData.purchaseEmission && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'purchaseEmission_unit' + i"
+                                            [options]="units.hybrid_purchased_ef"
+                                            [(ngModel)]="purchaseData.purchaseEmission_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(purchasedGoodAndServices.hybridMethod.purchaseData, i)"
+                                        pButton pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="purchasedGoodAndServices.hybridMethod.purchaseData.length ==i + 1"
+                                    class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Hybrid_Method, 'purchase')"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- hybrid - material -->
+                <p>Sum across material inputs of the purchased goods and services</p>
+                <div *ngIf="purchasedGoodAndServices.hybridMethod.materialData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Hybrid_Method, 'material')"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row"
+                    *ngIf="purchasedGoodAndServices.hybridMethod.materialData.length > 0">
+                    <div class="row p-2"
+                        *ngFor="let materialData of purchasedGoodAndServices.hybridMethod.materialData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Material type *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'materialType' + i"
+                                            placeholder="Select Material Type" [options]="hybrid_material_type"
+                                            [(ngModel)]="materialData.materialType" #funit="ngModel" optionValue="code"
+                                            optionLabel="name" class="col-4" appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!materialData.materialType && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Mass or quantity of material inputs used by tier 1 supplier *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'materialAmount' + i" [(ngModel)]="materialData.materialAmount"
+                                            class="form-control" placeholder="Enter Mass or Quantity" />
+                                            <p class="info-message text-danger"
+                                        *ngIf="!materialData.materialAmount && fData.submitted">This is a
+                                        mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'materialAmount_unit' + i"
+                                            [options]="units.hybrid_material_amount"
+                                            [(ngModel)]="materialData.materialAmount_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-8 col-md-8">
+                                    <div class="p-field">
+                                        <label>Cradle-to-gate emission factor for the material <i
+                                                pTooltip="Entered Emission  factor will override system Emission Factors"
+                                                class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'materialEF' + i" [(ngModel)]="materialData.materialEF"
+                                            class="form-control" placeholder="Enter Emission Factor" />
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'average_emissions_of_building_unit' + i"
+                                            [options]="units.hybrid_matrial_ef"
+                                            [(ngModel)]="materialData.materialEF_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(purchasedGoodAndServices.hybridMethod.materialData, i)"
+                                        pButton pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="purchasedGoodAndServices.hybridMethod.materialData.length ==i + 1"
+                                    class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Hybrid_Method, 'material')"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- hybrid - material transport -->
+                <p>Sum across transport of material inputs to tier 1 supplier</p>
+                <div *ngIf="purchasedGoodAndServices.hybridMethod.materialTrasportData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Hybrid_Method, 'material-transport')"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row"
+                    *ngIf="purchasedGoodAndServices.hybridMethod.materialTrasportData.length > 0">
+                    <div class="row p-2"
+                        *ngFor="let materialTransData of purchasedGoodAndServices.hybridMethod.materialTrasportData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Vehicle type *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'materialTransType' + i"
+                                            placeholder="Select Vehicle Type" [options]="hybrid_vehicle_type"
+                                            [(ngModel)]="materialTransData.materialTransType" #funit="ngModel"
+                                            optionValue="code" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!materialTransData.materialTransType && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Distance of transport of material inputs to tier 1supplier *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'distance' + i" [(ngModel)]="materialTransData.distance"
+                                            class="form-control" placeholder="Enter Distance" />
+                                            <p class="info-message text-danger"
+                                            *ngIf="!materialTransData.distance && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'distance_unit' + i"
+                                            [options]="units.hybrid_transport_distance"
+                                            [(ngModel)]="materialTransData.distance_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-8 col-md-8">
+                                    <div class="p-field">
+                                        <label>Mass or volume of material input</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'materialTransAmount' + i"
+                                            [(ngModel)]="materialTransData.materialTransAmount" class="form-control"
+                                            placeholder="Enter Mass or Volume" />
+                                            <p class="info-message text-danger"
+                                            *ngIf="!materialTransData.materialTransAmount && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView" [name]="'materialTransAmount_unit' + i"
+                                            [options]="units.hybrid_transport_mass"
+                                            [(ngModel)]="materialTransData.materialTransAmount_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-8 col-md-8">
+                                    <div class="p-field">
+                                        <label>Cradle-to-gate emission factor for the vehicle type <i
+                                                pTooltip="Entered Emission  factor will override system Emission Factors"
+                                                class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'materialTransEF' + i"
+                                            [(ngModel)]="materialTransData.materialTransEF" class="form-control"
+                                            placeholder="Enter Emission Factor" />
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView" [name]="'materialTransEF_unit' + i"
+                                            [options]="units.hybrid_transport_ef"
+                                            [(ngModel)]="materialTransData.materialTransEF_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(purchasedGoodAndServices.hybridMethod.materialTrasportData, i)"
+                                        pButton pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="purchasedGoodAndServices.hybridMethod.materialTrasportData.length ==i + 1"
+                                    class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Hybrid_Method, 'material-transport')"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- hybrid - waste -->
+                <p>Sum across waste outputs by tier 1 supplier relating to purchased goods and services</p>
+                <div *ngIf="purchasedGoodAndServices.hybridMethod.wasteData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Hybrid_Method, 'waste')"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row"
+                    *ngIf="purchasedGoodAndServices.hybridMethod.wasteData.length > 0">
+                    <div class="row p-2"
+                        *ngFor="let wasteData of purchasedGoodAndServices.hybridMethod.wasteData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Purchased good or service *</label>
+                                        <input [disabled]="isView" type="text" [name]="'wasteType' + i"
+                                            [(ngModel)]="wasteData.wasteType" class="form-control"
+                                            placeholder="Enter Good or Service" />
+                                            <p class="info-message text-danger"
+                                        *ngIf="!wasteData.wasteType && fData.submitted">This is a
+                                        mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Mass of waste from tier 1 supplier relating to the purchased good or
+                                            service</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'wasteAmount' + i" [(ngModel)]="wasteData.wasteAmount"
+                                            class="form-control" placeholder="Enter Mass" />
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.wasteAmount && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'wasteAmount_unit' + i"
+                                            [options]="units.hybrid_waste_amount"
+                                            [(ngModel)]="wasteData.wasteAmount_unit" #funit="ngModel" optionValue="code"
+                                            optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-8 col-md-8">
+                                    <div class="p-field">
+                                        <label>Waste Activity *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'waste_activity' + i"
+                                            [options]="wasteActivities" [(ngModel)]="wasteData.waste_activity"
+                                            #funit="ngModel" optionValue="code"
+                                            (onChange)="onSelectWasteActivity(wasteData)" optionLabel="name"
+                                            class="col-4" appendTo="body"
+                                            placeholder="Select waste activity"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- biological treatment -->
+                        <div class="col-10 col-md-10"
+                            *ngIf="wasteData.waste_activity === wasteDataWaste_activity.BIOLOGICAL_TREATMENT">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Gas type *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'biological_gas_type' + i"
+                                            [options]="gasTypes" [(ngModel)]="wasteData.gas_type" #funit="ngModel"
+                                            placeholder="Enter gas type" optionValue="name" optionLabel="name"
+                                            class="col-4" appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.gas_type && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Waste basis * </label>
+                                        <p-dropdown [disabled]="isView" [name]="'biological_wasteBasis' + i"
+                                            [options]="wasteBasis" [(ngModel)]="wasteData.wasteBasis" #funit="ngModel"
+                                            optionValue="name" optionLabel="name" class="col-4" appendTo="body"
+                                            placeholder="Enter waste basis"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                        *ngIf="!wasteData.wasteBasis && fData.submitted">This is a
+                                        mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Biological treatment system *</label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'biological_biologicalTreatmentSystem' + i"
+                                            placeholder="Enter biological treatement system"
+                                            [options]="biologicalTreatments"
+                                            [(ngModel)]="wasteData.biologicalTreatmentSystem" #funit="ngModel"
+                                            optionValue="name" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.biologicalTreatmentSystem && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Waste category * </label>
+                                        <p-dropdown [disabled]="isView" [name]="'biological_wasteCategory' + i"
+                                            placeholder="Enter waste category" [options]="wasteCategories"
+                                            [(ngModel)]="wasteData.wasteCategory" #funit="ngModel" optionValue="name"
+                                            optionLabel="name" (onChange)="onChangeWasteCat($event.value)" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.wasteCategory && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Type of waste *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'biological_typeOfWaste' + i"
+                                            placeholder="Enter type of waste" [options]="wasteTypes"
+                                            [(ngModel)]="wasteData.typeOfWaste" #funit="ngModel" optionValue="name"
+                                            optionLabel="name" class="col-4" appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.typeOfWaste && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--END biological treatment -->
+                        <!-- waste incineraation -->
+                        <div class="col-10 col-md-10"
+                            *ngIf="wasteData.waste_activity === wasteDataWaste_activity.WASTE_INCINERATION">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Gas type *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'incineration_gas_type' + i"
+                                            (onChange)="onChangeGasType($event.value)" [options]="gasTypes"
+                                            [(ngModel)]="wasteData.gas_type" #funit="ngModel"
+                                            placeholder="Enter gas type" optionValue="name" optionLabel="name"
+                                            class="col-4" appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.gas_type && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Type of MSW * </label>
+                                        <p-dropdown [disabled]="isView" [name]="'incineration_mswType' + i"
+                                            placeholder="Enter type of MSW type" [options]="mswTypes"
+                                            [(ngModel)]="wasteData.mswType" #funit="ngModel" optionValue="name"
+                                            optionLabel="name" class="col-4" appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.mswType && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Waste category * </label>
+                                        <p-dropdown [disabled]="isView" [name]="'incineration_wasteCategory' + i"
+                                            (onChange)="onChangeWasteCat($event.value)" [options]="wasteCategories"
+                                            [(ngModel)]="wasteData.wasteCategory" #funit="ngModel"
+                                            placeholder="Enter waste category" optionValue="name" optionLabel="name"
+                                            class="col-4" appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.wasteCategory && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Type of waste *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'incineration_typeOfWaste' + i"
+                                            [options]="wasteTypes" [(ngModel)]="wasteData.typeOfWaste" #funit="ngModel"
+                                            placeholder="Enter type of waste" optionValue="name" optionLabel="name"
+                                            class="col-4" appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.typeOfWaste && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--END waste incineraation -->
+                        <!-- open-burning -->
+                        <div class="col-10 col-md-10"
+                            *ngIf="wasteData.waste_activity === wasteDataWaste_activity.OPEN_BURNING">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Gas type *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'burning_gas_type' + i"
+                                            placeholder="Enter gas type" [options]="gasTypes"
+                                            [(ngModel)]="wasteData.gas_type" #funit="ngModel"
+                                            (onChange)="onChangeGasType($event.value)" optionValue="name"
+                                            optionLabel="name" class="col-4" appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.gas_type && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Type of MSW * </label>
+                                        <p-dropdown [disabled]="isView" [name]="'burning_mswType' + i"
+                                            [options]="mswTypes" [(ngModel)]="wasteData.mswType" #funit="ngModel"
+                                            optionValue="name" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.mswType && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Waste category * </label>
+                                        <p-dropdown [disabled]="isView" [name]="'burning_wasteCategory' + i"
+                                            (onChange)="onChangeWasteCat($event.value)" [options]="wasteCategories"
+                                            [(ngModel)]="wasteData.wasteCategory" #funit="ngModel" optionValue="name"
+                                            optionLabel="name" class="col-4" appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.wasteCategory && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Type of waste *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'burning_typeOfWaste' + i"
+                                            [options]="wasteTypes" [(ngModel)]="wasteData.typeOfWaste" #funit="ngModel"
+                                            optionValue="name" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.typeOfWaste && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--END open-burning -->
+                        <!-- domestic waste water -->
+                        <div class="col-10 col-md-10"
+                            *ngIf="wasteData.waste_activity === wasteDataWaste_activity.DOMESTIC_WASTEWATER">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Type of Treatment of Discharge *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'domestic_treatmentDischargeType' + i"
+                                            [options]="treatmentTypeDischarge"
+                                            [(ngModel)]="wasteData.treatmentDischargeType" #funit="ngModel"
+                                            optionValue="name" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.treatmentDischargeType && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END domestic waste water -->
+                        <!-- industrial waste water -->
+                        <div class="col-10 col-md-10"
+                            *ngIf="wasteData.waste_activity === wasteDataWaste_activity.INDUSTRIAL_WASTEWATER">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Type of Treatment of Discharge *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'industrial_treatmentDischargeType' + i"
+                                            [options]="treatmentTypeDischarge"
+                                            [(ngModel)]="wasteData.treatmentDischargeType" #funit="ngModel"
+                                            optionValue="name" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.treatmentDischargeType && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END industrial waste water -->
+                        <!-- defra -->
+                        <div class="col-10 col-md-10"
+                            *ngIf="wasteData.waste_activity === wasteDataWaste_activity.OTHER_ACTIVITIES_BASED_ON_DEFRA">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Waste *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'defra_waste' + i"
+                                            placeholder="Select waste type" [options]="disposalWasteTypes"
+                                            [(ngModel)]="wasteData.waste" #funit="ngModel" optionValue="code"
+                                            optionLabel="name" class="col-4" appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.waste && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Disposal method *</label>
+                                        <p-dropdown [disabled]="isView || editEntryId !== undefined"
+                                            [name]="'defra_disposalMethod' + i" placeholder="Select disposal method"
+                                            [options]="disposalMethods" [(ngModel)]="wasteData.disposalMethod"
+                                            #funit="ngModel" optionValue="name" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.disposalMethod && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--END defra -->
+                        <!-- incineration -->
+                        <div class="col-10 col-md-10"
+                            *ngIf="wasteData.waste_activity === wasteDataWaste_activity.INCINERATION">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Waste *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'incineration_waste' + i"
+                                            placeholder="Select waste type" [options]="incinerationWaste"
+                                            [(ngModel)]="wasteData.waste" #funit="ngModel" optionValue="code"
+                                            optionLabel="name" class="col-4" appendTo="body"></p-dropdown>
+                                            <p class="info-message text-danger"
+                                            *ngIf="!wasteData.waste && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--END incineration -->
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(purchasedGoodAndServices.hybridMethod.wasteData, i)" pButton
+                                        pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="purchasedGoodAndServices.hybridMethod.wasteData.length ==i + 1"
+                                    class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Hybrid_Method, 'waste')"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- hybrid-waste-other-emission -->
+                <p>other emissions </p>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row"
+                    *ngIf="purchasedGoodAndServices.hybridMethod.otherData[0]">
+                    <div class="col-10 col-md-10">
+                        <div class="row p-2">
+                            <div class="col-8 col-md-8">
+                                <div class="p-field">
+                                    <label>Other emissions emitted in provision of the good or service as applicable
+                                        *</label>
+                                    <input [disabled]="isView" type="number" step="any" min="0"
+                                        oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                        [name]="'wasteOtherEmission'"
+                                        [(ngModel)]="purchasedGoodAndServices.hybridMethod.otherData[0].otherEmission"
+                                        class="form-control" placeholder="Enter Emission" />
+                                </div>
+                            </div>
+                            <div class="col-2 col-md-2">
+                                <div class="p-field">
+                                    <label>Unit *</label>
+                                    <p-dropdown [disabled]="isView" [name]="'wasteOtherEmission_unit'"
+                                        [options]="units.hybrid_waste_ef"
+                                        [(ngModel)]="purchasedGoodAndServices.hybridMethod.otherData[0].otherEmission_unit"
+                                        #funit="ngModel" optionValue="code" optionLabel="label" class="col-4"
+                                        appendTo="body"></p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="purchasedGoodAndServices.method == createPurchasedGoodsAndServiceDtoMethod.Average_Data_Method">
+                <!-- <ng-container *ngTemplateOutlet="AVERAGE_DATA_METHOD"></ng-container> -->
+                <div *ngIf="purchasedGoodAndServices.averageDataMethod.averageData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Average_Data_Method)" pButton
+                        pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2"
+                        *ngFor="let averageData of purchasedGoodAndServices.averageDataMethod.averageData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Purchased good or service *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'averageType' + i"
+                                            placeholder="Select purchase good or service"
+                                            [options]="average_product_type" [(ngModel)]="averageData.averageType"
+                                            #funit="ngModel" optionValue="code" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                        <p class="info-message text-danger"
+                                            *ngIf="!averageData.averageType && fData.submitted">
+                                            This is a mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Mass of purchased good or service*</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'averageAmount' + i" [(ngModel)]="averageData.averageAmount"
+                                            class="form-control" placeholder="Enter Mass" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!averageData.averageAmount && fData.submitted">
+                                            This is a mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'averageAmount_unit' + i"
+                                            [options]="units.average_mass" [(ngModel)]="averageData.averageAmount_unit"
+                                            #funit="ngModel" optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                        <p class="info-message text-danger"
+                                            *ngIf="!averageData.averageAmount_unit && fData.submitted">This is a
+                                            mandatory field
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-8 col-md-8">
+                                    <div class="p-field">
+                                        <label>Emission factor of purchased good or service per unit of mass/per
+                                            reference unit <i
+                                                pTooltip="Entered Emission  factor will override system Emission Factors"
+                                                class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'averageEF' + i" [(ngModel)]="averageData.averageEF"
+                                            class="form-control" placeholder="Enter Emission Factor" />
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView" [name]="'averageEF_unit' + i"
+                                            [options]="units.average_ef" [(ngModel)]="averageData.averageEF_unit"
+                                            #funit="ngModel" optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(purchasedGoodAndServices.averageDataMethod.averageData, i)"
+                                        pButton pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="purchasedGoodAndServices.averageDataMethod.averageData.length ==i + 1"
+                                    class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Average_Data_Method)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="purchasedGoodAndServices.method == createPurchasedGoodsAndServiceDtoMethod.Spend_Based_Method">
+                <!-- <ng-container *ngTemplateOutlet="SPEND_BASED_METHOD"></ng-container> -->
+                <div *ngIf="purchasedGoodAndServices.spendBasedMethod.spendData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Average_Data_Method)" pButton
+                        pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2"
+                        *ngFor="let spendData of purchasedGoodAndServices.spendBasedMethod.spendData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Purchased good or service *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'spendType' + i"
+                                            placeholder="Select purchased good or service"
+                                            [options]="spend_product_type" [(ngModel)]="spendData.spendType"
+                                            #spendType="ngModel" optionValue="code" optionLabel="name" class="col-4"
+                                            appendTo="body" [required]="true"
+                                            [ngModelOptions]="{ standalone: true }"></p-dropdown>
+                                        <p class="info-message text-danger"
+                                            *ngIf="!spendData.spendType && fData.submitted">
+                                            This is a mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Value of purchased good or service *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'spendAmount' + i" [(ngModel)]="spendData.spendAmount"
+                                            class="form-control" placeholder="Enter Value" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!spendData.spendAmount && fData.submitted">This
+                                            is a mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'spendAmount_unit' + i"
+                                            [options]="units.spend_value" [(ngModel)]="spendData.spendAmount_unit"
+                                            #funit="ngModel" optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body" [required]="true"></p-dropdown>
+                                        <p class="info-message text-danger"
+                                            *ngIf="!spendData.spendAmount_unit && fData.submitted">
+                                            This is a mandatory field
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-8 col-md-8">
+                                    <div class="p-field">
+                                        <label>Emission factor of purchased good or service per unit of economic value
+                                            <i pTooltip="Entered Emission  factor will override system Emission Factors"
+                                                class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'spendEF' + i" [(ngModel)]="spendData.spendEF" class="form-control"
+                                            placeholder="Enter Emission Factor" />
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView" [name]="'spendEF_unit' + i"
+                                            [options]="units.spend_ef" [(ngModel)]="spendData.spendEF_unit"
+                                            #funit="ngModel" optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(purchasedGoodAndServices.spendBasedMethod.spendData, i)"
+                                        pButton pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="purchasedGoodAndServices.spendBasedMethod.spendData.length ==i + 1"
+                                    class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createPurchasedGoodsAndServiceDtoMethod.Average_Data_Method)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+                    One or more mandatory fields should be filled before save action.
+                </p>
+            </div>
+            <br />
+
+            <div class="row p-grid p-fluid col-md-6 col-sm-6">
+                <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+                    <button class="btn btn-secondary text-uppercase" (click)="onBackClick()">Back</button>
+                </div>
+                <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+                    <button *ngIf="!isNewEntry && deletable && !isView" class="btn btn-danger text-uppercase"
+                        type="button" (click)="onDeleteClick()">Delete</button>
+                </div>
+                <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+                    <button [disabled]="creating || !puesAssigned || isDuplicated"
+                        class="btn btn-primary text-uppercase" type="submit" *ngIf="!isView">Save</button>
+                </div>
+            </div>
+            <div class="row"></div>
+        </div>
+    </form>
+</div>

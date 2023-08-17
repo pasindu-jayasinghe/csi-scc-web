@@ -1,0 +1,9 @@
+<div>
+    <p-chart  type="bar" [data]="basicData" [options]="basicOptions" height="80vh"></p-chart>
+    <p *ngIf="target === 0 && real !== 0" class="info-message text-danger">Note: Target emission is not available for this unit</p>
+    
+    <!-- <div *ngIf="nodata" class="p-grid p-fluid ">
+        <p-messages [(value)]="msgs1" [enableService]="false"></p-messages>
+        <p>no data</p>
+    </div> -->
+</div>

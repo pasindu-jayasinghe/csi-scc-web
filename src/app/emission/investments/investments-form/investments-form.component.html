@@ -1,0 +1,868 @@
+
+<div class="container pl-25 pr-25">
+    <div class="mb-12">
+      <h4 class="mt-4">{{isNewEntry ? "Add" : isView ? "View": "Edit"  }} Investments</h4>
+    </div>
+    <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+      <div class="card">
+  
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Unit *</label>
+                <app-unit-select [isView]="isView" [unit]="selectedUnit" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>                
+              </div>
+            </div>
+          </div>
+        </div>
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Project *</label>
+                <app-project-select [isView]="isView" [unit]="selectedUnit" [project]="investment.project" (onUpdateProject)="onChangeProject($event)" [data]="fData"></app-project-select>               
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Year *</label>
+                
+              <input
+                [disabled]="true"
+                type="text"
+                name="year"
+                [(ngModel)]="investment.year"
+                class="form-control"
+                placeholder="Enter Year"
+                required
+              />
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Month *</label>
+              <p-dropdown
+                [disabled]="isView"
+                name="institution"
+                [options]="months"
+                [(ngModel)]="month"
+                  (onChange)="monthCgange()"
+                #fmonth="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                [required]="true"
+                appendTo="body"
+              ></p-dropdown>
+              <p 
+              class="info-message text-danger"
+              *ngIf="
+                !month &&
+                (fData.submitted ||
+                fmonth.touched ||
+                fmonth.dirty)
+              "
+              >
+                This is a mandatory field
+              </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label>Generator number *</label>
+                <input
+                  [disabled]="isView"
+                  type="text"
+                  name="firstname"
+
+                  class="form-control"
+                  placeholder="Enter generator number"
+                  required
+                />
+                <p
+                  class="info-message text-danger" *ngIf="1 && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+        
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="lastname">Activity Type*</label>
+
+                  <p-dropdown
+                  (onChange)="onSelectMethod($event)"
+
+                  [disabled]="isView ||!isNewEntry"
+                  name="investtype"
+                  [options]="investfActivityTypes"
+                  [required]="true"
+                  [(ngModel)]="investment.activityType"
+                  #fgWP_RGs="ngModel"
+                  placeholder="Select.."
+                  optionLabel="name"
+                  optionValue="code"
+                  appendTo="body"
+
+                                    
+                ></p-dropdown>
+             
+                  <p class="info-message text-danger" *ngIf=" !investment.activityType && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--Method A-->
+          <div class="p-grid p-fluid col-md-12 col-sm-12" *ngIf="investment.activityType == 'investment-specific-method-equity-investments'" style="background-color: #F4FFFF;">
+            <div class="row p-2" *ngFor="let data of investment.methodA_data; let i = index">
+              <div class="col-12 col-md-4">
+                <div class="p-field">
+                  <label>Scope1 Scope2 Emissions Of Equity Investment*</label>
+
+                  
+                  <div class="row">
+
+                    <p-inputNumber 
+                    [min]="0.00001"
+                  [minFractionDigits]="2"
+                  [maxFractionDigits]="5"
+                  style="width: 64%; "
+                  [required]="true"
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'scp1scpe2EmissionsOfEquityInvestment_' + i"
+                    [(ngModel)]="data.scp1scpe2EmissionsOfEquityInvestment"
+                    class="col-8"
+                    placeholder="Enter emissions of equity investment"
+                  
+                    ></p-inputNumber >
+
+
+                  <p-dropdown
+                  [disabled]="isView"
+                  [name]="'scp1scpe2EmissionsOfEquityInvestment_unit' + i"               
+                  class=" col-4"
+                  [options]="units.emission"
+                  [(ngModel)]="data.scp1scpe2EmissionsOfEquityInvestment_unit"
+                  #funit="ngModel"
+                  [autoDisplayFirst]="true"
+                  optionLabel="label"
+                  optionValue="code"
+                ></p-dropdown>
+           
+              </div>
+
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="p-field">
+                  <label>share Of Equity % *</label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                  [minFractionDigits]="2"
+                  [maxFractionDigits]="5"
+                    [disabled]="isView"
+                    type="text"
+                    [name]="'shareOfEquity_' + i"
+                    [(ngModel)]="data.shareOfEquity"
+                    placeholder="Enter Share Of Equity"
+                    
+                    ></p-inputNumber >
+
+                
+                </div>
+              </div>
+              <div class="col-12 col-md-2 text-right" *ngIf="!isView">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  (click)="deleteOneA(i,data.id)"
+                  pButton
+                  pRipple
+                  icon="pi pi-minus"
+
+
+                >
+                </button>
+              </div>
+            </div>
+            <div class="row p-2"  *ngIf="!isView"> 
+              <div class="col-12 text-right">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  (click)="addMethodAData()"
+                  icon="pi pi-plus"
+                    pButton
+                    pRipple
+
+                >
+                  
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!--Method B-->
+          <div class="p-grid p-fluid col-md-12 col-sm-12" *ngIf="investment.activityType == 'average-data-method-equity-investments'" style="background-color: #F4FFFF;">
+            <div class="row p-2" *ngFor="let data of investment.methodB_data; let i = index">
+              <div class="col-12 col-md-3">
+                <div class="p-field">
+                  <label>Investee Company Total Revenue($)*</label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                 [minFractionDigits]="2"
+                 [maxFractionDigits]="5"
+                   [required]="true"
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'investeeCompanyTotalRevenue' + i"               
+                    [(ngModel)]="data.investeeCompanyTotalRevenue"
+                    
+                    placeholder="Enter Investee Company Total Revenue"
+                    
+                    ></p-inputNumber >
+
+                </div>
+              </div>
+              <div class="col-12 col-md-2">
+                <div class="p-field">
+                  <label>Share Of Equity% *</label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                [minFractionDigits]="2"
+                [maxFractionDigits]="5"
+                [required]="true"
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'shareOfEquity' + i"               
+                    [(ngModel)]="data.shareOfEquity"
+                  
+                    placeholder="Enter Share Of Equity"
+                  
+                    ></p-inputNumber >
+
+                
+                </div>
+              </div>
+              <div class="col-12 col-md-3">
+                <div class="p-field">
+                  <label>EF Investee Sector kgCO2e/$ <i pTooltip="Entered Emission  factor will override system Emission Factors" class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                      [minFractionDigits]="2"
+                     [maxFractionDigits]="5"
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'ef_InvesteeSector' + i"               
+                    [(ngModel)]="data.ef_InvesteeSector"
+                    placeholder="Enter Factor"
+                    
+                    ></p-inputNumber >
+
+                
+                </div>
+              </div>
+
+              <div class="col-12 col-md-2">
+                <div class="p-field">
+                  <label>Investee Sector</label>
+                  <p-dropdown
+                  [disabled]="isView"
+                  [name]="'investeeSector' + i"               
+              
+                  [options]="investeeSectors"
+                  [(ngModel)]="data.investeeSector"
+                  #funit="ngModel"
+                  [autoDisplayFirst]="true"
+                  optionLabel="name"
+                  optionValue="code"
+                ></p-dropdown>
+                
+                </div>
+              </div>
+              <div class="col-12 col-md-2 text-right"  *ngIf="!isView">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  (click)="deleteOneB(i,data.id)"
+                  pButton
+                  pRipple
+                  icon="pi pi-minus"
+                >
+                  
+                </button>
+              </div>
+            </div>
+            <div class="row p-2"  *ngIf="!isView">
+              <div class="col-12 text-right">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  (click)="addMethodBData()"
+                  pButton
+                  pRipple
+                  icon="pi pi-plus"
+                >
+                </button>
+              </div>
+            </div>
+          </div>
+          
+
+          
+          <!--Method C-->
+          <div class="p-grid p-fluid col-md-12 col-sm-12" *ngIf="investment.activityType == 'project-specific-method-project-finance-and-debt-investments'" style="background-color: #F4FFFF;">
+            <div class="row p-2" *ngFor="let data of investment.methodC_data; let i = index">
+              <div class="col-12 col-md-4">
+                <div class="p-field">
+                  <label>Scope1 Scope2 Emission Relevant Project*</label>
+                  <div class="row">
+
+                    <p-inputNumber 
+                       [min]="0.00001"
+                        [minFractionDigits]="2"
+                       [maxFractionDigits]="5"
+                      [required]="true"    
+                      style="width: 64%; "
+  
+                      [disabled]="isView"
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'scp1scp2EmissionRelevantProject' + i"               
+                    [(ngModel)]="data.scp1scp2EmissionRelevantProject"
+                    class=" col-8"
+
+                    placeholder="Enter Emission"
+                   
+                    ></p-inputNumber >
+
+
+                  <p-dropdown
+                  [disabled]="isView"
+                  [name]="'scp1scp2EmissionRelevantProject_unit' + i"               
+                  class=" col-4"
+                  [options]="units.emission"
+                  [(ngModel)]="data.scp1scp2EmissionRelevantProject_unit"
+                  #funit="ngModel"
+                  [autoDisplayFirst]="true"
+                  optionLabel="label"
+                  optionValue="code"
+                ></p-dropdown>
+                </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="p-field">
+                  <label>share Of Total Project Costs % *</label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                   [minFractionDigits]="2"
+                  [maxFractionDigits]="5"
+                 [required]="true"    
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'shareOfTotalProjectCosts' + i"               
+                    [(ngModel)]="data.shareOfTotalProjectCosts"
+                    
+                    placeholder="Enter share Of Total Project Costs"
+                  
+                    ></p-inputNumber >
+
+                
+                </div>
+              </div>
+  
+              <div class="col-12 col-md-2 text-right"  *ngIf="!isView">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  (click)="deleteOneC(i,data.id)"
+                  pButton
+                  pRipple
+                  icon="pi pi-minus"
+                >
+                  
+                </button>
+              </div>
+            </div>
+            <div class="row p-2"  *ngIf="!isView">
+              <div class="col-12 text-right">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  (click)="addMethodCData()"
+                  pButton
+                  pRipple
+                  icon="pi pi-plus"
+                >
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+          <!--Method D-->
+          <div class="p-grid p-fluid col-md-12 col-sm-12" *ngIf="investment.activityType == 'average-data-method-project-finance-and-debt-investments'" style="background-color: #F4FFFF;">
+            <div class="row p-2" *ngFor="let data of investment.methodD_data; let i = index">
+              <div class="col-12 col-md-3">
+                <div class="p-field">
+                  <label>Project Construction Cost($)*</label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                   [minFractionDigits]="2"
+                  [maxFractionDigits]="5"
+                 [required]="true"    
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'projectConstructionCost' + i"               
+                    [(ngModel)]="data.projectConstructionCost"
+                  
+                    placeholder="Enter Project Construction Cost"
+                    
+                    ></p-inputNumber >
+
+                </div>
+              </div>
+              <div class="col-12 col-md-3">
+                <div class="p-field">
+                  <label>Emission Factor Relevent Construction Sector(kgCO2e/$revenue)</label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                   [minFractionDigits]="2"
+                  [maxFractionDigits]="5"
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'ef_ReleventConsSector' + i"               
+                    [(ngModel)]="data.ef_ReleventConsSector"
+                  
+                    placeholder="Enter Emission Factor Relevent Construction Sector"
+                  
+                    ></p-inputNumber >
+
+                
+                </div>
+              </div>
+              <div class="col-12 col-md-3">
+                <div class="p-field">
+                  <label>Share Of Total Project Costs % *</label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                   [minFractionDigits]="2"
+                  [maxFractionDigits]="5"
+                 [required]="true" 
+                    [disabled]="isView"
+                    type="text"
+                    [name]="'shareOfTotalProjectCosts' + i"               
+                    [(ngModel)]="data.shareOfTotalProjectCosts"
+                  
+                    placeholder="Enter Share Of Total Project Costs"
+                  
+                    ></p-inputNumber >
+
+                
+                </div>
+              </div>
+              <div class="col-12 col-md-3">
+                <div class="p-field">
+                  <label>Project Revenue In Reporting Year($) *</label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                   [minFractionDigits]="2"
+                  [maxFractionDigits]="5"
+                 [required]="true" 
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'projectRevenueInReportingYear' + i"               
+                    [(ngModel)]="data.projectRevenueInReportingYear"
+                  
+                    placeholder="Enter Project Revenue In Reporting Year"
+                  
+                    ></p-inputNumber >
+
+                
+                </div>
+              </div>
+  
+              <div class="col-12 col-md-3">
+                <div class="p-field">
+                  <label>Emission Factor Relevant Operating Sector(kgCO2e/$revenue)*</label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                   [minFractionDigits]="2"
+                  [maxFractionDigits]="5"
+                    [disabled]="isView"
+                    type="number"
+                    [name]="'ef_relevantOperatingSector' + i"               
+                    [(ngModel)]="data.ef_relevantOperatingSector"
+                
+                    placeholder="Enter Emission Factor Relevant Operating Sector"
+                  
+                    ></p-inputNumber >
+
+                
+                </div>
+              </div>
+
+              <div class="col-12 col-md-3">
+                <div class="p-field">
+                  <label>Construction Sector*</label>
+                 <!--Label change with operating sector-->
+                  <p-dropdown
+                  [disabled]="isView"
+                  [name]="'operatingtSector' + i"               
+              
+                  [options]="operatingSectors"
+                  [(ngModel)]="data.operatingtSector"
+                  #funit="ngModel"
+                  [autoDisplayFirst]="true"
+                  optionLabel="name"
+                  optionValue="code"
+                ></p-dropdown>
+                
+                </div>
+              </div>
+
+              <div class="col-12 col-md-3">
+                <div class="p-field">
+                  <label>Operating Sector*</label>
+
+                  <p-dropdown
+                  [disabled]="isView"
+                  [name]="'constructSector' + i"               
+              
+                  [options]="constructSectors"
+                  [(ngModel)]="data.constructSector"
+                  #funit="ngModel"
+                  [autoDisplayFirst]="true"
+                  optionLabel="name"
+                  optionValue="code"
+                ></p-dropdown>
+                
+                </div>
+              </div>
+              <div class="col-12 col-md-2 text-right"  *ngIf="!isView">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  (click)="deleteOneD(i,data.id)"
+                  pButton
+                  pRipple
+                  icon="pi pi-minus"
+                >
+                  
+                </button>
+              </div>
+            </div>
+            <div class="row p-2"  *ngIf="!isView">
+              <div class="col-12 text-right">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  (click)="addMethodDData()"
+                  pButton
+                  pRipple
+                  icon="pi pi-plus"
+                >
+                  
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+          
+          <!--Method E-->
+          <div class="p-grid p-fluid col-md-12 col-sm-12" *ngIf="investment.activityType == 'projected-total-lifetime-emissions-project-finance-and-debt-investments'" style="background-color: #F4FFFF;">
+            <div class="row p-2" *ngFor="let data of investment.methodE_data; let i = index">
+              <div class="col-12 col-md-4">
+                <div class="p-field">
+                  <label>Projected Annual Emissions Of Project*</label>
+                  <div class="row">
+
+                    <p-inputNumber 
+                    [min]="0.00001"
+                     [minFractionDigits]="2"
+                    [maxFractionDigits]="5"
+                   [required]="true"    
+                   style="width: 64%; "
+
+                    [disabled]="isView"
+                    type="text"
+                    [name]="'projectedAnnualEmissionsOfProject' + i"               
+                    [(ngModel)]="data.projectedAnnualEmissionsOfProject"
+                    class=" col-8"
+                    placeholder="Enter Projected Annual Emissions Of Project"
+                    
+                    ></p-inputNumber >
+
+                  <p-dropdown
+                  [disabled]="isView"
+                  [name]="'projectedAnnualEmissionsOfProject_unit' + i"               
+                  class=" col-4"
+                  [options]="units.emission"
+                  [(ngModel)]="data.projectedAnnualEmissionsOfProject_unit"
+                  #funit="ngModel"
+                  [autoDisplayFirst]="true"
+                  optionLabel="label"
+                  optionValue="code"
+                ></p-dropdown>
+                </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-3">
+                <div class="p-field">
+                  <label>Projected Lifetime Of Project(yr)*</label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                   [minFractionDigits]="2"
+                  [maxFractionDigits]="5"
+                 [required]="true"    
+                    [disabled]="isView"
+                    type="text"
+                    [name]="'projectedLifetimeOfProject' + i"               
+                    [(ngModel)]="data.projectedLifetimeOfProject"
+                    placeholder="Enter Projected Lifetime Of Project"
+                    ></p-inputNumber >
+
+                
+                </div>
+              </div>
+              <div class="col-12 col-md-3">
+                <div class="p-field">
+                  <label>share Of Total Project Costs % *</label>
+                  <p-inputNumber 
+                  [min]="0.00001"
+                   [minFractionDigits]="2"
+                  [maxFractionDigits]="5"
+                 [required]="true"    
+                 style="width: 64%; "
+                    [disabled]="isView"
+                    type="text"
+                    [name]="'shareOfTotalProjectCosts' + i"               
+                    [(ngModel)]="data.shareOfTotalProjectCosts"
+                    placeholder="Enter share Of Total Project Costs*
+                    "
+                    ></p-inputNumber >
+
+                
+                </div>
+              </div>
+   
+              <div class="col-12 col-md-2 text-right"  *ngIf="!isView">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  (click)="deleteOneE(i,data.id)"
+                  pButton
+                  pRipple
+                  icon="pi pi-minus"
+
+                >
+                  
+                </button>
+              </div>
+            </div>
+            <div class="row p-2"  *ngIf="!isView">
+              <div class="col-12 text-right">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  (click)="addMethodEData()"
+                  pButton
+                  pRipple
+                  icon="pi pi-plus"
+                >
+                </button>
+              </div>
+            </div>
+          </div>
+        <!-- </div> -->
+          
+        <!-- <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="lastname">Unit*</label>
+  
+                  <p-dropdown
+                  [disabled]="isView"
+                  name="units"
+                  [options]="units"
+    
+                  [(ngModel)]="unit"
+                  #fmonth="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  
+                ></p-dropdown>
+                  <p class="info-message text-danger" *ngIf=" !generator.fc_unit && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        <!-- <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="firstname">Fuel consumption*</label>
+         
+                <div class="row">
+                  <p-inputNumber
+                  [min]="0.00001"
+                    [disabled]="isView"
+                    type="number"
+                    name="lastname"
+                    class="col-8"
+                    placeholder="Enter consumption value"
+                    style="width: 64%;"
+                    mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                  ></p-inputNumber>
+                  <p-dropdown
+                    [disabled]="isView"
+                    name="consumptionunits"
+                    [options]="units.consumption"
+                    [(ngModel)]="unit"
+                    #funit="ngModel"
+                    optionLabel="label"
+                    class=" col-4"
+                    appendTo="body"
+                  ></p-dropdown>
+                </div>
+                <p
+                  class="info-message text-danger" *ngIf="1 && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <!-- <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isView || !isNewEntry">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label>Emission (tCO<sub>2</sub>) *</label>
+                <input
+                  [disabled]="true"
+                  type="text"
+                  name="emission"
+                  class="form-control"
+                  placeholder="Enter the last name"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div> -->
+  
+        <div id="basic" class="row" *ngIf="puesData && puesData.sourceType && puesData.sourceType.toString() === 'B'">
+          <div class="col-1" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="true"></p-radioButton>
+            <label class="radio-l">Mobile</label>
+          </div> 
+
+          <div class="col-2" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="false"></p-radioButton>
+            <label class="radio-l">Stationary</label>
+          </div> 
+          <div class="col-9" style="margin-left: 10px;"> </div>
+          <br>
+        </div>
+
+
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="puesData && !puesData.clasification">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Ownership *</label>
+              <p-dropdown
+                [disabled]="isView"
+                name="ownership"
+                [options]="ownerships"
+                placeholder="Select .."
+                optionLabel="name"
+                optionValue="name"
+                appendTo="body"
+                [required]="true"
+                ></p-dropdown>           
+            </div>
+          </div>
+          <!-- <p
+            class="info-message text-danger" *ngIf="!generator.ownership && (fData.submitted)">
+              This is a mandatory field
+          </p> -->
+        </div>
+        <br>
+      </div>
+
+      <div>
+        <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+          One or more mandatory fields should be filled before save action.
+        </p>
+      </div>
+      <br>
+
+      <div class="row p-grid p-fluid col-md-6 col-sm-6">
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+          <button class="btn btn-secondary text-uppercase" (click)="onBackClick()">
+            Back
+          </button>
+        </div>
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2"  *ngIf="!isView">
+          <button *ngIf="!isNewEntry && deletable" class="btn btn-danger text-uppercase" type="button"
+            (click)="onDeleteClick()">
+            Delete
+          </button>
+        </div>
+        <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+          <button [disabled]="creating || !puesAssigned || isDuplicated" class="btn btn-primary text-uppercase" type="submit" *ngIf="!isView">
+            Save
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <!-- <div *ngIf="creating" class="d-flex col-6 justify-content-end">
+          <p class="info-message text-warning mt-2" *ngIf="true">
+            please wait a moment...
+          </p>
+        </div> -->
+      </div>
+      </div>
+
+  </form>
+</div>
+
+ <!-- <p-toast position="top-right"></p-toast> -->
+  <!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+
+  
+  

@@ -1,0 +1,37 @@
+<div class="container">
+    <!-- <h4 class="mt-4">Passenger Transport</h4> -->
+    <div class="p-grid p-fluid card">
+        <div class="row">
+      
+          <p-tabView [scrollable]="true" style="width: 97%;" [activeIndex]="index">
+            
+            <p-tabPanel header="Air"  *ngIf="isCSIUser ||  accessESList.includes(puesDataReqDtoSourceName.Passenger_air)">
+              <ng-container><app-passenger-air-list></app-passenger-air-list></ng-container>
+            </p-tabPanel>
+            
+            <p-tabPanel header="Off-Road"  *ngIf="isCSIUser || accessESList.includes(puesDataReqDtoSourceName.Passenger_offroad)">
+              <ng-container><app-passenger-offroad-list></app-passenger-offroad-list></ng-container>
+            </p-tabPanel>
+            
+            <p-tabPanel header="Rail"  *ngIf="isCSIUser || accessESList.includes(puesDataReqDtoSourceName.Passenger_rail)">
+              <ng-container><app-passenger-rail-list></app-passenger-rail-list></ng-container>
+            </p-tabPanel>
+
+            <p-tabPanel header="Employee Commuting"  *ngIf="isCSIUser || accessESList.includes(puesDataReqDtoSourceName.Passenger_road)">
+              <ng-container><app-passenger-road-list></app-passenger-road-list></ng-container>
+            </p-tabPanel>
+      
+            <p-tabPanel header="Water" *ngIf="isCSIUser || accessESList.includes(puesDataReqDtoSourceName.Passenger_water)">
+              <ng-container><app-passenger-water-list></app-passenger-water-list></ng-container>
+            </p-tabPanel>
+
+            <p-tabPanel header="Busines Travel"  *ngIf="isCSIUser || accessESList.includes(puesDataReqDtoSourceName.Business_travel)">
+              <ng-container><app-business-travel-list></app-business-travel-list></ng-container>
+            </p-tabPanel>
+
+          </p-tabView>
+        </div>
+
+
+</div>
+  </div>

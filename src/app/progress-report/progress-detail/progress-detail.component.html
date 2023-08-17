@@ -1,0 +1,95 @@
+
+<div class="p-grid p-fluid card">
+    <!-- <div class="row" style="margin-left: 3px;">
+        <p *ngIf="data.completeness === 'COMPLETED'">All the data has been entered for {{data.esName}} for all months</p>
+        <p *ngIf="data.completeness === 'PARTIAL'">Unfilled data for {{data.esName}}</p>
+    </div> -->
+    <div class="col-6" style="float: right;" *ngIf="completable">
+        <button  class="btn btn-primary btn-block btn-md" type="submit" (click)="setAsCompleted()">Set as completed</button>
+    </div>
+    <br>
+    <p *ngIf=" acData.length === 0 && !data.isEC" > No data entered for this unit</p>
+    <h5 *ngIf="acData && acData.length > 0 && !data.isEC">Entered activity data</h5>
+    <p *ngIf="data.noEmpCount !== undefined && data.noEmpCount" style="color: red">Note: Number of employess has not been entered for this unit. Please enter the number of units to get the progress.</p>
+    <p *ngIf="data.noUnitDetail !== undefined && data.noUnitDetail" style="color: red">Note: Unit details has not been filled for this unit. Please fill the unit details and enter the number of employees to get the progress.</p>
+    <p-table *ngIf="acData && acData.length > 0 && !data.isEC"
+        [value]="acData" 
+        rowGroupMode="rowspan" 
+        responsiveLayout="scroll"
+        groupRowsBy="Parameter" 
+        styleClass="p-datatable-sm"
+        dataKey="Parameter">
+        <ng-template pTemplate="header">
+            <!-- <tr> -->
+                <!-- <th>Parameter</th>
+                <th>Jan</th>
+                <th>Feb</th> -->
+                <!-- <th *ngFor="let col of columns">{{col.name}}</th>
+            </tr> -->
+            <tr *ngFor="let cols of columns">
+                <ng-container *ngFor="let col of cols">
+                    <th *ngIf="col.colspan" colspan="13" class="text-center" header-class="text-center">{{col.name}}</th>
+                    <th *ngIf="!col.colspan">{{col.name}}</th>
+                </ng-container>
+            </tr>
+        </ng-template>
+        <ng-template 
+            pTemplate="body" 
+            let-esData 
+            let-rowgroup="rowgroup" 
+            let-rowspan="rowspan">
+            <tr>
+                <!-- <td pFrozenColumn
+                    *ngIf="rowgroup" 
+                    [attr.rowspan]="rowspan">
+                    <span>
+                        {{esData.Parameter}}
+                    </span>
+                </td> -->
+                <ng-container *ngFor="let col of columns[columns.length - 1]">
+                    <td>{{getValue(esData[col.code])}}</td>
+                </ng-container>
+                <!-- <td>{{company.thisYearSales}}</td>
+                <td>{{company.lastYearSales}}</td> -->
+
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-table *ngIf="data.isEC" [value]="ecData" [tableStyle]="{'min-width': '50rem'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th></th>
+                <th colspan="2">Smaple Basis</th>
+                <th colspan="2">If total number of employees considered</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>Paid</th>
+                <th>Not paid</th>
+                <th>Paid</th>
+                <th>Not paid</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-ec>
+            <tr>
+                <td>Required</td>
+                <td>{{ec.paidSample}}</td>
+                <td>{{ec.notPaidSample}}</td>
+                <td>{{ec.paidTotal}}</td>
+                <td>{{ec.notPaidTotal}}</td>
+            </tr>
+            <tr>
+                <td>Uploaded</td>
+                <td>{{ec.uploadedPaid}}</td>
+                <td>{{ec.uploadedNotPaid}}</td>
+                <td>{{ec.uploadedPaid}}</td>
+                <td>{{ec.uploadedNotPaid}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <br>
+    <p *ngIf="isShowTypes">Available types: <span *ngFor="let type of types">{{type}} ,</span></p>
+    <p *ngIf="data.isComplete" style="color: red">Note: This emission source is marked as completed for this unit </p>
+    <p *ngIf="data.totalEmployee">Total Employees: {{data.totalEmployee}}</p>
+    <p *ngIf="data.sample">Sample count of employees: {{data.sample}}</p>
+</div>

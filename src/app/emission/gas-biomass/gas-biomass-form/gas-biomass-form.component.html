@@ -1,0 +1,277 @@
+<!-- <div class="container pl-20 pr-20">
+    <div class="mb-12">
+      <h4 class="mt-4">{{ isNewEntry ? "Add" : "Edit" }} Biomass Gas</h4>
+    </div>
+    <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+      <div class="card">
+  
+      
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Unit *</label>
+                <app-unit-select [isView]="isView" [unit]="selectedUnit" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>                
+              </div>
+            </div>
+          </div>
+        </div>
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Project *</label>
+                <app-project-select [isView]="isView" [unit]="selectedUnit" [project]="gasBiomass.project" (onUpdateProject)="onChangeProject($event)"></app-project-select>               
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="firstname">Type of the Gas *</label>
+                <!-- <input
+                  type="text"
+                  name="firstname"
+                  [(ngModel)]="gasBiomass.type"
+                  class="form-control"
+                  placeholder="Enter the first name"
+                  required
+                />
+                <p
+                  class="info-message text-danger" *ngIf="!gasBiomass.type&& (fData.submitted)">
+                  This is a mandatory field
+                </p> -->
+                <p-dropdown
+                name="institution"
+                [options]="types"
+  
+                [(ngModel)]="type"
+                #ftype="ngModel"
+                placeholder="Select Biomass Type.."
+                optionLabel="name"
+                
+              ></p-dropdown>
+              <p 
+              class="info-message text-danger"
+              *ngIf="
+                !type.value &&
+                (fData.submitted ||
+                ftype.touched ||
+                ftype.dirty)
+              "
+              >
+                This is a mandatory field
+              </p>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="firstname">Country Code *</label>
+                  <input
+                    type="text"
+                    name="firstname"
+                    [(ngModel)]="gasBiomass.countryCode"
+                    class="form-control"
+                    placeholder="Enter the first name"
+                    required
+                  />
+                  <p
+                    class="info-message text-danger" *ngIf="!gasBiomass.countryCode&& (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="lastname">Biomass Consumption(Kg) *</label>
+  
+                <input
+                [min]="0"
+
+                  type="text"
+                  name="lastname"
+                  [(ngModel)]="gasBiomass.fcn"
+  
+                  class="form-control"
+                  placeholder="Enter the last name"
+                  required
+                />
+                <p class="info-message text-danger" *ngIf=" !gasBiomass.fcn && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Year *</label>
+                <p-dropdown
+                name="institution"
+                [options]="years"
+  
+                [(ngModel)]="year"
+                #fyear="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+             
+                
+              ></p-dropdown>
+              <p 
+              class="info-message text-danger"
+              *ngIf="
+                !year.value &&
+                (fData.submitted ||
+                fyear.touched ||
+                fyear.dirty)
+              "
+              >
+                This is a mandatory field
+              </p>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Month *</label>
+                <p-dropdown
+                name="institution"
+                [options]="months"
+  
+                [(ngModel)]="month"
+                #fmonth="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                
+              ></p-dropdown>
+              <p 
+              class="info-message text-danger"
+              *ngIf="
+                (month |json) === '{}' &&
+                (fData.submitted ||
+                fmonth.touched ||
+                fmonth.dirty)
+              "
+              >
+                This is a mandatory field
+              </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+  
+  
+        <div>
+          <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+            One or more mandatory fields should be filled before save action.
+          </p>
+        </div>
+  
+
+
+        <br>
+        <div id="basic" class="row" *ngIf="puesData && puesData.sourceType && puesData.sourceType.toString() === 'B'">
+          <div class="col-1" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="true"></p-radioButton>
+            <label class="radio-l">Mobile</label>
+          </div> 
+  
+          <div class="col-2" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="false"></p-radioButton>
+            <label class="radio-l">Stationary</label>
+          </div> 
+          <div class="col-9" style="margin-left: 10px;"> </div>
+          <br>
+        </div>
+  
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="puesData && !puesData.clasification">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Ownership *</label>
+                <p-dropdown
+                  [disabled]="isView"
+                  name="ownership"
+                  [options]="ownerships"
+                  [(ngModel)]="gasBiomass.ownership"
+                  #fOwnership="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  optionValue="name"
+                  appendTo="body"
+                  ></p-dropdown>           
+              </div>
+            </div>
+          </div>
+          <br>
+        </div>
+        <div class="row">
+          <div class="d-flex col-1 justify-content-start">
+            <button class="btn btn-secondary text-uppercase ml-15 btn-lg" (click)="onBackClick()">
+              Back
+            </button>
+          </div>
+          <div class="d-flex offset-2 col-1 justify-content-end p-button-vertical mb-0 pl-2">
+            <button
+              *ngIf="!isNewEntry"
+             
+              class="btn btn-warning text-uppercase"
+              type="button"
+              (click)="onDeleteClick()"
+            >
+              Delete
+            </button>
+          </div>
+          <div class="col-2 d-flex justify-content-end ml-4">
+            <button [disabled]="coreatingUser" class="btn btn-primary text-uppercase btn-lg" type="submit">
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="row">
+          <div *ngIf="coreatingUser" class="d-flex col-6 justify-content-end">
+            <p class="info-message text-warning mt-2" *ngIf="true">
+              please wait a moment...
+            </p>
+          </div>
+        </div>
+      </div>
+  
+      
+    </form>
+  </div>
+  
+   <!-- <p-toast position="top-right"></p-toast> -->
+  
+  
+  
+   -->

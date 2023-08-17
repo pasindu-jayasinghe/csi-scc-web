@@ -1,0 +1,78 @@
+@use 'themes' as *;
+
+@use '@nebular/theme/styles/globals' as *;
+
+@include nb-install() {
+  @include nb-theme-global();
+};
+/* Abstract */
+@import "../src/assets/scss/abstracts/variables";
+@import "../src/assets/scss/abstracts/mixin";
+@import "../src/assets/scss/abstracts/functions";
+
+/* vendors */
+@import "../node_modules/primeng/resources/themes/saga-blue/theme.css";
+@import "../node_modules/primeicons/primeicons.css";
+
+/* Base */
+@import "../src/assets/scss/base/common";
+@import "../src/assets/scss/base/typography";
+@import "../src/assets/scss/base/icons";
+
+/* Components */
+// @import "../src/assets/scss/components/buttons";
+// @import "../src/assets/scss/components/forms";
+// @import "../src/assets/scss/components/stepy";
+
+/* Partials */
+@import "../src/assets/scss/partials/landing";
+@import "../src/assets/scss/partials/login";
+@import "../src/assets/scss/partials/dashboard";
+
+@import '~ngx-org-chart/_theming.scss';
+
+
+.initial-unit{
+  background: #64cde03b !important;
+}
+
+.signed-unit{
+  background: #e2dd5f3b !important;
+}
+
+.approved-unit{
+  background: #7cec403b !important;
+}
+
+.asigned-unit{
+  background: #8ced573b !important;
+}
+
+.pr-0{
+  padding-right: 0;
+}
+.radio-l{
+  margin-left: 10px;
+}
+
+.radio-b{
+  margin-bottom: 4px;
+}
+
+p-table{
+  // padding-bottom: 80px;
+}
+
+
+.table-card{
+  max-width: 1200px;
+}
+
+.infor-video{
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.infor-video i {
+  font-size: 1.5rem;
+}

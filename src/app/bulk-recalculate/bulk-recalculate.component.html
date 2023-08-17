@@ -1,0 +1,64 @@
+<div class="container">
+    <h4 class="mt-4">Recalculations</h4>
+    <div class="p-grid p-fluid card">
+      <div class="row">
+        <div class="col-5">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">Unit</label>
+            </div>
+            <div class="col-8">
+              <app-unit-select (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>
+            </div>
+          </div>
+        </div>
+        <div class="col-2">
+            <p-checkbox  [(ngModel)]="isWithChildUnits" [binary]="true" name="Alldata" class="col-2"></p-checkbox>
+            <label class="" for="Alldata">With Child Units</label>
+        </div>
+        <div class="col-5">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">Project</label>
+            </div>
+            <div class="col-8">
+              <app-project-select [isView]="false" (onUpdateProject)="onChangeProject($event)"></app-project-select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+<div class="container">
+  <div class="p-grid p-fluid card">
+      <div style="padding: 0px 30px 0 30px">
+          <h6>Select Emission Sources</h6>
+      </div>
+      <div class="row" style="padding: 0px 0px 0px 30px;">
+          <div class="p-field check" *ngFor="let emissionSource of emissionSources">
+              <div class="">
+                  <p-checkbox [name]="emissionSource.name+'_emissionSources'" [value]="emissionSource" [(ngModel)]="selectedEmissionSource"></p-checkbox>
+                  <label class="check-box-label" for="la">{{emissionSource.name | titlecase}}</label>
+              </div>                       
+          </div>                                    
+      </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="p-grid p-fluid card">
+    <button                                                    
+        class="ml-4"
+        type="button"
+        (click)="recalculate()"
+        pButton
+        pRipple       
+        style="width: 150px;margin-left: 80%"                   
+        styleClass="p-button-warn"
+        >Recalcualte
+    </button>
+  </div>
+</div>

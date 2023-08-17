@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col-2">
+        <button (click)="clear()" class="btn btn-secondary">Clear</button>
+    </div>
+    <div class="col-2">
+        <button (click)="selectAll()" class="btn btn-secondary">Select All</button>
+    </div>
+
+    <div class="col-2">
+        <button (click)="save()" class="btn btn-primary">Save</button>
+    </div>
+</div>
+
+<br>
+
+<div class="row">
+    <div class="p-grid p-fluid card">
+        <div style="padding: 0px 30px 0 30px">
+            <h6>Select Projects </h6>
+        </div>
+        <div class="row" style="padding: 0px 0px 0px 30px;">
+            <div *ngIf="projects.length===0"><span>Loading ...</span></div>
+            <div class="p-field check" *ngFor="let u of projects">
+                <div class="">
+                    <p-checkbox  [disabled]="false" [name]="'_unit'" [value]="u.id" [(ngModel)]="selectedProjects"></p-checkbox>
+                    <label class="check-box-label" for="la">{{u.name | titlecase}}</label>
+                </div>                       
+            </div>                                    
+        </div>
+    </div>
+</div>
+
+<br>
+
+
+<div class="row">
+
+</div>

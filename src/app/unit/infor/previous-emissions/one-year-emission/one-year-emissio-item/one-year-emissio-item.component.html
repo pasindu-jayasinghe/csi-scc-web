@@ -1,0 +1,63 @@
+
+
+<div class="col-12" *ngIf="prevEmission">
+    <div class="row">
+        <div class="col-3">
+            <div class="p-field">
+                <label for="institution">Source *</label>
+                <p-dropdown
+                  name="ownership"
+                  [options]="esList"
+                  [(ngModel)]="prevEmission.emissionSource"
+                  #fOwnership="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  appendTo="body"
+                ></p-dropdown>           
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="p-field">
+                <label for="institution">Ownership *</label>
+                <p-dropdown
+                  name="ownership"
+                  [options]="ownerships"
+                  [(ngModel)]="prevEmission.ownership"
+                  #fOwnership="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  optionValue="name"
+                  appendTo="body"
+                ></p-dropdown>           
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4">
+                    <label for="firstname">Emission *</label>
+                </div>
+                <div class="col-8">
+                    <input
+                        style="margin-left: -50px;"            
+                        [(ngModel)]="prevEmission.e_sc"
+                        type="text"
+                        name="projectName"
+                        class="form-control"
+                        placeholder="Enter the project name"
+                        required
+                    />
+                    <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p> 
+                    <!-- <p class="info-message text-danger" *ngIf="!prevEmission.e_sc">
+                        Project name already exist
+                    </p>  -->
+                </div>                     
+            </div>  
+        </div>
+        <div class="col-1">
+          <button (click)="save()" class="btn btn-primary text-uppercase" type="submit">
+            Save
+          </button>
+        </div>
+    </div>
+</div>
+<hr>

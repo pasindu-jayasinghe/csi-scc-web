@@ -1,0 +1,479 @@
+<div class="container pl-20 pr-20">
+    <div class="mb-12">
+      <h4 class="mt-4">{{ isNewEntry ? "Add" : isView ? "View": "Edit"  }} Wastewater Treatments</h4>
+    </div>
+    <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+      <div class="card">
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Unit *</label>
+                <app-unit-select [isView]="isView" [unit]="selectedUnit" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>                
+              </div>
+            </div>
+          </div>
+        </div>
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Project *</label>
+                <app-project-select [isView]="isView" [unit]="selectedUnit"  [project]="selectedProject" (onUpdateProject)="onChangeProject($event)" [data]="fData"></app-project-select>               
+              </div>
+            </div>
+          </div>
+        </div>
+
+    
+          
+
+          <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="lastname">Total Industry Product *</label>
+    
+                  <!-- <input
+                    [disabled]="isView"
+                    type="number"
+                    name="lastname"
+                    [(ngModel)]="wasteWaterTreatments.tip"
+    
+                    class="form-control"
+                    placeholder="Product"
+                    required
+                  /> -->
+
+                  <div class="row">
+                    <p-inputNumber
+                      [disabled]="isView"
+                      type="number"
+                      name="tip"
+                      [(ngModel)]="wasteWaterTreatments.tip"
+                      class="col-8"
+                      placeholder="Enter Total Industry Product"
+                      style="width: 64%;"
+                      mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                    ></p-inputNumber>
+                    <p-dropdown
+                      [disabled]="isView"
+                      name="tipunits"
+                      [options]="units.tip"
+                      [(ngModel)]="tipunit"
+                      #funit="ngModel"
+                      optionLabel="label"
+                      class=" col-4"
+                    ></p-dropdown>
+                  </div>
+                  <p class="info-message text-danger" *ngIf=" !wasteWaterTreatments.tip && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="lastname">Waste Generated *</label>
+    
+                  <!-- <input
+                    [disabled]="isView"
+                    type="number"
+                    name="lastname"
+                    [(ngModel)]="wasteWaterTreatments.wasteGenerated"
+    
+                    class="form-control"
+                    placeholder="Waste Generated"
+                    required
+                  /> -->
+                  <div class="row">
+                    <p-inputNumber 
+                      [disabled]="isView"
+                      type="number"
+                      name="wasteGenerated"
+                      [(ngModel)]="wasteWaterTreatments.wasteGenerated"
+                      class="col-8"
+                      placeholder="Enter Waste Generated"
+                      style="width: 64%;"
+                      mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                    ></p-inputNumber>
+                    <p-dropdown
+                      [disabled]="isView"
+                      name="wasteGeneratedunits"
+                      [options]="units.wasteGenerated"
+                      [(ngModel)]="wasteGeneratedunit"
+                      #funit="ngModel"
+                      optionLabel="label"
+                      class=" col-4"
+                    ></p-dropdown>
+                  </div>
+                  <p class="info-message text-danger" *ngIf=" !wasteWaterTreatments.wasteGenerated && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="lastname">Chemical Oxigen Demand *</label>
+    
+                  <!-- <input
+                    [disabled]="isView"
+                    type="number"
+                    name="lastname"
+                    [(ngModel)]="wasteWaterTreatments.cod"
+    
+                    class="form-control"
+                    placeholder="COD"
+                    required
+                  /> -->
+                  <div class="row">
+                    <p-inputNumber
+                      [disabled]="isView"
+                      type="number"
+                      name="cod"
+                      [(ngModel)]="wasteWaterTreatments.cod"
+                      class="col-8"
+                      placeholder="Enter Chemical Oxigen Demand"
+                      style="width: 64%;"
+                      mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                    ></p-inputNumber>
+                    <p-dropdown
+                      [disabled]="isView"
+                      name="codunits"
+                      [options]="units.cod"
+                      [(ngModel)]="codunit"
+                      #funit="ngModel"
+                      optionLabel="label"
+                      class=" col-4"
+                    ></p-dropdown>
+                  </div>
+                  <p class="info-message text-danger" *ngIf=" !wasteWaterTreatments.cod && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="lastname">Treatment method *</label>
+                  <p-dropdown
+                  [disabled]="isView"
+                  name="anaerobicDeepLagoon"
+                  [options]="anaerobicDeepLagoons"
+                  [required]="true"
+                  [(ngModel)]="anaerobicDeepLagoon"
+                  #fanaerobicDeepLagoon="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  
+                ></p-dropdown>
+    
+                  <p class="info-message text-danger" *ngIf=" !anaerobicDeepLagoon && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="lastname">Sludge Removed *</label>
+    
+                  <!-- <input
+                    [disabled]="isView"
+                    type="number"
+                    name="lastname"
+                    [(ngModel)]="wasteWaterTreatments.sludgeRemoved"
+    
+                    class="form-control"
+                    placeholder="Sludge Removed"
+                    required
+                  /> -->
+                  <div class="row">
+                    <p-inputNumber
+                      [disabled]="isView"
+                      type="number"
+                      name="sludgeRemoved"
+                      [(ngModel)]="wasteWaterTreatments.sludgeRemoved"
+                      class="col-8"
+                      placeholder="Enter Sludge Removed"
+                      style="width: 64%;"
+                      mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                    ></p-inputNumber>
+                    <p-dropdown
+                      [disabled]="isView"
+                      name="sludgeRemovedunits"
+                      [options]="units.sludgeRemoved"
+                      [(ngModel)]="sludgeRemovedunit"
+                      #funit="ngModel"
+                      optionLabel="label"
+                      class=" col-4"
+                    ></p-dropdown>
+                  </div>
+                  <p class="info-message text-danger" *ngIf=" !wasteWaterTreatments.sludgeRemoved && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="lastname">Recovered CH<sub>4</sub> *</label>
+    
+                  <!-- <input
+                    [disabled]="isView"
+                    type="number"
+                    name="lastname"
+                    [(ngModel)]="wasteWaterTreatments.recoveredCh4"
+    
+                    class="form-control"
+                    placeholder="Recovered CH4"
+                    required
+                  /> -->
+                  <div class="row">
+                    <p-inputNumber
+                      [disabled]="isView"
+                      type="number"
+                      name="recoveredCh4"
+                      [(ngModel)]="wasteWaterTreatments.recoveredCh4"
+                      class="col-8"
+                      placeholder="Enter Recovered CH4"
+                      style="width: 64%;"
+                      mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                    ></p-inputNumber>
+                    <p-dropdown
+                      [disabled]="isView"
+                      name="recoveredCh4units"
+                      [options]="units.recoveredCh4"
+                      [(ngModel)]="recoveredCh4unit"
+                      #funit="ngModel"
+                      optionLabel="label"
+                      class=" col-4"
+                    ></p-dropdown>
+                  </div>
+                  <p class="info-message text-danger" *ngIf=" !wasteWaterTreatments.recoveredCh4 && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Year *</label>
+                <input
+                
+                [disabled]="true"
+                type="text"
+                name="year"
+                [(ngModel)]="wasteWaterTreatments.year"
+                class="form-control"
+                placeholder="Enter Year"
+                required
+              />
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Month *</label>
+                
+              <p-dropdown
+                [disabled]="isView"
+              
+                name="month"
+                [options]="months"
+                [(ngModel)]="month"
+                  (onChange)="monthCgange()"
+                #fmonth="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                [required]="true"
+                appendTo="body"
+              ></p-dropdown>
+              <p 
+              class="info-message text-danger"
+              *ngIf="
+                !month &&
+                (fData.submitted ||
+                fmonth.touched ||
+                fmonth.dirty)
+              "
+              >
+                This is a mandatory field
+              </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isView || !isNewEntry">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label>Total organic degradable *</label>
+                <input
+                [disabled]="true" 
+                type="text" 
+                class="form-control form-control-sm" 
+                id="nama-ocr" 
+                name="tcod" 
+                [(ngModel)]="wasteWaterUpdate['emission']['tcod']"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isView || !isNewEntry">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label>Net Methane Emission (kg CH<sub>4</sub>/yr)*</label>
+                <input
+                [disabled]="true" 
+                type="text" 
+                class="form-control form-control-sm" 
+                id="nama-ocr" 
+                name="tch4" 
+                [(ngModel)]="wasteWaterUpdate['emission']['tch4']"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isView || !isNewEntry">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label>Net GHG Emission (tCO<sub>2</sub>e/yr)*</label>
+                <input
+                [disabled]="true" 
+                type="text" 
+                class="form-control form-control-sm" 
+                id="nama-ocr" 
+                name="tco2e" 
+                [(ngModel)]="wasteWaterUpdate['emission']['tco2e']"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+ 
+        <div id="basic" class="row" *ngIf="puesData && puesData.sourceType && puesData.sourceType.toString() === 'B'">
+          <div class="col-1" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="true"></p-radioButton>
+            <label class="radio-l">Mobile</label>
+          </div> 
+  
+          <div class="col-2" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="false"></p-radioButton>
+            <label class="radio-l">Stationary</label>
+          </div> 
+          <div class="col-9" style="margin-left: 10px;"> </div>
+          <br>
+        </div>
+  
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="puesData && !puesData.clasification">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Ownership *</label>
+                <p-dropdown
+                  [disabled]="isView"
+                  name="ownership"
+                  [options]="ownerships"
+                  [(ngModel)]="wasteWaterTreatments.ownership"
+                  #fOwnership="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  optionValue="name"
+                  appendTo="body"
+                  [required]="true"
+                  ></p-dropdown>           
+              </div>
+            </div>
+            <p class="info-message text-danger" *ngIf=" !wasteWaterTreatments.ownership && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+          <br>
+        </div>
+
+        <div>
+          <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+            One or more mandatory fields should be filled before save action.
+          </p>
+        </div>
+        <br>
+
+
+      <div class="row p-grid p-fluid col-md-6 col-sm-6">
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+          <button class="btn btn-secondary text-uppercase" (click)="onBackClick()">
+            Back
+          </button>
+        </div>
+        <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+          <button *ngIf="!isNewEntry  && deletable" class="btn btn-danger text-uppercase" type="button"
+            (click)="onDeleteClick()">
+            Delete
+          </button>
+        </div>
+        <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+          <button [disabled]="creating || !puesAssigned || isDuplicated" class="btn btn-primary text-uppercase" type="submit" *ngIf="!isView">
+            Save
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div *ngIf="creating" class="d-flex col-6 justify-content-end">
+          <p class="info-message text-warning mt-2" *ngIf="true">
+            please wait a moment...
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+
+  
+        
+  
+  

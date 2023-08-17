@@ -1,0 +1,198 @@
+<div class="container">
+    <h4 class="mt-4">Guidance</h4>
+
+
+    <div class="p-grid p-fluid card">
+      
+  
+      <p-table
+      paginatorDropdownAppendTo="body"
+       [value]="methodologyData"
+       [lazy]="true"
+       (onLazyLoad)="load($event)"
+       [paginator]="true"
+       [rows]="rows"
+       [showCurrentPageReport]="true"
+       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+       [rowsPerPageOptions]="[10,25,50]"
+       [totalRecords]="totalRecords"
+       [loading]="loading"
+       >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <div class="col-sm-2" style="width: 70.666667%">
+                <button
+                  
+                  class="ml-4"
+                  type="button"
+                  (click)="new()"
+                  pButton
+                  pRipple
+                  icon="pi pi-plus"
+                  styleClass="p-button-warn"
+                ></button>
+              </div>
+            </th>
+            
+            <th>Name</th>
+            <th>Description</th>
+            <th>Project Type</th>
+            
+  
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-methodology>
+          <tr>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button  (click)="view(methodology.id)" pButton pRipple type="button" icon="pi pi-eye" class="p-button p-button-success p-button-outlined"></button>
+                <button  (click)="edit(methodology.id)" pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-button-warning p-button-outlined"></button>
+                <button  (click)="onDeleteClick(methodology.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+              </div>
+            </td>
+
+            <td>{{ methodology.name }}</td>
+            <td>{{ methodology.description }}</td>
+            <td>{{ methodology.projectType.name }}</td>
+            
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  
+<p-dialog [(visible)]="display" [style]="{width: '50vw' }">
+  
+    <div class="mb-12">
+      <h4 class="mt-4">{{ isNewEntry ? "Add" : isView ? "View": "Edit" }} Guidance</h4>
+    </div>
+    <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+      <div class="card">
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            
+              <div class="p-field">
+                <label>Name *</label>
+
+                  <input
+                    [disabled]="isView"
+                    type="text"
+                    name="name"
+                    [(ngModel)]="methodology.name"
+                    class="form-control"
+                    placeholder="Enter Name"
+                    required
+                    
+                  />
+                <p class="info-message text-danger" *ngIf=" !methodology.name && (fData.submitted)">
+                This is a mandatory field
+                </p>
+              </div>
+            
+          </div>
+        </div>
+
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              
+                <div class="p-field">
+                  <label>Description *</label>
+
+                  <textarea 
+                    pInputTextarea 
+                    rows="5" 
+                    [disabled]="isView"
+                    type="text"
+                    name="description"
+                    [(ngModel)]="methodology.description"
+                    class="form-control"
+                    placeholder="Enter Description"                      
+                    maxlength="500"
+                    required
+                  >
+                  </textarea>
+  
+                    <!-- <input
+                      [disabled]="isView"
+                      type="text"
+                      name="description"
+                      [(ngModel)]="methodology.description"
+                      class="form-control"
+                      placeholder="Enter Description"
+                      required
+                      
+                    /> -->
+                  <p class="info-message text-danger" *ngIf=" !methodology.description && (fData.submitted)">
+                  This is a mandatory field
+                  </p>
+                </div>
+              
+            </div>
+          </div>
+
+          <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              
+                <div class="p-field">
+                  <label>Project Type *</label>
+  
+                    <p-dropdown
+                          
+                          [disabled]="isView"
+                          [(ngModel)]="methodology.projectType"
+                          name="projectType"
+                          [options]="projectTypes"
+                          placeholder="Select .."
+                          optionLabel="name"
+                          #fprojectType="ngModel"
+                          appendTo="body"
+                          [required]="true" 
+                          
+                      ></p-dropdown>
+                    <p class="info-message text-danger" *ngIf=" !methodology.projectType && (fData.submitted)">
+                    This is a mandatory field
+                    </p>
+                </div>
+              
+            </div>
+          </div>
+        
+  
+        <div>
+          <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+            One or more mandatory fields should be filled before save action.
+          </p>
+        </div>
+
+
+
+        <div class="row p-grid p-fluid col-md-6 col-sm-6">
+          <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+            <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+              Back
+            </button>
+          </div>
+
+          <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+            <button [disabled]="creating" class="btn btn-primary text-uppercase" type="submit">
+              Save
+            </button>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div *ngIf="creating" class="d-flex col-6 justify-content-end">
+            <p class="info-message text-warning mt-2" *ngIf="true">
+              please wait a moment...
+            </p>
+          </div>
+        </div>
+      </div>
+  
+    </form>
+
+</p-dialog>

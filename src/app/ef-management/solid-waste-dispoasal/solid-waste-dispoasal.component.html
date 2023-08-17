@@ -1,0 +1,280 @@
+<div class="container">
+  <h4 class="mt-4">Open Burning Of Waste</h4>
+  <div class="ui-fluid formgrid grid">
+    <p-table
+      paginatorDropdownAppendTo="body" [lazy]="true" [value]="solidWasteDisposalFacs" (onLazyLoad)="loadEF($event)" [paginator]="true"
+      [rows]="rows" [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]"
+      [totalRecords]="totalRecords" [loading]="loading">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>
+            <div class="col-sm-2" style="width: 30%">
+              <!-- <button type="button" (click)="showDialog()" icon="pi pi-info-circle" label="Show"></button> -->
+
+              <button class="ml-4" type="button" (click)="newEF()" pButton pRipple icon="pi pi-plus"
+                styleClass="p-button-warn"></button>
+
+
+            </div>
+          </th>
+          <th>Factor</th>
+          <th>MSW Type</th>
+          <th>Waste Category</th>
+          <th>Type of Waste</th>
+          <th>Value</th>
+
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-efData>
+        <tr>
+          <td>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button (click)="viewEF(efData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                class="p-button p-button-success p-button-outlined"></button>
+              <button (click)="editEF(efData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                class="p-button p-button-warning p-button-outlined"></button>
+              <!-- <button (click)="onDeleteClick(elecData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button> -->
+            </div>
+          </td>
+
+          <td>{{ efData.name }}</td>
+          <td>{{ efData.mswType }}</td>
+          <td>{{ efData.wasteCategory }}</td>
+          <td>{{ efData.typeOfWate }}</td>
+          <td>EF:{{ efData.ef ? efData.ef:" N/A" }} | dm: {{ efData.dm ? efData.dm:" N/A" }} | cf: {{ efData.cf ?
+            efData.cf:" N/A" }} | fcf: {{ efData.fcf ? efData.fcf:" N/A" }} | of:{{ efData.of ? efData.of:" N/A" }}</td>
+
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-dialog header="Solid Waste Disposal" [(visible)]="displayFuel" [style]="{width: '50vw' }">
+  <form #wasteFacData="ngForm" (ngSubmit)="saveWasteFac(wasteFacData)" novalidate>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Approach *</label>
+            <p-dropdown name="wdApproach" [disabled]="isView" [(ngModel)]="solidWasteDisposal.approach"
+              [options]="wdApproach" placeholder="Select .." optionValue="name" optionLabel="name"
+              (onChange)="onChangeGasType($event.value)"></p-dropdown>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Climate Zone *</label>
+            <p-dropdown [disabled]="isView" [(ngModel)]="solidWasteDisposal.climateZone" name="climateZone"
+              [options]="climateZone" placeholder="Select .." optionValue="name" optionLabel="name"></p-dropdown>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Tier*</label>
+            <p-dropdown [disabled]="isView" name="tiere" [(ngModel)]="solidWasteDisposal.tier" [options]="tieres"
+              placeholder="Select .." optionValue="name" optionLabel="name"></p-dropdown>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+
+
+    <p-divider align="left" type="dashed">
+      <div class="inline-flex align-items-center">
+        <b>DOC</b>
+      </div>
+    </p-divider>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+
+      <div class="row p-2">
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Food Waste*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.doc_foodWaste" type="number"
+              name="cf" class="form-control" placeholder="Enter Food Waste" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Garden*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.doc_gaeden" type="number"
+              name="cf" class="form-control" placeholder="Enter Garden" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Paper*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.doc_paper" type="number"
+              name="cf" class="form-control" placeholder="Enter Paper" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Wood & Straw*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.doc_woodAndStraw"
+              type="number" name="cf" class="form-control" placeholder="Enter Wood & Straw" required />
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Textiles*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.doc_textiles" type="number"
+              name="cf" class="form-control" placeholder="Enter Textiles" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Disposble Nappies*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.doc_disposableNappies"
+              type="number" name="cf" class="form-control" placeholder="Enter Disposble Nappies" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Saweedhe Sludge*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.doc_sewageSludge"
+              type="number" name="cf" class="form-control" placeholder="Enter Saweedhe Sludge" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Industrial Waste</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.doc_industrailWaste"
+              type="number" name="cf" class="form-control" placeholder="Enter Industrial Waste" required />
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+
+
+
+    <p-divider align="left" type="dashed">
+      <div class="inline-flex align-items-center">
+        <b>Methen Generation Rate Constant</b>
+      </div>
+    </p-divider>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+
+      <div class="row p-2">
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Food Waste*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.m_foodWaste" type="number"
+              name="cf" class="form-control" placeholder="Enter Food Waste" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Garden*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.m_gaeden" type="number"
+              name="cf" class="form-control" placeholder="Enter Garden" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Paper*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.m_paper" type="number"
+              name="cf" class="form-control" placeholder="Enter Paper" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Wood & Straw*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.m_woodAndStraw" type="number"
+              name="cf" class="form-control" placeholder="Enter Wood & Straw" required />
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Textiles*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.m_textiles" type="number"
+              name="cf" class="form-control" placeholder="Enter Textiles" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Disposble Nappies*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.m_disposableNappies"
+              type="number" name="cf" class="form-control" placeholder="Enter Disposble Nappies" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Saweedhe Sludge*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.m_sewageSludge" type="number"
+              name="cf" class="form-control" placeholder="Enter Saweedhe Sludge" required />
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Industrial Waste</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="solidWasteDisposal.m_industrailWaste"
+              type="number" name="cf" class="form-control" placeholder="Enter Industrial Waste" required />
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+
+
+
+
+    <div class="row p-grid p-fluid col-md-6 col-sm-6">
+
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+        <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+          Back
+        </button>
+      </div>
+
+      <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10">
+        <button pButton type="submit" label="Save"></button>
+      </div>
+
+    </div>
+  </form>
+</p-dialog>

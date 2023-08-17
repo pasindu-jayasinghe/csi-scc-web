@@ -1,0 +1,94 @@
+<div class="container" style="min-height: 500px">
+    <h4 class="mt-4">Progress Report</h4>
+
+    <div class="p-grid p-fluid card">
+        <div class="row">
+            <div class="p-grid p-fluid col-md-6 col-sm-6"> 
+                <div class="row">
+                    <div class="col-2 card-text">
+                        <label  for="selectUnit" style="padding-top: 10px">Project</label>
+                    </div>
+                    <div class="col-8">
+                        <div class="p-field">
+                            <p-dropdown
+                                [filter]="true" filterBy="name" [showClear]="true"
+                                name="selectUnit"
+                                [options]="projects"
+                                [(ngModel)]="selectProject"
+                                (onChange)="onSelectProject()"
+                                placeholder="Select a project"
+                                optionLabel="name"       
+                                appendTo="body"                     
+                            ></p-dropdown>
+                        </div>            
+                    </div>
+                </div>       
+            </div>  
+            <div class="p-grid p-fluid col-md-2 col-sm-2" *ngIf="selectProject && completable"> 
+                <button  class="btn btn-primary btn-block btn-md" type="submit" (click)="setAsCompleted()">Set as completed</button>       
+            </div> 
+            <div class="p-grid p-fluid col-md-3 col-sm-3" *ngIf="selectProject"> 
+                <button  class="btn btn-primary  btn-md" type="submit" (click)="downloadExcel()">Export</button>          
+            </div> 
+        </div>
+        </div>
+
+        <div class="p-grid p-fluid card">
+        <br>
+        <div class="row">
+            <div class="col-3">
+                <div class="rectangle complete"></div>  
+                <div class="card-text">Data Completed</div> 
+            </div>
+            <div class="col-3">
+                <div class="rectangle noData"></div>  
+                <div class="card-text">Data Not Entered</div>
+            </div>
+            <div class="col-3">
+                <div class="rectangle partial"></div>  
+                <div class="card-text">Partially Completed</div>
+            </div>
+            <div class="col-3">
+                <div class="rectangle notAssigned"></div>  
+                <div class="card-text">Not assigned</div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <p-table 
+                *ngIf="progressData.length !== 0" 
+                [value]="progressData" 
+                [lazy]="true" 
+                (onLazyLoad)="load($event)"
+                [paginator]="false" 
+                [rows]=10 
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {10} entries" 
+                [rowsPerPageOptions]="[10,25,50]"
+                [totalRecords]="10" 
+                [rowHover]="true" 
+                styleClass="p-datatable-sm p-datatable-gridlines"
+                [scrollable]="true" scrollHeight="420px"
+            >
+            <!-- [scrollHeight]="'calc(100vh - 204px)'" -->
+            <!-- scrollable="true" scrollHeight="500px" [virtualScroll]="true" -->
+            <!-- [resizableColumns]="true" -->
+                <ng-template pTemplate="header" frozen="true">
+                    <tr>
+                        <th pFrozenColumn style="min-width: 200px" pSortableColumn="unitName">Unit<p-sortIcon field="unitName"></p-sortIcon></th>
+                        <th *ngFor="let col of esList" style="min-width: 100px">{{col.name | titlecase}}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-i="rowIndex">
+                   <tr>
+                        <td pFrozenColumn style="min-width: 200px">{{rowData.unitName}}</td>
+                        <td (click)="click(rowData[col.code])" class="es-data"  *ngFor="let col of esList" [style]="{'background':getValue(rowData[col.code]), 'cursor': getCursor(rowData[col.code])}" 
+                            [pTooltip]="getToolTip(rowData[col.code])"></td>
+                   </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <!-- [scrollHeight]="'calc(100vh - 204px)'" -->
+</div>

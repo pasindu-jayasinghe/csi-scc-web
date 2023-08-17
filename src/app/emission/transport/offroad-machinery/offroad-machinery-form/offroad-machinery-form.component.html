@@ -1,0 +1,34 @@
+<div class="container pl-20 pr-20">
+    <div class="mb-12">
+        <h4 class="mt-4">{{ isNewEntry ? "Add" : isView ? "View": "Edit" }} Off-Road Machinery Transport</h4>
+    </div>
+    <div class="p-grid p-fluid card">
+        <div class="row" style="width: 90.666667%;margin-bottom: 140px;margin-left: 4px;">
+            <div id="basic" class="row">
+                <div class="col">
+                    <div class="p-field row container">
+                        <label for="year">Domestic/International * </label>
+                        <div class="col-9">
+                            <p-dropdown [disabled]="isView" name="domesticInternational"
+                                [options]="domesticInternationals" [(ngModel)]="domesticInternational"
+                                #fdomesticInternational="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" >
+                            </p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="col">
+                    <div class="p-field row container">
+                        <label for="year">Passenger Mode *</label>
+                        <div class="col-9">
+                            <p-dropdown (onChange)="onSelectMode($event)" [disabled]="isView" name="passengerMode"
+                                [options]="passengerModes" [(ngModel)]="passengerMode" #ffreightMode="ngModel"
+                                placeholder="Select .." optionLabel="name" appendTo="body" ></p-dropdown>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+    <app-offroad-transport-form></app-offroad-transport-form>
+</div>

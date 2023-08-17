@@ -1,0 +1,103 @@
+<div class="container">
+    <h4 class="mt-4">ForkLift <span (click)="watchVideo()" pTooltip="Click to watch guidance video"  class="infor-video"><i class="pi pi-video"></i></span> </h4>
+
+    <div class="p-grid p-fluid card">
+      <div class="row">
+        <div class="col-6">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">Unit</label>
+            </div>
+            <div class="col-8">
+              <app-unit-select [isView]="!isAnyAdmin" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>   
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">Project</label>
+            </div>
+            <div class="col-8">
+              <app-project-select   [project]="selectedProject" [isView]="false" (onUpdateProject)="onChangeProject($event)"></app-project-select>               
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-grid p-fluid card">
+
+  
+      <p-table
+      paginatorDropdownAppendTo="body"
+      [value]="forkliftData"
+      [lazy]="true"
+      (onLazyLoad)="load($event)"
+      [paginator]="true"
+      [rows]="rows"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rowsPerPageOptions]="[10,25,50]"
+      [totalRecords]="totalRecords"
+      [loading]="loading"
+
+       >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <div class="col-sm-2" style="width: 70.666667%">
+                <div class="row">
+              <div class="col">
+                <button *ngIf="creatable" class="ml-4" type="button" (click)="new()" pButton pRipple icon="pi pi-plus"
+                  styleClass="p-button-warn"></button>
+              </div>
+              <!-- <div pTooltip="Delete selected all records" class="col" *ngIf="selected.length > 0 && deletable">
+                <button class="ml-4" icon="pi pi-times" class="p-button p-button-danger p-button-outlined" type="button" (click)="deleteAll(esCode.toString())" pButton></button>
+              </div> -->
+            </div>
+              </div>
+            </th>
+            
+            <th>Project</th>
+            <th>Fuel Type</th>
+            <th>Consumption</th>
+            <th>Unit of Measure</th>
+            <th pSortableColumn="year">Year<p-sortIcon field="year"></p-sortIcon></th> 
+            <th pSortableColumn="month">Month<p-sortIcon field="month"></p-sortIcon></th>            
+            <th>Country Code</th> 
+            <th>GHG Emission</th>
+
+  
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-Forklifts>
+          <tr>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button  *ngIf="viewable" (click)="view(Forklifts.id)" pButton pRipple type="button" icon="pi pi-eye" class="p-button p-button-success p-button-outlined"></button>
+                <button  *ngIf="editable" (click)="edit(Forklifts.id)" pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-button-warning p-button-outlined"></button>
+                <button   *ngIf="deletable" (click)="onDeleteClick(Forklifts.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+              </div>
+            </td> 
+
+            <td>{{ Forklifts.project.name }}</td>
+            <td>{{ Forklifts.fuelType }}</td>
+            <td>{{ Forklifts.consumption }}</td>
+            <td>{{ parameterUnits && parameterUnits[Forklifts.consumption_unit] ? parameterUnits[Forklifts.consumption_unit].label: '-' }}</td>
+            <td>{{ Forklifts.year }}</td>
+            <td>{{ getMonth(Forklifts.month) }}</td>
+            <td>{{ Forklifts.countryCode }}</td>
+            <td>{{ Forklifts.emission | number:'1.4-4'}}</td> 
+  
+  
+  
+  
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  
+<!-- <p-toast position="top-right"></p-toast>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->

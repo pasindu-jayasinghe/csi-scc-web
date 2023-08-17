@@ -1,0 +1,145 @@
+<nb-layout>
+  <nb-layout-column class="p-0">
+    <div class="wrapper d-flex flex-row flex-grow-1">
+      <div class="sidebar d-flex flex-column customSB d-print-none"
+        [ngClass]="{ open: togglemenu || innerWidth > 1280 }">
+        <div class="sidebar--button selectable" (click)="togglemenu = !togglemenu">
+          <i class="pi pi-arrow-right" *ngIf="!togglemenu"></i>
+          <i class="pi pi-arrow-left" *ngIf="togglemenu"></i>
+        </div>
+        <div class="sidebar--header">
+          <img style="height: 47px;padding-left: 20px" src="../assets/images/logo-new.png" />
+        </div>
+        <div class="sidebar-items flex-grow-1">
+          <div data-ccs-admin-menu>
+           
+            <div *ngFor="let menuItem of sideMenu">   
+
+              <p-accordion *ngIf="menuItem.childs.length >0 && hasSideMenuAccess(menuItem.requireRoles, menuItem.requireActions)">
+                <p-accordionTab data-assess>
+                  <p-header class="p-accordion-header-text d-flex flex-row align-items-left">
+                    <div [routerLink]="[menuItem.path]" routerLinkActive="selected">
+                      <p class="mb-2">{{menuItem.title}}</p>
+                    </div>
+                  </p-header>
+
+                  <div *ngFor="let clild of menuItem.childs">
+
+                    <div class="sidebar-items--link d-flex flex-column align-items-start"
+                      [routerLink]="[clild.path]" routerLinkActive="selected"
+                      *ngIf="!clild.childs &&  hasSideMenuAccess(clild.requireRoles, clild.requireActions, clild.isES, clild.es)">
+                      <p class="mb-0 ml-20">{{ clild.isES ? getEsName(clild.title, clild.isES) : clild.title}}</p>
+                    </div>
+
+                    <p-accordion *ngIf="clild.childs">
+                      <p-accordionTab data-assess>
+                        <p-header class="p-accordion-header-text d-flex flex-row align-items-left">
+                          <div [routerLink]="[clild.path]" routerLinkActive="selected">
+                            <p class="mb-2">{{clild.title}}</p>
+                          </div>
+                        </p-header>
+
+                        <div   *ngFor="let subClild of clild.childs" class="sidebar-items--link d-flex flex-column align-items-start"
+                          [routerLink]="[subClild.path]"
+                          routerLinkActive="selected">
+                          <p class="mb-0 ml-20">{{subClild.title}}</p>
+                        </div>
+                        
+
+                      </p-accordionTab>
+                    </p-accordion>
+
+                  </div>
+                </p-accordionTab>
+              </p-accordion>
+
+              <div  *ngIf="menuItem.childs.length == 0  && hasSideMenuAccess(menuItem.requireRoles, menuItem.requireActions)" class="sidebar-items--link align-items-start" 
+                [routerLink]="[menuItem.path]"
+                >
+                <div class=""></div>
+                {{menuItem.title}}
+              </div>
+
+            </div>
+
+
+
+
+            
+
+          </div>
+        </div>
+
+        <div class="sidebar--footer">
+          <div></div>
+          <div></div>
+          <div></div>
+          <!-- <div class="sidebar-items--link" [routerLink]="['/app/user/setting']" routerLinkActive="router-link-active">
+            <i class="pi pi-cog"></i> Account Settings
+          </div> -->
+          <!-- <div class="sidebar-items--link" (click)="logout()">
+            <i class="pi pi-sign-out"></i> Logout
+          </div> -->
+        </div>
+      </div>
+      <div class="main d-flex flex-column flex-grow-1">
+        <div class="d-flex flex-column justify-content-start">
+          <div class="p-text-nowrap p-text-truncate m-0 pr-2 text-right">
+            <div class="top-panel d-flex justify-content-end">
+              
+              <div class="d-flex mt-10 mr-20">
+                <div class="row" style="padding-right: 10%;">
+                  <div class="col-5">
+                    <label for="">Project Type</label>
+                  </div>
+                  <div class="col-7">
+                    <p-dropdown
+                        (onChange)="onChangeProjectType($event.value)"
+                        name="project"
+                        [options]="projectTypes"
+                        placeholder="Select .."
+                        appendTo="body"
+                        [showClear]="true"                        
+                        >              
+                    </p-dropdown>
+                  </div>
+                </div>
+                <!-- <span class="mr-10">
+                    <img
+                      src="https://github.com/mdo.png"
+                      alt="mdo"
+                      width="45"
+                      height="45"
+                      class="rounded-circle"
+                    />
+                  </span> -->
+                <span>
+                  <div class="username">{{userName}}</div>
+                  <div class="unitName">{{unitName}}</div>
+                  <div class="userrole">{{userRole}}</div>
+                  
+                </span>
+
+                <span>
+                  <div (click)="logout()" class="logout">
+                    <i class="pi pi-sign-out"></i>
+                  </div>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="p-text-nowrap p-text-truncate m-0 mb-1 pr-2 text-right">
+            <!-- <small><b>Test</b></small> -->
+          </div>
+        </div>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </nb-layout-column>
+
+  <nb-layout-footer fixed>
+  </nb-layout-footer>
+</nb-layout>
+
+
+<!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->

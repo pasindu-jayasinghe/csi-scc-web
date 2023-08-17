@@ -1,0 +1,196 @@
+<div class="container">
+  <h4 class="mt-4">Transport</h4>
+  <div class="ui-fluid formgrid grid">
+    <p-table
+      paginatorDropdownAppendTo="body" [lazy]="true" [value]="transFacs" (onLazyLoad)="loadEF($event)" [paginator]="true" [rows]="rows"
+      [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rowsPerPageOptions]="[10,25,50]" [totalRecords]="totalRecords" [loading]="loading">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>
+            <div class="col-sm-2" style="width: 30%">
+              <!-- <button type="button" (click)="showDialog()" icon="pi pi-info-circle" label="Show"></button> -->
+
+              <button class="ml-4" type="button" (click)="newEF()" pButton pRipple icon="pi pi-plus"
+                styleClass="p-button-warn"></button>
+
+
+            </div>
+          </th>
+          <th>Vehicle Type</th>
+          <th>CO₂</th>
+          <th>CH₄</th>
+          <th>N₂O</th>
+          <th>g/km</th>
+          <th>KG CO₂e /vehicle km</th>
+          <th>KG CO₂e /passenger km</th>
+          <th>Assumption</th>
+
+
+
+
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-efData>
+        <tr>
+          <td>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button (click)="viewEF(efData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                class="p-button p-button-success p-button-outlined"></button>
+              <button (click)="editEF(efData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                class="p-button p-button-warning p-button-outlined"></button>
+              <!-- <button (click)="onDeleteClick(elecData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button> -->
+            </div>
+          </td>
+
+          <td>{{ efData.name }}</td>
+          <td>{{ efData.co2 }}</td>
+          <td>{{ efData.ch4 }}</td>
+          <td>{{ efData.n2o }}</td>
+          <td>{{ efData.gKm }}</td>
+          <td>{{ efData.kgco2eVKm }}</td>
+          <td>{{ efData.kgco2ePKm }}</td>
+          <td>{{ efData.assumption }}</td>
+
+
+
+
+          <!-- <td>EF:{{ efData.ef ?  efData.ef:" N/A" }} | dm: {{ efData.dm ?  efData.dm:" N/A" }} | cf: {{ efData.cf ?  efData.cf:" N/A" }} | fcf: {{ efData.fcf ?  efData.fcf:" N/A" }} | of:{{ efData.of ?  efData.of:" N/A" }}</td> -->
+
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-dialog header="Transport" [(visible)]="displayFuel" [style]="{width: '50vw' }">
+  <form #wasteFacData="ngForm" (ngSubmit)="saveWasteFac(wasteFacData)" novalidate>
+
+    <div class="p-grid p-fluid col-md-12 col-sm-12">
+      <div class="row">
+        <div class="col-4">
+          <div class="p-field">
+            <label>Vehicle Type *</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="transFac.name" type="text" name="vtype"
+              class="form-control" placeholder="Enter Vehicle Type" required />
+            <p class="info-message text-danger" *ngIf="!transFac.name && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+
+
+        <div class="col-4">
+          <div class="p-field">
+            <label>Code *</label>
+            <p-dropdown [disabled]="isView" optionLabel="name" optionValue="code" name="vtypeCode" [options]="public_transport_modes" [(ngModel)]="transFac.code"></p-dropdown>
+
+            <!-- <input [disabled]="isView" [disabled]="false" [(ngModel)]="transFac.code" type="text" name="vtype"
+              class="form-control" placeholder="Enter Vehicle Code" required /> -->
+            <p class="info-message text-danger" *ngIf="!transFac.code && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="p-field">
+            <label>CO₂ *</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="transFac.co2"   min="0" type="number" name="co2"
+              class="form-control" placeholder="Enter CO₂ Value" required />
+            <p class="info-message text-danger" *ngIf="!transFac.co2 && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+     
+      </div>
+      <div class="row">
+        <div class="col-4">
+          <div class="p-field">
+            <label>kgCO₂e /passenger km*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="transFac.kgco2ePKm"min="0"  type="number" name="pkm"
+              class="form-control" placeholder="Enter Value" required />
+            <p class="info-message text-danger" *ngIf="!transFac.kgco2ePKm && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="p-field">
+            <label>kgCO₂e /vehicle km*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="transFac.kgco2eVKm"min="0"  type="number" name="pkm"
+              class="form-control" placeholder="Enter Value" required />
+            <p class="info-message text-danger" *ngIf="!transFac.kgco2eVKm && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="p-field">
+            <label>N₂O*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="transFac.n2o" min="0" type="number" name="n2o"
+              class="form-control" placeholder="Enter N₂O Value" required />
+            <p class="info-message text-danger" *ngIf="!transFac.n2o && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="p-field">
+            <label>g/Km*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="transFac.gKm" min="0" type="number" name="gkm"
+              class="form-control" placeholder="Enter g/Km" required />
+            <p class="info-message text-danger" *ngIf="!transFac.gKm && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-3">
+          <div class="p-field">
+            <label>CH₄*</label>
+            <input [disabled]="isView" [disabled]="false" [(ngModel)]="transFac.ch4" min="0" type="number" name="ch4"
+              class="form-control" placeholder="Enter CH₄ Value" required />
+            <p class="info-message text-danger" *ngIf="!transFac.ch4 && (wasteFacData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+
+        <div class="col-3">
+
+        <div class="p-field">
+          <label>Assumption*</label>
+
+          <textarea pInputTextarea rows="5" [disabled]="isView" [disabled]="false" min="0" type="text" name="assump"
+            [(ngModel)]="transFac.assumption" class="form-control" placeholder="Enter Assumption" maxlength="500"
+            required>
+                </textarea>
+          <p class="info-message text-danger" *ngIf="!transFac.assumption && (wasteFacData.submitted)">
+            This is a mandatory field
+          </p>
+        </div>
+        </div>
+        </div>
+      <div class="row">
+
+      </div>
+    </div>
+
+    <div class="row p-grid p-fluid col-md-6 col-sm-6">
+
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+        <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+          Back
+        </button>
+      </div>
+
+      <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10" *ngIf="!isView">
+        <button pButton type="submit" label="Save"></button>
+      </div>
+
+    </div>
+  </form>
+</p-dialog>

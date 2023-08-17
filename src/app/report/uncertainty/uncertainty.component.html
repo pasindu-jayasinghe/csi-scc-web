@@ -1,0 +1,11 @@
+
+<button
+    class="ml-4"
+    type="button"
+    (click)="add()"
+    pButton
+    pRipple
+    icon="pi pi-plus"
+    styleClass="p-button-warn"
+></button>
+<app-uncertainty-item [reportData]="reportData" [emissionSources]="emissionSources" [uncertainty]="uncertainty" *ngFor="let uncertainty of uncertainties"></app-uncertainty-item>

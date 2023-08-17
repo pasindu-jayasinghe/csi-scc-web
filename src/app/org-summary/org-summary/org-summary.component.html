@@ -1,0 +1,126 @@
+<div class="container">
+    <h4 class="mt-4">Organization Summary</h4>
+
+    <div class="p-grid p-fluid card" *ngIf="isCSIUser">
+        <div class="row">
+          <div class="col-6">
+            <div class="row">
+              <div class="col-2">
+                <label style="padding-top: 8px">Unit</label>
+              </div>
+              <div class="col-8">
+                <app-unit-select [isView]="!isCSIUser" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>   
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-6">
+            <div class="row">
+              <div class="col-2">
+                <label style="padding-top: 8px">Project</label>
+              </div>
+              <div class="col-8">
+                <app-project-select [isView]="false" (onUpdateProject)="onChangeProject($event)"></app-project-select>               
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+   
+    <!-- ////////////////////////////////////// -->
+    <div class="p-grid p-fluid ">
+        <div class="row" style="margin-left: 3px;">
+            <div id="basic" class="row">
+                <div class="col card" style="margin-right: 2%;">
+                    <div class="p-field row container" *ngFor="let detail of card1">
+                        <div class="col-7" >
+                            <p class = "card-text"><strong>{{detail.title}}</strong> </p>
+                        </div> 
+                        <div class="col-5">
+                            <p class = "card-text">{{detail.value}}</p>
+                        </div>                 
+                    </div>  
+                    <!-- <div class="col-2" style="float: right;">
+                        <button  class="btn btn-primary text-uppercase btn-lg" (click)="export()">
+                          Export
+                        </button>
+                    </div>                                          -->
+                </div>
+                <div class="col card">
+                    <img [src]="logoPath"  alt="Unit logo" class="logo">
+                  <!-- Where to get the unit logo -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ////////////////////////////////////// -->
+    <div class="p-grid p-fluid card">
+        <ng-container *ngTemplateOutlet="es"></ng-container>
+    </div>
+    <!-- ////////////////////////////////////// -->
+    <div class="p-grid p-fluid card">
+        <div class="col-6 row">
+            <p class="col-3 card-text">Project Type</p>
+            <p-dropdown 
+                name="projectType"
+                [options]="projectTypes"
+                [(ngModel)]="projectType"
+                #ftype="ngModel"
+                placeholder="Project Type"
+                class="col-4"
+            ></p-dropdown>
+        </div>
+        <br >
+        <div class="card" *ngIf="unit">
+            <app-project-emission-chart 
+                [unitId]="unit.id"
+                [projectType]="projectType"
+            ></app-project-emission-chart>
+        </div>
+        <div class="card" *ngIf="unit">
+            <app-es-emission-chart 
+                [unitId]="unit.id"
+                [projectType]="projectType"
+            ></app-es-emission-chart>
+        </div>
+    </div>
+   
+</div>
+
+<ng-template #es>
+  <h6 class="mt-4">Projects</h6>
+  <p-table
+      paginatorDropdownAppendTo="body"
+      [value]="projectDataList"
+      [lazy]="true"
+      (onLazyLoad)="load($event)"
+      [paginator]="true"
+      [rows]=10
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rowsPerPageOptions]="[10,25,50]"
+      [totalRecords]="totalRecords"
+      [rowHover]="true"
+  >
+      <ng-template pTemplate="header">
+      <tr>
+          <th>No</th>
+          <th>Project Name</th>
+          <th>Project Type</th>
+          <th>Methodology</th>
+          <th>Year</th>  
+          <th>Status</th>  
+      </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-project let-i="rowIndex">
+      <tr (click)="click(project.id)" style="cursor: pointer">
+          <td>{{i+1}}</td>
+          <td>{{project.name}}</td>
+          <td>{{project.projectType.name}}</td>
+          <td>{{project.methodology.name}}</td>
+          <td>{{project.year}}</td>
+          <td>{{project.projectStatus}}</td>
+      </tr>
+      </ng-template>
+  </p-table>
+</ng-template>
+

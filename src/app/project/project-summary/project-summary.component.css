@@ -1,0 +1,15 @@
+.card-text{
+    font-size: 14px;
+    line-height:2;
+    font-family: Inter;
+}
+
+.pie-chart{
+    margin: auto; 
+    width: 75%
+}
+
+.bar-chart{
+    margin: auto; 
+    width: 100%
+}

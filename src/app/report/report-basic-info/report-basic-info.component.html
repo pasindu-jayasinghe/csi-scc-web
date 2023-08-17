@@ -1,0 +1,214 @@
+
+<form #fData="ngForm" (ngSubmit)="saveCSIData()">
+    <div class="row br">
+        <div class="col-4">
+            <label>Dissemination policy*</label>
+        </div>
+        <div class="col-6">
+            <textarea
+                type="text"
+                name="dissemination"
+                class="form-control"
+                placeholder="Enter dissemination"
+                required
+                maxlength="1000"
+                [(ngModel)]="reportData.dissemination"
+            ></textarea> 
+        </div>
+    </div>
+    <div class="row br">
+      <div class="col-4">
+          <label>Data gathering method *</label>
+      </div>
+      <div class="col-6">
+        <p-multiSelect
+          name="dataGatheringMethods"
+          placeholder="Select .."
+          appendTo="body"
+          [options]="dataGatheringMethods"
+          [(ngModel)]="selectedDataGatheringMethods"
+          >
+          <ng-template let-dataGatheringMethod pTemplate="item">
+            <div class="country-item">
+              <div>{{ dataGatheringMethod }}</div>
+            </div>
+          </ng-template>
+        </p-multiSelect>   
+      </div>
+    </div>
+    
+    <div class="row br">
+      <div class="col-4">
+          <label>Recomandations *</label>
+      </div>
+      <div class="col-6">
+        <p-multiSelect
+          name="recomandations"
+          placeholder="Select .."
+          appendTo="body"
+          optionLabel="title"
+          [options]="recomandations"
+          [(ngModel)]="reportData.recommendations"
+    
+        >
+        <ng-template let-recomandation pTemplate="item">
+          <div class="country-item">
+            <div>{{ recomandation.title }}</div>
+          </div>
+        </ng-template>
+      </p-multiSelect>    
+      </div>
+    </div>
+    
+    <div class="row br">
+      <div class="col-4">
+          <label>Next Steps *</label>
+      </div>
+      <div class="col-6">
+        <p-multiSelect
+          name="nextSteps"
+          placeholder="Select .."
+          appendTo="body"
+          optionLabel="descryption"
+          [options]="nextSteps"
+          [(ngModel)]="reportData.nextSteps"
+    
+        >
+        <ng-template let-nextStep pTemplate="item">
+          <div class="country-item">
+            <div>{{ nextStep.descryption }}</div>
+          </div>
+        </ng-template>
+      </p-multiSelect>    
+      </div>
+    </div>
+    
+    <div class="row br">
+      <div class="col-4">
+          <label>Attempt *</label>
+      </div>
+      <div class="col-6">
+          <input
+              type="number"
+              name="attempt"
+              class="form-control"
+              placeholder="Enter no of attempt"
+              required
+              [(ngModel)]="reportData.attempt"
+          /> 
+      </div>
+    </div>
+    
+    <div class="row br">
+      <div class="col-4">
+          <label>ISO Standard *</label>
+      </div>
+      <div class="col-6">
+          <input
+              type="text"
+              name="ISOStandard"
+              class="form-control"
+              placeholder="Enter ISO Standard"
+              required
+              [(ngModel)]="reportData.iSOStandard"
+          />
+      </div>
+    </div>
+    
+    <div class="row br">
+      <div class="col-4">
+          <label>Previous Year ISO Standard *</label>
+      </div>
+      <div class="col-6">
+          <input
+              type="text"
+              name="Pr_ISOStandard"
+              class="form-control"
+              placeholder="Enter Previous Year ISO Standard"
+              required
+              [(ngModel)]="reportData.previousYearISOStandard"
+          />
+      </div>
+    </div>
+    
+    <div class="row br">
+      <div class="col-4">
+          <label>Proposed Date *</label>
+      </div>
+      <div class="col-6">
+        <p-calendar 
+          appendTo="body" 
+          name="proposed_Date"
+          [(ngModel)]="reportData.proposedDate"
+        ></p-calendar>
+      </div>
+    </div>
+    
+    <div class="row br">
+      <div class="col-4">
+          <label>Proposal Number *</label>
+      </div>
+      <div class="col-6">
+          <input
+              type="text"
+              name="proposalNumber"
+              class="form-control"
+              placeholder="Enter proposal number"
+              required
+              [(ngModel)]="reportData.proposalNumber"
+          />
+      </div>
+    </div>
+
+    <div class="row br">
+      <div class="col-4">
+          <label>Indirect Emission Limit *</label>
+      </div>
+      <div class="col-6">
+        <div class="row">
+          <div class="col-6">
+            <p-dropdown 
+              name="lessorgreater"
+              [options]="lessOrGreater"
+              [(ngModel)]="reportData.lessOrGreater"
+              #ftype="ngModel"
+            ></p-dropdown>
+          </div>
+          <div class="col-6">
+            <input
+              type="numebr"
+              name="limit"
+              class="form-control"
+              placeholder="Enter indirect limit"
+              required
+              [(ngModel)]="reportData.indirectLimit"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row br">
+      <div class="col-4">
+          <label>Responsible Person *</label>
+      </div>
+      <div class="col-6">
+          <input
+              type="text"
+              name="responsiblePerson"
+              class="form-control"
+              placeholder="Enter post of responsible person"
+              required
+              [(ngModel)]="reportData.responsiblePerson"
+          />
+      </div>
+    </div>
+
+    <div class="row br">
+        <div class="col-10">
+          <button class="btn btn-primary text-uppercase" type="submit" style="float: right">
+            Save
+          </button>
+        </div>
+      </div>
+</form>

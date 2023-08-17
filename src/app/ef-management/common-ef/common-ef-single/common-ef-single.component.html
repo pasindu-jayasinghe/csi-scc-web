@@ -1,0 +1,86 @@
+<div class="p-grid p-fluid card">
+    <div class="row" style="margin-top: 10px">
+        <div class="row">
+            <div class="col-3">
+                <div class="col-3">
+                    <label for="firstname">Country *</label>
+                </div>
+                <div class="col-9">
+                    <p-dropdown name="countryCode" [options]="countries" placeholder="Select .." optionLabel="name"
+                        optionValue="code" appendTo="body" [(ngModel)]="ef.countryCode"></p-dropdown>
+                    <p class="info-message text-danger" *ngIf=" !ef.countryCode">
+                        This is a mandatory field
+                    </p>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="col-3">
+                    <label for="firstname">Year *</label>
+                </div>
+                <div class="col-9">
+                    <p-dropdown name="year" [options]="years" placeholder="Select .." appendTo="body"
+                        [(ngModel)]="ef.year"></p-dropdown>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="col-3">
+                    <label for="firstname">Name *</label>
+                </div>
+                <div class="col-9">
+                    <input type="text" name="name" class="form-control" placeholder="Enter the Name" required
+                        [(ngModel)]="ef.name" />
+                    <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="col-3">
+                    <label for="firstname">Code *</label>
+                </div>
+                <div class="col-9">
+                    <p-dropdown name="code" [options]="efCodes" placeholder="Select .." appendTo="body"
+                        [(ngModel)]="ef.code"                        
+                        ></p-dropdown>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-3">
+                <div class="col-3">
+                    <label for="firstname">Value *</label>
+                </div>
+                <div class="col-9">
+                    <input min="0" type="number" name="value" class="form-control" placeholder="Enter the Value" required
+                        [(ngModel)]="ef.value" />
+                    <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="col-3">
+                    <label for="firstname">Unit *</label>
+                </div>
+                <div class="col-9">
+                    <input type="text" name="unit" class="form-control" placeholder="Enter the unit" required
+                        [(ngModel)]="ef.unit" />
+                    <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="col-3">
+                    <label for="firstname">Reference</label>
+                </div>
+                <div class="col-9">
+                    <input type="text" name="reference" class="form-control" placeholder="Enter the Reference"
+                        [(ngModel)]="ef.reference" />
+                    <p class="info-message text-danger" *ngIf="false">This is a mandatory field</p>
+                </div>
+            </div>
+            <div class="col-3">
+                <button (click)="save()" style="margin-top: 24px; width: '75%'"
+                    class="btn btn-primary text-uppercase btn">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

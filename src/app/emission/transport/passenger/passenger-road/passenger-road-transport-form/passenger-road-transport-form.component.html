@@ -1,0 +1,555 @@
+<div class="container pl-20 pr-20">
+  <div class="mb-12">
+      <h4 class="mt-4">{{ isNewEntry ? "Add" : isView ? "View": "Edit" }} Employee Commuting</h4>
+  </div>
+  <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate style="padding: 20px;" >
+    <div class="p-grid p-fluid card" >
+      <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+        <div id="basic" class="row">
+          <div class="col">
+            <div class="p-field row container" *ngIf="isAnyAdmin">
+              <div class="col-9 p-2">
+                  <label for="institution">Unit *</label>
+                  <app-unit-select [isView]="isView" [unit]="selectedUnit" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>                
+              </div>
+            </div>
+            <div class="p-field row container" style="margin-bottom: 10px;">
+              <label for="firstname">Year *</label>
+              <div class="col-9">
+                <input [disabled]="true" type="text" name="year" [(ngModel)]="passengerRoad.year" class="form-control"
+                  placeholder="Enter Year" required />
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="p-field row container" *ngIf="isProjectSelected">
+              <div class="col-9 p-2">
+                  <label for="institution">Project *</label>
+                  <app-project-select [isView]="isView" [unit]="selectedUnit" [project]="selectedProject"  (onUpdateProject)="onChangeProject($event)" [data]="fData"></app-project-select>               
+              </div>
+            </div>
+            <div class="p-field row container" style="margin-bottom: 10px;">
+              <label for="firstname">Month *</label>
+              <div class="col-9">
+                <p-dropdown [disabled]="isView" name="month" (onChange)="monthCgange()" [options]="months" [(ngModel)]="month" #fmonth="ngModel"
+                  placeholder="Select .." optionLabel="name" appendTo="body" [required]="true"></p-dropdown>
+              </div>
+              <p class="info-message text-danger" *ngIf=" !month && (fData.submitted)">
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-grid p-fluid card">
+      <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+        <div id="basic" class="row">
+          <div class="col">
+            <div class="p-field row container">
+              <label for="year">Transport Category * </label>
+              <div class="col-9 p-2">
+                  <p-dropdown [disabled]="isView" name="onroadMethod"
+                      [disabled]="true"
+                      [options]="onroadMethods" [(ngModel)]="passengerRoad.transportMethod" [required]="true" optionValue="code"
+                      #fdomesticInternational="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" >
+                  </p-dropdown>
+              </div>
+              <p class="info-message text-danger" *ngIf=" !passengerRoad.transportMethod && (fData.submitted)">
+                This is a mandatory field
+              </p>
+            </div>
+            <ng-container *ngIf="passengerRoad.transportMethod">
+              <div class="p-field row container">
+                <label for="year">Domestic/International * </label>
+                <div class="col-9 p-2">
+                    <p-dropdown [disabled]="isView" name="domesticInternational" [required]="true"
+                        [options]="domesticInternationals" [(ngModel)]="passengerRoad.domOrInt" optionValue="code"
+                        #fdomesticInternational="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" >
+                    </p-dropdown>
+                </div>
+                <p class="info-message text-danger" *ngIf=" !passengerRoad.domOrInt && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div *ngIf="passengerRoad.transportMethod === 'EC'"><ng-container *ngTemplateOutlet="ec_card1"></ng-container></div>
+              <div class="p-field row container" style="margin-bottom: 10px;">
+                <label for="firstname">Vehicle Number</label>
+                <div class="col-9">
+                  <input [disabled]="isView" type="text" name="vehicleNo" [(ngModel)]="passengerRoad.vehicleNo"
+                    class="col-8 form-control" placeholder="Vehicle No" />
+                </div>
+                <!-- <p class="info-message text-danger" *ngIf=" !passengerRoad.vehicleNo && (fData.submitted)">
+                  This is a mandatory field
+                </p> -->
+              </div>
+              <div class="p-field row container" *ngIf="(passengerRoad.ownership |json) !== '{}' && passengerRoad.ownership === 'Hired'">
+                <div class="row col-8">
+                  <p-checkbox (onChange)="check()" [(ngModel)]="checked" [value]="true" name="paid" class="col-2"></p-checkbox>
+                  <label class="col-7"  for="paid">Paid by the company</label>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <div class="col">
+            <ng-container *ngIf="passengerRoad.transportMethod">
+              <div class="p-field row container" style="margin-bottom: 10px;">
+                <label for="firstname">Ownership *</label>
+                <div class="col-9">
+                  <p-dropdown [disabled]="isView" name="ownership" [options]="ownership_freightTransport" [required]="true"
+                    [(ngModel)]="passengerRoad.ownership" #fOwnership="ngModel" placeholder="Select .." optionLabel="name" optionValue="name"  appendTo="body" ></p-dropdown>
+                </div>
+                <p class="info-message text-danger" *ngIf=" !passengerRoad.ownership && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div class="p-field row container" style="margin-bottom: 10px;">
+                <label for="year">Method * </label>
+                <div class="col-9">
+                  <p-dropdown (onChange)="onSelectMethod($event)" [disabled]="isView" name="method" [required]="true"
+                    [options]="methods_freightTransport" [(ngModel)]="method" #fmethod="ngModel" placeholder="Select .."
+                    optionLabel="name" appendTo="body" ></p-dropdown>
+                </div>
+                <p class="info-message text-danger" *ngIf=" !method && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="method?.id === 2">
+                <label for="year">One Way/ Round Trip *</label>
+                <div class="col-9">
+                  <p-dropdown [disabled]="isView" name="option" [required]="true"
+                    [options]="options_freightTransport" [(ngModel)]="passengerRoad.option" #ffreightType="ngModel"
+                    placeholder="Select .." optionLabel="name" optionValue="code" appendTo="body" ></p-dropdown>
+                </div>
+                <p class="info-message text-danger" *ngIf=" !passengerRoad.option && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="passengerRoad.transportMethod === 'BT'">
+                <label for="year">Number of Trips *</label>
+                <div class="col-9">
+                  <input [disabled]="isView" type="number" name="noOfTrips" [(ngModel)]="passengerRoad.noOfTrips"
+                    class="col-8 form-control" value="1" required />
+                </div>
+                <p class="info-message text-danger" *ngIf=" !passengerRoad.noOfTrips && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="passengerRoad.transportMethod === 'EC'">
+                <label for="year">Working Days *</label>
+                <div class="col-9">
+                  <input [disabled]="isView" type="text" name="workingDays" [(ngModel)]="passengerRoad.workingDays" class="form-control"
+                    placeholder="Enter working days" required />
+                </div>
+                <p class="info-message text-danger" *ngIf=" !passengerRoad.workingDays && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+    <div class="p-grid p-fluid card" *ngIf="puesData && puesData.sourceType && puesData.sourceType.toString() === 'B' || method?.id === 1 || (method?.id === 2 && passengerRoad.transportMethod === 'BT')">
+      <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+        <div id="basic" class="row">
+          <div class="col">
+            <div class="p-field row container" style="margin-bottom: 10px;"  *ngIf="passengerRoad.transportMethod === 'BT'">
+              <label for="year">Fuel Type * </label>
+              <div class="col-9">
+                <app-fuel-select 
+                  (onUpdateFuel)="onUpdateFuel($event)"
+                  *ngIf="selectedUnit"
+                  [year]="passengerRoad.year" 
+                  [countryCode]="selectedUnit.country.code"
+                  [es]="sourceName.Passenger_road"
+                  [fuel]="passengerRoad.fuelType"
+                  >
+                </app-fuel-select>
+                <!-- <p-dropdown [disabled]="isView" name="fuelType" [options]="fuelTypeBT" [(ngModel)]="passengerRoad.fuelType" [required]="true"
+                  #ffuelType="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" optionValue="code"></p-dropdown> -->
+              </div>
+              <p class="info-message text-danger" *ngIf=" !passengerRoad.fuelType && (fData.submitted)">
+                This is a mandatory field
+              </p>
+            </div>
+            <div *ngIf="method?.id === 1"><ng-container *ngTemplateOutlet="fuel_col1"></ng-container></div>
+            <div id="basic" class="row p-2"  *ngIf="puesData && puesData.sourceType && puesData.sourceType.toString() === 'B'">
+              <div class="col-4" style="margin-left: 10px;">                    
+                <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="true"></p-radioButton>
+                <label class="radio-l">Mobile</label>
+              </div> 
+      
+              <div class="col-6" style="margin-left: 10px;">                    
+                <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="false"></p-radioButton>
+                <label class="radio-l">Stationary</label>
+              </div> 
+              <div class="col-9" style="margin-left: 10px;"> </div>
+              <br>
+            </div>
+            <div class="p-field row container" *ngIf="isView || !isNewEntry">
+              <div class="col-9 p-2">
+                <label>Emission (tCO<sub>2</sub>) *</label>
+              <input
+                [disabled]="true"
+                type="text"
+                name="emission"
+                [ngModel]="passengerRoad.e_sc  | number: '1.0-5'"
+                class="form-control"
+                placeholder="Enter the last name"
+                required
+              />         
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div *ngIf="method?.id === 1 "><ng-container *ngTemplateOutlet="fuel_col2"></ng-container></div>
+            <div *ngIf="method?.id === 2 && passengerRoad.transportMethod === 'BT'"><ng-container *ngTemplateOutlet="dist_col2"></ng-container></div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="method?.id === 1 || passengerRoad.transportMethod === 'BT'"><ng-container *ngTemplateOutlet="footer"></ng-container></div>
+    </div>
+    <div *ngIf="method?.id === 2 && passengerRoad.transportMethod === 'EC'"><ng-container *ngTemplateOutlet="no_emission"></ng-container></div>
+    <div *ngIf="method?.id === 2 && passengerRoad.transportMethod === 'EC'"><ng-container *ngTemplateOutlet="private"></ng-container></div>
+    <div *ngIf="method?.id === 2 && passengerRoad.transportMethod === 'EC'"><ng-container *ngTemplateOutlet="hired"></ng-container></div>
+    <div *ngIf="method?.id === 2 && passengerRoad.transportMethod === 'EC'"><ng-container *ngTemplateOutlet="public"></ng-container></div>
+  </form>
+</div>
+
+<ng-template #fuel_col1>
+  <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="passengerRoad.transportMethod === 'EC'">
+    <label for="year">Transport Mode</label>
+    <div class="col-9">
+      <p-dropdown [disabled]="isView" name="trnasportMode" [options]="private_modes" [(ngModel)]="passengerRoad.directTransportMode"
+        #ftMode="ngModel" placeholder="Select transport mode" optionLabel="name" appendTo="body" optionValue="code"></p-dropdown>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #fuel_col2>
+  <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="passengerRoad.transportMethod === 'EC'">
+    <label for="year">Petrol Consumption Per Day*</label>
+    <div class="col-9 row pr-0">
+      <div class="col-7 pr-0">
+        <p-inputNumber [disabled]="isView" type="number" name="petrolConsumption"
+          [(ngModel)]="passengerRoad.petrolConsumption" class="" placeholder="Enter Petrol Consumption"
+          mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+      </div>
+      <div class="col-5 pr-0">
+        <p-dropdown [disabled]="isView" name="fuel_unit" [options]="units.ecFuel"
+          [(ngModel)]="passengerRoad.petrolConsumption_unit" #fdistance_unit="ngModel"  [autoDisplayFirst]="true" 
+          optionLabel="label" optionValue="code" class=" col-md-3" appendTo="body" ></p-dropdown>
+      </div>
+    </div>
+  </div>
+  <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="passengerRoad.transportMethod === 'EC'">
+    <label for="year">Diesel Consumption Per Day*</label>
+    <div class="col-9 row pr-0">
+      <div class="col-7 pr-0">
+        <p-inputNumber  [disabled]="isView" type="number" name="dieselConsumption"
+          [(ngModel)]="passengerRoad.dieselConsumption" class="" placeholder="Enter Diesel Consumption"
+          mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+      </div>
+      <div class="col-5 pr-0">
+        <p-dropdown [disabled]="isView" name="fuel_unit" [options]="units.ecFuel"
+          [(ngModel)]="passengerRoad.dieselConsumption_unit" #fdistance_unit="ngModel"  [autoDisplayFirst]="true" 
+          optionLabel="label" optionValue="code" class=" col-md-3" appendTo="body" ></p-dropdown>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #dist_col2>
+  <div class="p-field row container" style="margin-bottom: 10px;">
+    <label for="year">Fuel Economy*</label>
+    <div class="col-9 row pr-0">
+      <div class="col-7 pr-0">
+        <p-inputNumber [disabled]="isView" type="number" name="fuelEconomy"
+          [(ngModel)]="passengerRoad.fuelEconomy" class="" placeholder="Enter Fuel Economy"
+          mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+      </div>
+      <div class="col-5 pr-0">
+        <p-dropdown [disabled]="isView" name="fuel_unit" [options]="units.fuelEconomy"
+          [(ngModel)]="passengerRoad.fuelEconomy_unit" #fdistance_unit="ngModel"  [autoDisplayFirst]="true" 
+          optionLabel="label" optionValue="code" class=" col-md-3" appendTo="body" ></p-dropdown>
+      </div>
+      <p class="info-message text-danger" *ngIf=" !passengerRoad.fuelEconomy_unit && (fData.submitted)">
+        This is a mandatory field
+      </p>
+    </div>
+  </div>
+  <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="onSelectUnitId === 'LKR'">
+    <label for="year">Total Cost </label>
+    <div class="col-9">
+      <p-inputNumber [disabled]="isView" type="number" name="totalCost"
+        [(ngModel)]="totalCost" class="" placeholder="Enter cost" (ngModelChange)="onCostChange($event)" 
+        mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+    </div>
+    <p class="info-message text-danger" *ngIf=" !month && (fData.submitted)">
+      This is a mandatory field
+    </p>
+  </div>
+</ng-template>
+
+<ng-template #ec_card1>
+
+  <div class="p-field row container" style="margin-bottom: 10px;">
+    <label for="employee">Employee Identity</label>
+    <div class="col-9">
+      <p-dropdown [options]="employees" appendTo="body" [(ngModel)]="passengerRoad.employeeName" optionLabel="displayLabel" optionValue="code"[filter]="true" filterBy="name" [showClear]="true" placeholder="Select a Employee" #fempid="ngModel" name="empid">
+    </p-dropdown>
+  
+    </div>
+ 
+
+    <div class="col-3">
+      <p-button 
+      icon="pi pi-user-plus" iconPos="right" 
+      (onClick)="saveEmployee($event)">
+  </p-button>
+    </div>
+
+    <p class="info-message text-danger" *ngIf=" !passengerRoad.employeeName && (fData.submitted)">
+      This is a mandatory field
+    </p>
+  </div>
+
+
+</ng-template>
+
+<ng-template #no_emission>
+  <div class="p-grid p-fluid card" *ngIf="(method |json) !== '{}'">
+    <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+      <div id="basic" class="row">
+        <p><u>No Emission</u></p>
+        <div class="col">
+          <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="passengerRoad.transportMethod === 'EC'">
+            <label for="year">Transport Mode </label>
+            <div class="col-9">
+              <p-dropdown [disabled]="isView" name="noEmissionMode" [options]="no_emission_modes" [(ngModel)]="passengerRoad.noEmissionMode"
+                #fneMode="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" optionValue="code"></p-dropdown>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="p-field row container" style="margin-bottom: 10px;">
+            <label for="year">Distance Travelled Per Day</label>
+            <div class="col-9 row pr-0">
+              <div class="col-7 pr-0">
+                <p-inputNumber [disabled]="isView" type="number" name="noEmissionDistance"
+                  [(ngModel)]="passengerRoad.noEmissionDistance" class="" placeholder="Enter Distance"
+                  mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+              </div>
+              <div class="col-5 pr-0">
+                <p-dropdown [disabled]="isView" name="noEmissionDistance_unit" [options]="units.ecDistance"
+                  [(ngModel)]="noEmissionDistance_unit" #fnedistance_unit="ngModel"  [autoDisplayFirst]="true" 
+                  optionLabel="label" class=" col-md-3" appendTo="body" ></p-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+</ng-template>
+
+<ng-template #private>
+  <div class="p-grid p-fluid card" *ngIf="(method |json) !== '{}'">
+    <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+      <div id="basic" class="row">
+        <p><u>Private</u></p>
+        <div class="col">
+          <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="passengerRoad.transportMethod === 'EC'">
+            <label for="year">Transport Mode</label>
+            <div class="col-9">
+              <p-dropdown [disabled]="isView" name="privateMode" [options]="private_modes" [(ngModel)]="passengerRoad.privateMode"
+                #fptMode="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" optionValue="code" ></p-dropdown>
+            </div>
+          </div>
+          <div class="p-field row container" style="margin-bottom: 10px;">
+            <label for="year">Fuel Type </label>
+            <div class="col-9">
+                <app-fuel-select 
+                  *ngIf="selectedUnit"
+                  (onUpdateFuel)="onUpdateFuel($event)"
+                  [year]="passengerRoad.year" 
+                  [countryCode]="selectedUnit.country.code"
+                  [es]="sourceName.Passenger_road"
+                  [fuel]="passengerRoad.fuelType"
+                  >
+                </app-fuel-select>
+              <!-- <p-dropdown [disabled]="isView" name="fuelType" [options]="fuelType1" [(ngModel)]="fuelType"
+                #ffuelType="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" ></p-dropdown> -->
+              <!-- <p-dropdown [disabled]="isView" name="fuelType" [options]="fuelType1" [(ngModel)]="passengerRoad.fuelType" [required]="true"
+                #ffuelType="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" optionValue="code"></p-dropdown>               -->
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="p-field row container" style="margin-bottom: 10px;">
+            <label for="year">Distance Travelled Per Day </label>
+            <div class="col-9 row pr-0">
+              <div class="col-7 pr-0">
+                <p-inputNumber [disabled]="isView" type="number" name="privateDistance"
+                  [(ngModel)]="passengerRoad.privateDistance" class="" placeholder="Enter Distance"
+                  mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+              </div>
+              <div class="col-5 pr-0">
+                <p-dropdown [disabled]="isView" name="privateDistance_unit" [options]="units.ecDistance"
+                  [(ngModel)]="passengerRoad.privateDistance_unit" #fpdistance_unit="ngModel"  [autoDisplayFirst]="true" 
+                  optionLabel="label" optionValue="code" class=" col-md-3" appendTo="body" ></p-dropdown>
+              </div>
+            </div>
+          </div>
+          <div class="p-field row container" style="margin-bottom: 10px;">
+            <label for="year">Fuel Economy</label>
+            <div class="col-9 row pr-0">
+              <div class="col-7 pr-0">
+                <p-inputNumber [disabled]="isView" type="number" name="fuelEconomy"
+                  [(ngModel)]="passengerRoad.fuelEconomy" class="" placeholder="Enter Fuel Economy"
+                  mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+              </div>
+              <div class="col-5 pr-0">
+                <p-dropdown [disabled]="isView" name="fuel_unit" [options]="units.fuelEconomy"
+                  [(ngModel)]="passengerRoad.fuelEconomy_unit" #fdistance_unit="ngModel" [autoDisplayFirst]="true"
+                  optionLabel="label" optionValue="code" class=" col-md-3" appendTo="body" ></p-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+</ng-template>
+
+<ng-template #hired>
+  <div class="p-grid p-fluid card" *ngIf="(method |json) !== '{}'">
+    <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+      <div id="basic" class="row">
+        <p><u>Hired</u></p>
+        <div class="col">
+          <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="passengerRoad.transportMethod === 'EC'">
+            <label for="year">Transport Mode </label>
+            <div class="col-9">
+              <p-dropdown [disabled]="isView" name="privateMode" [options]="private_modes" [(ngModel)]="passengerRoad.hiredMode"
+                #fptMode="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" optionValue="code" ></p-dropdown>
+            </div>
+          </div>
+          <div class="p-field row container" style="margin-bottom: 10px;">
+            <label for="year">Fuel Type </label>
+            <div class="col-9">
+                <app-fuel-select 
+                  (onUpdateFuel)="onUpdateHiredFuel($event)"
+                  [year]="passengerRoad.year" 
+                  [countryCode]="selectedUnit.country.code"
+                  [es]="sourceName.Passenger_road"
+                  [fuel]="passengerRoad.hiredFuelType"
+                  >
+                </app-fuel-select>
+              <!-- <p-dropdown [disabled]="isView" name="fuelType" [options]="fuelType1" [(ngModel)]="fuelType"
+                #ffuelType="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" ></p-dropdown> -->
+              <!-- <p-dropdown [disabled]="isView" name="hiredFuelType" [options]="fuelType1" [(ngModel)]="passengerRoad.hiredFuelType" [required]="true"
+                #ffuelType="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" optionValue="code"></p-dropdown>               -->
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="p-field row container" style="margin-bottom: 10px;">
+            <label for="year">Distance Travelled Per Day</label>
+            <div class="col-9 row pr-0">
+              <div class="col-7 pr-0">
+                <p-inputNumber [disabled]="isView" type="number" name="hiredDistance"
+                  [(ngModel)]="passengerRoad.hiredDistance" class="" placeholder="Enter Distance"
+                  mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+              </div>
+              <div class="col-5 pr-0">
+                <p-dropdown [disabled]="isView" name="hiredDistance_unit" [options]="units.ecDistance"
+                  [(ngModel)]="passengerRoad.hiredDistance_unit" #fhdistance_unit="ngModel"  [autoDisplayFirst]="true" 
+                  optionLabel="label" optionValue="code" class=" col-md-3" appendTo="body" ></p-dropdown>
+              </div>
+            </div>
+          </div>
+          <div class="p-field row container" style="margin-bottom: 10px;">
+            <label for="year">Fuel Economy</label>
+            <div class="col-9 row pr-0">
+              <div class="col-7 pr-0">
+                <p-inputNumber [disabled]="isView" type="number" name="hiredFuelEconomy"
+                  [(ngModel)]="passengerRoad.hiredFuelEconomy" class="" placeholder="Enter Fuel Economy"
+                  mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+              </div>
+              <div class="col-5 pr-0">
+                <p-dropdown [disabled]="isView" name="hiredFuelEconomy_unit" [options]="units.fuelEconomy"
+                  [(ngModel)]="passengerRoad.hiredFuelEconomy_unit" #fdistance_unit="ngModel" [autoDisplayFirst]="true"
+                  optionLabel="label" optionValue="code" class=" col-md-3" appendTo="body" ></p-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+</ng-template>
+
+<ng-template #public>
+  <div class="p-grid p-fluid card" *ngIf="(method |json) !== '{}'">
+    <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+      <div id="basic" class="row">
+        <p><u>Public</u></p>
+        <div class="col">
+          <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="passengerRoad.transportMethod === 'EC'">
+            <label for="year">Transport Mode</label>
+            <div class="col-9">
+              <p-dropdown [disabled]="isView" name="publicMode" [options]="public_modes" [(ngModel)]="passengerRoad.publicMode"
+                #ftMode="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" optionValue="code" ></p-dropdown>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="p-field row container" style="margin-bottom: 10px;">
+            <label for="year">Distance Travelled Per Day </label>
+            <div class="col-9 row pr-0">
+              <div class="col-7 pr-0">
+                <p-inputNumber [disabled]="isView" type="number" name="publicDistance"
+                  [(ngModel)]="passengerRoad.publicDistance" class="" placeholder="Enter Distance"
+                  mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+              </div>
+              <div class="col-5 pr-0">
+                <p-dropdown [disabled]="isView" name="publicDistance_unit" [options]="units.publicDistance"
+                  [(ngModel)]="passengerRoad.publicDistance_unit" #fdistance_unit="ngModel"  [autoDisplayFirst]="true" 
+                  optionLabel="label" optionValue="code" class=" col-md-3" appendTo="body" ></p-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngTemplateOutlet="footer"></ng-container>
+  </div> 
+</ng-template>
+
+<ng-template #footer> 
+  <div class="row justify-content-end">
+    <div class="row p-grid p-fluid col-md-6 col-sm-6">
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+        <button class="btn btn-secondary text-uppercase" (click)="onBackClick()">
+          Back
+        </button>
+      </div>
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+        <button *ngIf="!isNewEntry  && deletable" class="btn btn-danger text-uppercase" type="button" (click)="onDeleteClick()">
+          Delete
+        </button>
+      </div>
+      <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+        <button [disabled]="creating || !puesAssigned || isDuplicated" class="btn btn-primary text-uppercase" type="submit">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+

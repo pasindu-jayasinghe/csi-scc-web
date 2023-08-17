@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="col">
+        <p-checkbox (onChange)="onChangeEs($event)" [(ngModel)]="assigned" [disabled]="isView || loading" [value]="true"></p-checkbox>
+        <label class="check-box-label" for="la">{{getName(es) | titlecase}}</label>  
+    </div>
+    <div class="col">
+        <div class="p-field row container">                    
+            <div class="col-9">
+                <p-dropdown
+                    (onChange)="change()"
+                    [disabled]="isView || assigned.length == 0"
+                    [(ngModel)]="pues.clasification"
+                    name="type"
+                    [options]="clasifications"
+                    placeholder="Select classification"                
+                    appendTo="body" 
+                ></p-dropdown>
+                <p class="info-message text-danger" *ngIf="!pues.clasification && assigned.length>0">This is a mandatory field</p>  
+            </div>                    
+        </div>     
+    </div>
+    <div class="col">
+        <div class="p-field row container">                    
+            <div class="col-9">
+                <p-dropdown
+                    (onChange)="change()"
+                    [disabled]="isView || assigned.length == 0"
+                    [(ngModel)]="pues.tier"
+                    name="tier"
+                    [options]="tiers"
+                    placeholder="Select tier"      
+                    appendTo="body" 
+                ></p-dropdown>
+                <p class="info-message text-danger" *ngIf="!pues.tier && assigned.length>0">This is a mandatory field</p>  
+            </div>                    
+        </div>     
+    </div>
+    <div class="col">
+        <div class="p-field row container">                    
+            <div class="col-9">
+                <p-dropdown
+                    (onChange)="change()"
+                    [disabled]="isView || assigned.length == 0"
+                    [(ngModel)]="pues.scope"
+                    name="scope"
+                    [options]="scopes"
+                    placeholder="Select Scope"      
+                    appendTo="body" 
+                ></p-dropdown>
+            </div>                    
+        </div>     
+    </div>
+    <div class="col">
+        <div class="col" style="margin-left: 10px;">                    
+            <p-checkbox (onChange)="change()" [disabled]="isView || assigned.length == 0" name="isfy" [value]="true"  [(ngModel)]="mobile"></p-checkbox>
+            <label class="check-box-label" for="la">Mobile</label>
+        </div> 
+        <div class="col" style="margin-left: 10px;">                    
+            <p-checkbox (onChange)="change()" [disabled]="isView || assigned.length == 0" name="isfy" [value]="true" [(ngModel)]="stationary"></p-checkbox>
+            <label class="check-box-label" for="la">Stationary</label>
+        </div> 
+        <p class="info-message text-danger" *ngIf="(mobile.length == 0 && stationary.length == 0) && assigned.length>0">This is a mandatory field</p>  
+    </div>
+</div>
+<hr>

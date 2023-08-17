@@ -1,0 +1,45 @@
+<div class="container">
+    <div class="row" style="padding: 0px 0px 0px 30px;">
+        <div class="col">
+            <div class="p-field check">
+                <div class="">
+                    <p-checkbox  [disabled]="isView" name="thisUnit" [(ngModel)]="thisUnit" [value]="true"  [binary]="true"></p-checkbox>
+                    <label class="check-box-label" for="la">For this Unit</label>
+                </div>                       
+            </div>     
+        </div>
+        <div class="col">
+            <div class="p-field check">
+                <div class="">
+                    <p-checkbox (onChange)="onChangeChildCheck()" [disabled]="isView" name="childUnit" [(ngModel)]="childUnit" [binary]="true"></p-checkbox>
+                    <label class="check-box-label" for="la">For all children Units</label>
+                </div>                       
+            </div>    
+        </div>    
+    </div>
+    <hr>
+
+    <div class="row" style="padding: 0px 0px 0px 30px;">
+        <div class="p-field" *ngFor="let emissionSource of emissionSources">            
+            <div class="container">
+                <div class="row">
+                    <app-project-unit-es-data
+                        [loading]="loading"
+                        [isView]="isView"
+                        (onAssigneFirstESToUnit)="onAssigneFirstESToUnit($event)"
+                        [assignedEmissionSources]="assignedEmissionSources"
+                        [projectUnits]="assigningProjectUnits"
+                        [assigningProjectUnitIds]="assigningProjectUnitIds"
+                        [es]="emissionSource"
+                    ></app-project-unit-es-data>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="currentProjectUnit && !isView" style="padding: 0px 0px 0px 30px;float: right;">
+        <p-button  (click)="reassign()" label="Remove" icon="pi pi-times" styleClass="p-button-danger"></p-button>
+        <!-- <p-button icon="pi pi-check" (click)="assign()" label="Asign" class="p-button-text"></p-button> -->
+    </div>
+</div>
+

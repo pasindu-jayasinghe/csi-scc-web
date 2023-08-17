@@ -1,0 +1,38 @@
+<div class="p-grid p-fluid card">
+    <div class="row" *ngIf="isEnableGenerate && hasUserActionAccessTo()">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-3">
+                    <label for="version">Version Name</label>
+                </div>
+                <div class="col-9">
+                    <input
+                        type="text"
+                        name="version"
+                        class="form-control"
+                        placeholder="Enter version name"
+                        required
+                        [(ngModel)]="version"
+                    /> 
+                </div>
+            </div>
+        </div>
+        <button 
+            [disabled]="!selectedUnit || !selectedProject "
+            (click)="generate()"  class="ml-4" type="button" pButton pRipple style="width: 150px;margin-left: 4px;" styleClass="p-button-warn">
+            Generate
+        </button>
+    </div>
+
+    <div class="row">
+        <p *ngIf="reportHistoryList.length === 0 && !isCSIUser">Select Unit and Project to access the repors</p>
+        <div _ngcontent-mil-c27="" style="padding: 10px; cursor: pointer;" class="col-md-4 col-xs-6 ng-star-inserted" *ngFor="let r of reportHistoryList">
+            <div _ngcontent-mil-c27="" class="row  d-flex justify-content-center">
+                <img (click)="view(r.generateReportName)" _ngcontent-mil-c27="" src="../../../assets/images/pdf.webp" style="display: block; min-width:120px;max-width: 120px;">
+            </div>
+            <div _ngcontent-mil-c27="" class="row d-flex justify-content-center">
+                <span  class="row d-flex justify-content-center" (click)="view(r.generateReportName)">{{r.reportName}}</span>                
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+
+<div class="container">
+    <div class="p-grid p-fluid card">
+        <div style="padding: 0px 30px 0 30px">
+            <h6>Assign Units</h6>
+        </div>
+
+        <!-- <div class="card" style="min-height: 500px">
+            <div class="p-grid p-fluid col-md-9 col-sm-12">        
+                <div class="col-12 col-md-8">
+                  <div class="p-field">
+                    <label for="institution">Root Unit <span  *ngIf="project.ownerUnit">: {{project.ownerUnit.name}}</span></label>
+                    <p-dropdown
+                        *ngIf="!project.ownerUnit.id"
+                        (onChange)="onChangeUnit()"
+                        [options]="parentUnits"
+                        [(ngModel)]="parentUnit"
+                        #fproject="ngModel"
+                        placeholder="Select .."
+                        optionLabel="name"                    
+                    ></p-dropdown>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- [disabled]="this.project.projectUnits.length>0" -->
+
+
+        <div class="row" style="padding: 0px 0px 0px 30px;">
+            <ngx-org-chart direction="horizontal" style="margin-top: 30px;" [nodes]="nodes" (itemClick)="openUnitModel($event)"></ngx-org-chart>                               
+        </div>
+    </div>
+</div>

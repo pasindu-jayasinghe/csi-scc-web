@@ -1,0 +1,1017 @@
+<div class="container pl-25 pr-25">
+  <div class="mb-12">
+    <h4 class="mt-4">
+      {{ isNewEntry ? "Add" : isView ? "View" : "Edit" }} Business Travel
+    </h4>
+  </div>
+  <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+    <div class="card">
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Unit *</label>
+              <app-unit-select
+                [isView]="isView"
+                [unit]="selectedUnit"
+                (onUpdateUnit)="onUpdateUnit($event)"
+              ></app-unit-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Project *</label>
+              <app-project-select
+                [isView]="isView"
+                [unit]="selectedUnit"
+                [project]="business_travel.project"
+                (onUpdateProject)="onChangeProject($event)"
+                [data]="fData"
+              ></app-project-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Year *</label>
+
+              <input
+                [disabled]="true"
+                type="text"
+                name="year"
+                [(ngModel)]="business_travel.year"
+                class="form-control"
+                placeholder="Enter Year"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid p-fluid col-md-9 col-sm-12">
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Month *</label>
+              <p-dropdown
+                [disabled]="isView"
+                name="institution"
+                [options]="months"
+                [(ngModel)]="month"
+                (onChange)="monthCgange()"
+                #fmonth="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                [required]="true"
+                appendTo="body"
+              ></p-dropdown>
+              <p
+                class="info-message text-danger"
+                *ngIf="
+                  !month && fData.submitted && ( fmonth.touched || fmonth.dirty)
+                "
+              >
+                This is a mandatory field
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-grid p-fluid col-md-6 col-sm-6">
+        <label for="year">Method * <i pTooltip="Please remove unfilled data row by clicking '-' button in right side before save." class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+        <div class="col-9">
+          <p-dropdown
+            (onChange)="onSelectMethod($event)"
+            [disabled]="isView ||!isNewEntry"
+            name="method"
+            [required]="true"
+            [options]="methods_netZeroBusinessTravel"
+            [(ngModel)]="business_travel.method"
+            #fmethod="ngModel"
+            placeholder="Select .."
+            optionLabel="name"
+            optionValue="value"
+            appendTo="body"
+          ></p-dropdown>
+        </div>
+        <p class="info-message text-danger" *ngIf="!business_travel.method && (fData.submitted || fmethod.touched || fmethod.dirty)">
+          This is a mandatory field
+        </p>
+      </div>
+
+      <div
+        *ngIf="
+          business_travel.method ==
+          netZeroBusinessTravelActivityDataDtoMethod.FuelBase
+        "
+        class="p-grid p-fluid"
+      >
+        <div style="background-color: rgb(217, 246, 246); margin: 2% 0 5% 0">
+          <div
+            *ngFor="
+              let fuel of business_travel.fuel_emission_source_data.fuel_data;
+              let i = index
+            "
+            class="row p-2"
+          >
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Fuel Type</label>
+                <!-- <input
+                  [disabled]="isView"
+                  type="text"
+                  [name]="'fuelType' + i"
+                  class="form-control"
+                  [(ngModel)]="fuel.fuel_type"
+                  placeholder="Enter Fuel Type number"
+                  required
+                /> -->
+                <!-- <p-dropdown
+                [disabled]="isView"
+                [name]="'fuelType' + i"
+                [options]="types.fuel"
+                [(ngModel)]="fuel.fuel_type"
+                placeholder="Select .."
+                optionLabel="name"
+                optionValue="code"
+                [filter]="true"
+                filterBy="name"
+                appendTo="body"
+                class="col-4"
+                [required]="true"
+               
+              >
+              </p-dropdown> -->
+              <app-fuel-select 
+              (onUpdateFuel)="onUpdateFuel($event,fuel)"
+              [year]="business_travel.year" 
+              *ngIf="selectedUnit"
+              [countryCode]="selectedUnit.country.code"
+              [es]="sourceName.Net_zero_business_travel"
+              [fuel]="fuel.fuel_type"
+              >
+            </app-fuel-select>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!fuel.fuel_type && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Quantity of Fuel Consumed (liters)</label>
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'fuelQuntity' + i"
+                  class="form-control"
+                  [(ngModel)]="fuel.quntity"
+                  placeholder="Enter Quantity "
+                  required
+                  step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                  
+                />
+
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!fuel.quntity && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-2">
+              <div class="p-field">
+                <label>unit </label>
+                <p-dropdown
+                  [disabled]="isView"
+                  [name]="'gridUnit' + i"
+                  [options]="units.fuel"
+                  [(ngModel)]="fuel.fuel_quntity_unit"
+                  optionValue="code"
+                  optionLabel="label"
+                  class="col-4"
+                  appendTo="body"
+                ></p-dropdown>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!fuel.fuel_quntity_unit && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-2 col-md-2">
+              <div *ngIf="!isView" class="row">
+                <div class="col-3">
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="
+                      removeRow(
+                        business_travel.fuel_emission_source_data.fuel_data,
+                        i
+                      )
+                    "
+                    pButton
+                    pRipple
+                    icon="pi pi-minus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+                <div
+                  *ngIf="
+                    business_travel.fuel_emission_source_data.fuel_data
+                      .length ==
+                    i + 1
+                  "
+                  class="col-3"
+                >
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="addNewDataObject('fuel')"
+                    pButton
+                    pRipple
+                    icon="pi pi-plus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="background-color: rgb(217, 246, 246); margin: 2% 0 5% 0">
+          <div
+            *ngFor="
+              let grid of business_travel.fuel_emission_source_data.grid_data;
+              let i = index
+            "
+            class="row p-2"
+          >
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Grid Region</label>
+                <input
+                  [disabled]="isView"
+                  type="text"
+                  [name]="'gridRegion' + i"
+                  class="form-control"
+                  [(ngModel)]="grid.grid_type"
+                  placeholder="Enter Grid Region"
+                  required
+                />
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!grid.grid_type && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Quantity of Electricity Consumed (kWh)</label>
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'electricityConsumed' + i"
+                  [(ngModel)]="grid.quntity"
+                  class="form-control"
+                  placeholder="Enter Quantity"
+                  required
+                  step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                />
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!grid.quntity && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-2">
+              <div class="p-field">
+                <label>unit </label>
+                <p-dropdown
+                  [disabled]="isView"
+                  [name]="'gridUnit' + i"
+                  [options]="units.grid"
+                  [(ngModel)]="grid.grid_quntity_unit"
+                  optionValue="code"
+                  optionLabel="label"
+                  class="col-4"
+                  appendTo="body"
+                ></p-dropdown>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!grid.grid_quntity_unit && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-3">
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="
+                      removeRow(
+                        business_travel.fuel_emission_source_data.grid_data,
+                        i
+                      )
+                    "
+                    pButton
+                    pRipple
+                    icon="pi pi-minus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+                <div
+                  *ngIf="
+                    business_travel.fuel_emission_source_data.grid_data
+                      .length ==
+                    i + 1
+                  "
+                  class="col-3"
+                >
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="addNewDataObject('grid')"
+                    pButton
+                    pRipple
+                    icon="pi pi-plus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="background-color: rgb(217, 246, 246); margin: 2% 0 5% 0">
+          <div
+            *ngFor="
+              let ref of business_travel.fuel_emission_source_data
+                .refrigerant_data;
+              let i = index
+            "
+            class="row p-2"
+          >
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Refrigerant</label>
+                <!-- <input
+                  [disabled]="isView"
+                  type="text"
+                  [name]="'refrigerant' + i"
+                  [(ngModel)]="ref.refrigerant_type"
+                  class="form-control"
+                  placeholder="Enter Refrigerant"
+                  required
+                /> -->
+                <p-dropdown
+                [disabled]="isView"
+                [name]="'refrigerant' + i"
+                [options]="types.ref"
+                [(ngModel)]="ref.refrigerant_type"
+                placeholder="Select .."
+                optionLabel="name"
+                optionValue="name"
+                [filter]="true"
+                filterBy="name"
+                appendTo="body"
+                class="col-4"
+                [required]="true"
+               
+              ></p-dropdown>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!ref.refrigerant_type && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Quantity of Refrigerant Leakage </label>
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'leackege' + i"
+                  class="form-control"
+                  [(ngModel)]="ref.quntity"
+                  placeholder="Enter Quantity"
+                  required
+                  step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                />
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!ref.quntity && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <!-- <div class="col-6 col-md-2">
+            <div class="p-field">
+              <label>unit </label>
+              <p-dropdown
+              [disabled]="isView"
+              [name]="'reftUnit'+i"
+              [options]="units.consumption"
+              [(ngModel)]="ref.refrigerant_quntity_unit"
+              
+              optionLabel="label"
+              class=" col-4"
+              appendTo="body"
+            ></p-dropdown>
+              <p
+                  class="info-message text-danger" *ngIf="!ref.refrigerant_quntity_unit && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+            </div>
+          </div> -->
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-3">
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="
+                      removeRow(
+                        business_travel.fuel_emission_source_data
+                          .refrigerant_data,
+                        i
+                      )
+                    "
+                    pButton
+                    pRipple
+                    icon="pi pi-minus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+                <div
+                  *ngIf="
+                    business_travel.fuel_emission_source_data.refrigerant_data
+                      .length ==
+                    i + 1
+                  "
+                  class="col-3"
+                >
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="addNewDataObject('ref')"
+                    pButton
+                    pRipple
+                    icon="pi pi-plus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="
+          business_travel.method ==
+          netZeroBusinessTravelActivityDataDtoMethod.DistanceBase
+        "
+        class="p-grid p-fluid"
+      >
+        <div style="background-color: rgb(217, 246, 246); margin: 2% 0 5% 0">
+          <div
+            *ngFor="
+              let dis of business_travel.distance_emission_source_data
+                .vehicale_data;
+              let i = index
+            "
+            class="row p-2"
+          >
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Vehicale Type</label>
+              
+                <p-dropdown
+                  [disabled]="isView"
+                  [name]="'vehicleType' + i"
+                  [options]="types.distance"
+                  [(ngModel)]="dis.vehicleType"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  optionValue="code"
+                  [filter]="true"
+                  filterBy="name"
+                  appendTo="body"
+                  class="col-4"
+                  [required]="true"
+                 
+                >
+                </p-dropdown>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!dis.vehicleType && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label>Distance </label>
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'distance' + i"
+                  [(ngModel)]="dis.totalDistanceTravelled"
+                  class="form-control"
+                  placeholder="Enter Distance"
+                  required
+                  step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                />
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!dis.totalDistanceTravelled && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-2">
+              <div class="p-field">
+                <label>Unit </label>
+                <p-dropdown
+                  [disabled]="isView"
+                  [name]="'distUnit' + i"
+                  [options]="units.distance"
+                  [(ngModel)]="dis.totalDistanceTravelled_unit"
+                  #funit="ngModel"
+                  optionValue="code"
+                  optionLabel="label"
+                  class="col-4"
+                  appendTo="body"
+                ></p-dropdown>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!dis.totalDistanceTravelled_unit && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-3">
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="
+                      removeRow(
+                        business_travel.distance_emission_source_data
+                          .vehicale_data,
+                        i
+                      )
+                    "
+                    pButton
+                    pRipple
+                    icon="pi pi-minus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+                <div
+                  *ngIf="
+                    business_travel.distance_emission_source_data.vehicale_data
+                      .length ==
+                    i + 1
+                  "
+                  class="col-3"
+                >
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="addNewDataObject('distance')"
+                    pButton
+                    pRipple
+                    icon="pi pi-plus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background-color: rgb(217, 246, 246); margin: 2% 0 5% 0">
+          <div
+            *ngFor="
+              let hotel of business_travel.distance_emission_source_data
+                .hotel_data;
+              let i = index
+            "
+            class="row p-2"
+          >
+            <div class="col-6 col-md-3">
+              <div class="p-field">
+                <label> Country </label>
+                <p-dropdown
+                [disabled]="isView"
+                  name="countryCode"
+                  [options]="countries"
+                  [(ngModel)]="hotel.countryCode"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  optionValue="code"
+                  [filter]="true"
+                  filterBy="name"
+                  appendTo="body"
+                  [required]="true"
+                >
+                </p-dropdown>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!hotel.countryCode && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="p-field">
+                <label>Number of Nights </label>
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'numberOfnight' + i"
+                  [(ngModel)]="hotel.totalNumberHotelNight"
+                  class="form-control"
+                  placeholder="Enter Number of Nights"
+                  required
+                  step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                />
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!hotel.totalNumberHotelNight && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="p-field">
+                <label> Hotel Eemission Factor (kg CO2 e/night) <i pTooltip="Entered Emission  factor will override system Emission Factors" class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'userInputEf' + i"
+                  [(ngModel)]="hotel.user_input_ef"
+                  class="form-control"
+                  placeholder="Enter Factor"
+                   
+                />
+                <!-- <p
+                  class="info-message text-danger"
+                  *ngIf="!hotel.user_input_ef && fData.submitted"
+                >
+                  This is a mandatory field
+                </p> -->
+              </div>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-3">
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="
+                      removeRow(
+                        business_travel.distance_emission_source_data
+                          .hotel_data,
+                        i
+                      )
+                    "
+                    pButton
+                    pRipple
+                    icon="pi pi-minus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+                <div
+                  *ngIf="
+                    business_travel.distance_emission_source_data.hotel_data
+                      .length ==
+                    i + 1
+                  "
+                  class="col-3"
+                >
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="addNewDataObject('hotel')"
+                    pButton
+                    pRipple
+                    icon="pi pi-plus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="
+          business_travel.method ==
+          netZeroBusinessTravelActivityDataDtoMethod.SpendBase
+        "
+        class="p-grid p-fluid"
+      >
+        <div style="background-color: rgb(217, 246, 246); margin: 2% 0 5% 0">
+          <div
+            *ngFor="
+              let amount of business_travel.spend_emission_source_data
+                .amount_data;
+              let i = index
+            "
+            class="row p-2"
+          >
+            <div class="col-6 col-md-3">
+              <div class="p-field">
+                <label>Travel type</label>
+                <!-- <input
+                  [disabled]="isView"
+                  type="text"
+                  [name]="'spendType' + i"
+                  class="form-control"
+                  [(ngModel)]="amount.travel_type"
+                  placeholder="Enter Travel type"
+                  required
+                /> -->
+                <p-dropdown
+                [disabled]="isView"
+                [name]="'spendType' + i"
+                [options]="types.amount"
+                [(ngModel)]="amount.travel_type"
+                placeholder="Select .."
+                optionLabel="name"
+                optionValue="code"
+                [filter]="true"
+                filterBy="name"
+                appendTo="body"
+                class="col-4"
+                [required]="true"
+                
+               
+              >
+              </p-dropdown>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!amount.travel_type && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div class="col-6 col-md-2">
+              <div class="p-field">
+                <label>Amount($) </label>
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'amount' + i"
+                  class="form-control"
+                  [(ngModel)]="amount.totalAmountOnTravel"
+                  placeholder="Enter Amount"
+                  required
+                  step="any" min="0.000001" oninput="if(isNaN(this.value) || this.value < 0) this.value =0"
+                />
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!amount.totalAmountOnTravel && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div> <div class="col-6 col-md-3">
+              <div class="p-field">
+                <label>EEIO Emission Factor (kgCO2e/$)<i pTooltip="Entered Emission  factor will override system Emission Factors" class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  [name]="'numberOfnight' + i"
+                  [(ngModel)]="amount.user_input_ef"
+                  class="form-control"
+                  placeholder="Enter Value"
+                   
+                />
+                <!-- <p
+                  class="info-message text-danger"
+                  *ngIf="!amount.user_input_ef && fData.submitted"
+                >
+                  This is a mandatory field
+                </p> -->
+              </div>
+            </div>
+            <div class="col-6 col-md-2">
+              <div class="p-field">
+                <label>Unit </label>
+                <p-dropdown
+                  [disabled]="isView"
+                  [name]="'amountUnit' + i"
+                  [options]="units.amount"
+                  [(ngModel)]="amount.totalAmountOnTravel_unit"
+                  optionValue="code"
+                  optionLabel="label"
+                  class="col-4"
+                  appendTo="body"
+                ></p-dropdown>
+                <p
+                  class="info-message text-danger"
+                  *ngIf="!amount.totalAmountOnTravel_unit && fData.submitted"
+                >
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+            <div *ngIf="!isView" class="col-2 col-md-2">
+              <div class="row">
+                <div class="col-2">
+
+                </div>
+                <div class="col-5">
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="
+                      removeRow(
+                        business_travel.spend_emission_source_data.amount_data,
+                        i
+                      )
+                    "
+                    pButton
+                    pRipple
+                    icon="pi pi-minus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+                <div
+                  *ngIf="
+                    business_travel.spend_emission_source_data.amount_data
+                      .length ==
+                    i + 1
+                  "
+                  class="col-5"
+                >
+                  <button
+                    class="ml-1"
+                    type="button"
+                    (click)="addNewDataObject('amount')"
+                    pButton
+                    pRipple
+                    icon="pi pi-plus"
+                    styleClass="p-button-warn"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="basic"
+        class="row"
+        *ngIf="
+          puesData &&
+          puesData.sourceType &&
+          puesData.sourceType.toString() === 'B'
+        "
+      >
+        <div class="col-1" style="margin-left: 10px">
+          <p-radioButton
+            (onClick)="isMobileChange()"
+            [(ngModel)]="isMobile"
+            class="radio-b"
+            name="groupname"
+            [value]="true"
+          ></p-radioButton>
+          <label class="radio-l">Mobile</label>
+        </div>
+
+        <div class="col-2" style="margin-left: 10px">
+          <p-radioButton
+            (onClick)="isMobileChange()"
+            [(ngModel)]="isMobile"
+            class="radio-b"
+            name="groupname"
+            [value]="false"
+          ></p-radioButton>
+          <label class="radio-l">Stationary</label>
+        </div>
+        <div class="col-9" style="margin-left: 10px"></div>
+        <br />
+      </div>
+
+      <div
+        class="p-grid p-fluid col-md-9 col-sm-12"
+        *ngIf="puesData && !puesData.clasification"
+      >
+        <div class="row p-2">
+          <div class="col-12 col-md-8">
+            <div class="p-field">
+              <label for="institution">Ownership *</label>
+              <p-dropdown
+                [disabled]="isView"
+                name="ownership"
+                [options]="ownerships"
+                [(ngModel)]="business_travel.ownership"
+                #fOwnership="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                optionValue="name"
+                appendTo="body"
+                [required]="true"
+              ></p-dropdown>
+            </div>
+          </div>
+          <p
+            class="info-message text-danger"
+            *ngIf="!business_travel.ownership && fData.submitted"
+          >
+            This is a mandatory field
+          </p>
+        </div>
+        <br />
+      </div>
+
+      <div>
+        <p
+          class="info-message text-danger ml-5 col-6"
+          *ngIf="fData.submitted && !fData.valid"
+        >
+          All mandatory fields should be filled before save action.
+        </p>
+      </div>
+      <br />
+
+      <div class="row p-grid p-fluid col-md-6 col-sm-6">
+        <div
+          class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2"
+        >
+          <button
+            class="btn btn-secondary text-uppercase"
+            (click)="onBackClick()"
+          >
+            Back
+          </button>
+        </div>
+        <div
+          class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2"
+        >
+          <button
+            *ngIf="!isNewEntry && deletable && !isView"
+            class="btn btn-danger text-uppercase"
+            type="button"
+            (click)="onDeleteClick()"
+          >
+            Delete
+          </button>
+        </div>
+        <div
+          class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2"
+        >
+          <button
+            [disabled]="creating || !puesAssigned || isDuplicated"
+            class="btn btn-primary text-uppercase"
+            type="submit"
+            *ngIf="!isView"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+      <div class="row"></div>
+    </div>
+  </form>
+</div>
+
+<!-- <p-toast position="top-right"></p-toast> -->
+<!-- <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->

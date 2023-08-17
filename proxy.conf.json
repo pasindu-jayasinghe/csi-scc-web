@@ -1,0 +1,32 @@
+
+
+  [
+    {
+      "context": ["/api"],
+      "target": "https://applications.icao.int/icec/Home/AutoCompleted",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {"^/api": ""}
+    },
+    {
+      "context": ["/api2"],
+      "target": "https://applications.icao.int/icec/Home/AutoCompletedByDep",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {"^/api2": ""}
+    },
+    {
+      "context": ["/compute"],
+      "target": "https://applications.icao.int/icec/Home/getCompute",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {"^/compute": ""}
+    },
+    {
+      "context": ["/result"],
+      "target": "https://applications.icao.int/icec/Home/ChildResultTotalView",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {"^/result": ""}
+    }
+  ]

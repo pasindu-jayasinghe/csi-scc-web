@@ -1,0 +1,229 @@
+/* header css start */
+
+.header {
+  min-height: 75px;
+  height: 12%;
+  transition: all 0.5s;
+  z-index: 997;
+  padding: 24px 0;
+}
+.header a{
+cursor: pointer;
+}
+
+
+@media (max-width: 1024px) {
+  .header {
+    padding: 12px 0;
+  }
+}
+.header>div {
+ 
+  align-items: center;
+ }
+.climatesi-logo {
+
+/* height: 20px; */
+z-index: 99;
+
+}
+.climatesi-logo img {
+  /* background-color: #fff; */
+  width: 70%;
+  max-width: 140px !important;
+  max-height: 90px;
+  margin-right: 6px;
+  
+}
+
+
+
+/* navgation bar */
+
+@media (min-width: 1280px) {
+  .nav1 {
+    
+    display: flex;
+    list-style: none;
+    align-items: center;
+    position:relative;
+   
+  }
+  .nav1 div {
+    position:relative;
+
+    padding: 20px 0 20px 25px;
+  }
+  
+
+  .nav1 div>a{
+   
+    font-family: var(--font-default);
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.753);
+
+    transition: 0.3s;
+    
+ 
+  }
+  .nav1 div>a:hover{
+    text-decoration: underline !important;
+    color: rgb(255, 255, 255);
+  }
+  .nav1 div ul{
+    display: none;
+    position: absolute;
+    min-width: 150px;
+    top:50px;
+    margin: 0;
+    padding: 20px 0;
+    white-space: nowrap;
+    opacity: 0;
+    list-style: none;
+
+    background: #fff;
+    box-shadow: 0px 0px 30px rgba(8, 8, 9, 0.25);
+    transition: 0.2s;
+    border-radius: 10px;
+    
+  }
+  .nav1>div:hover ul{
+    opacity: 1;
+    display: block;
+  }
+  .nav1>div ul li{
+    margin: 10px 20px;
+  }
+  .nav1>div ul a{
+ 
+    font-weight: 500;
+    font-size: 16px;
+    text-transform: none;
+    color: var(--color-secondary);
+ 
+  }
+  .nav1>div ul a:hover{
+    text-shadow: rgb(90, 183, 85) 1px 1px 3px;
+    color: rgba(66, 192, 70, 0.9);
+ 
+  }
+  .mobile-nav-button{
+    display: none;
+  }
+}
+
+
+
+
+
+
+@media (max-width: 1279px) {
+  .nav1 {
+    max-height: 100vh;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    max-width: 400px;
+    /* bottom: 0; */
+    transition: 0.3s;
+    z-index: 100;
+    overflow-y: auto;
+    border-radius: 10px;
+    background: rgba(27, 47, 69, 0.9);
+  }
+  .nav1>div {
+    
+    inset: 0;
+    padding: 10px 0px 10px 20px;
+    margin: 0;
+ 
+    
+    transition: 0.3s;
+    z-index: 101;
+  }
+  .nav1 div>a{
+   
+    font-family: var(--font-default);
+    font-size: 16px;
+    font-weight: 500;
+    color: rgb(255, 255, 255);
+
+    transition: 0.3s;
+    
+ 
+  }
+
+
+
+  .nav1 ul {
+   
+    min-width: 50%;
+  
+    padding: 5% 10% 5% 5%;
+    border-radius: 10px;
+    list-style: none;
+    margin: 5% 0 0 0;
+    background: rgba(27, 47, 69, 0.9);
+    overflow-y: auto;
+    transition: 0.6s;
+    width: fit-content;
+  }
+ 
+  .nav1 div ul a{
+ 
+    
+    font-size: 14px;
+    text-transform: none;
+    color: white;
+ 
+  }
+  .nav1 div ul a:hover{
+    text-shadow: rgb(71, 51, 184) 1px 1px 3px;
+    color: rgba(77, 80, 174, 0.9);
+ 
+  }
+
+
+    
+  .mobile-nav-button {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 0;
+  
+    padding-right: 5%;
+  }
+
+
+
+  .mobile-nav-close {
+   
+    position: fixed;
+    right: 30px;
+    top: 15px;
+    z-index: 108;
+
+  }
+
+ 
+
+
+
+}
+
+/* header end */
+
+
+
+
+
+
+
+
+
+
+
+
+

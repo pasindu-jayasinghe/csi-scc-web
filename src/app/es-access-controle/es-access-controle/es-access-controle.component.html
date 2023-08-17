@@ -1,0 +1,89 @@
+<div class="container">
+    <h4 class="mt-4">Access control</h4>
+
+    <div class="p-grid p-fluid card">
+        <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+            <div class="col-4">
+                <div class="p-field row container">
+                    <div class="col-3">
+                        <label for="firstname">Project</label>
+                    </div>
+                    <div class="col-9">
+                        <p-dropdown
+                            [filter]="true" filterBy="name" [showClear]="true"
+                            (onChange)="getUnits()"
+                            [(ngModel)]="project"
+                            name="project"
+                            [options]="projects"
+                            placeholder="Select .."
+                            optionLabel="name"
+                            appendTo="body" 
+                        ></p-dropdown>
+                    </div>                    
+                </div>     
+            </div>
+            <div class="col-4">
+                <div class="p-field row container">
+                    <div class="col-3">
+                        <label for="firstname">Unit</label>
+                    </div>
+                    <div class="col-9">
+                        <p-dropdown
+                            [filter]="true" filterBy="name" [showClear]="true"
+                            (onChange)="changeUnit()"
+                            [(ngModel)]="unit"
+                            name="unit"
+                            [options]="units"
+                            placeholder="Select .."
+                            optionLabel="name"
+                            appendTo="body" 
+                        >
+                        <ng-template let-u pTemplate="unit">
+                            <div class="flex align-items-center operatingSystems-item">
+                                <div>
+                                    {{u.name}} <span *ngIf="u.perfix"> - {{u.perfix}}</span>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                    </div>                    
+                </div>     
+            </div>
+            <div class="col-3">
+                <div class="p-field row container">
+                    <div class="col-3">
+                        <label for="firstname">User</label>
+                    </div>
+                    <div class="col-9">
+                        <p-dropdown
+                            [filter]="true" filterBy="firstName" [showClear]="true"
+                            (onChange)="getPUESList()"
+                            [(ngModel)]="user"
+                            name="user"
+                            [options]="users"
+                            placeholder="Select .."
+                            optionLabel="firstName"
+                            appendTo="body" 
+                        ></p-dropdown>
+                    </div>                    
+                </div>     
+            </div>
+            <div class="col-1">
+                <button
+                    (click)="reset()"
+                    type="button"
+                    pButton
+                    pRipple                        
+                    styleClass="p-button-warn"
+                    >Reset
+                </button>        
+            </div>
+        </div>
+    </div>
+
+    <div class="p-grid p-fluid card">
+        <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+            <app-es-access-single *ngFor="let pues of puesList" [user]="user" [pues]="pues"></app-es-access-single>
+        </div>
+    </div>
+</div>

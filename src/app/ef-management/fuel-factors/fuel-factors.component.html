@@ -1,0 +1,952 @@
+
+
+
+<div class="container">
+
+  <div class="p-grid p-fluid card" *ngIf="currentTab != tabName.FUEL">
+    <div class="row">
+      <div class="col-3">
+        <div class="col-3">
+            <label for="firstname">Country</label>
+        </div>
+        <div class="col-9" *ngIf="countries.length > 0">
+            <p-dropdown name="countryCode" [options]="countries"             
+              placeholder="Select .." 
+              optionLabel="name"
+              optionValue="code"
+              [filter]="true"
+              filterBy="name"
+              (onChange)="changeFilter()"
+              [(ngModel)]="countryFilter"
+              appendTo="body">
+            </p-dropdown>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="col-3">
+            <label for="firstname">Year</label>
+        </div>
+        <div class="col-9">
+            <p-dropdown name="year" [options]="years" 
+              placeholder="Select .." 
+              [filter]="true"
+              (onChange)="changeFilter()"
+              [(ngModel)]="yearFilter"
+              appendTo="body">
+            </p-dropdown>
+        </div>
+      </div>
+
+      <div class="col-3">
+        <div class="col-3">
+            <label for="firstname">Fuel</label>
+        </div>
+        <div class="col-9">
+            <p-dropdown name="uel" [options]="fuelTypes" 
+              placeholder="Select .." 
+              [filter]="true"
+              (onChange)="changeFilter()"
+              [(ngModel)]="fuelFilter"
+              optionValue="code" optionLabel="name" 
+              appendTo="body">
+            </p-dropdown>
+        </div>
+      </div>
+
+      <div class="col-3" *ngIf="currentTab == tabName.FUELFAC">
+        <div class="col-6">
+            <label for="firstname">Emission Source</label>
+        </div>
+        <div class="col-9">
+            <p-dropdown name="es" [options]="emsources" 
+              placeholder="Select .." 
+              [filter]="true"
+              (onChange)="changeFilter()"
+              [(ngModel)]="esFilter"
+              optionValue="code" 
+              [optionLabel]="getESNamrVariable()"
+              appendTo="body">
+            </p-dropdown>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-grid p-fluid card" *ngIf="currentTab != tabName.FUEL">
+    <div class="p-grid p-fluid card">
+      <div class="col-3">
+        
+        <div class="col-9">
+          <button                                                    
+          class="ml-4"
+          type="button"
+          (click)="uploadExcell()"
+
+          pButton
+          pRipple       
+          style="width: 150px;margin-left: 4px;"                   
+          styleClass="p-button-warn"
+          > Upload Excel
+      </button>         
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-tabView [scrollable]="true" (onChange)="handleChange($event)">
+    <p-tabPanel header="Fuel">
+      <div class="container">
+        <div class="ui-fluid formgrid grid">
+          <p-table
+      paginatorDropdownAppendTo="body" [value]="fuelsData" [lazy]="true" (onLazyLoad)="loadFuel($event)" [paginator]="true" [rows]="rows"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [rowsPerPageOptions]="[10,25,50]" [totalRecords]="totalRecords" [loading]="loading">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <div class="col-sm-2" style="width: 30%">
+                    <!-- <button type="button" (click)="showDialog()" icon="pi pi-info-circle" label="Show"></button> -->
+
+                    <button class="ml-4" type="button" (click)="newFuel()" pButton pRipple icon="pi pi-plus"
+                      styleClass="p-button-warn"></button>
+
+
+                  </div>
+                </th>
+                <th>Name</th>
+                <th>Code</th>
+
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-fuelData>
+              <tr>
+                <td>
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button (click)="viewFuel(fuelData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                      class="p-button p-button-success p-button-outlined"></button>
+                    <button (click)="editFuel(fuelData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                      class="p-button p-button-warning p-button-outlined"></button>
+                    <button (click)="onDeleteFuel(fuelData.id)" pButton pRipple type="button" icon="pi pi-times" 
+                      class="p-button p-button-danger p-button-outlined"></button>
+                  </div>
+                </td>
+
+                <td>{{ fuelData.name }}</td>
+                <td>{{ fuelData.code }}</td>
+
+
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+    </p-tabPanel>
+    <p-tabPanel header="Fuel Factor">
+      <div class="container">
+        <h4 class="mt-4">Fuel Factors</h4>
+        <div class="p-grid p-fluid card">
+          <p-table
+            paginatorDropdownAppendTo="body" [value]="fuelFactorData" [lazy]="true" (onLazyLoad)="load($event)" [paginator]="true" [rows]="rows"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [rowsPerPageOptions]="[10,25,50]" [totalRecords]="totalRecordsFuelFactor" [loading]="loading">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <div class="col-sm-2" style="width: 70.666667%">
+                    <!-- <button type="button" (click)="showDialog()" icon="pi pi-info-circle" label="Show"></button> -->
+
+                    <button class="ml-4" type="button" (click)="showDialog()" pButton pRipple icon="pi pi-plus"
+                      styleClass="p-button-warn"></button>
+
+
+                  </div>
+                </th>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Year</th>
+                <th>Emission Source</th>
+                <th>Source</th>
+                <th>Industry</th>
+                <th>Tier</th>
+                <th>Country</th>
+                <th>CH₄</th>
+                <th>N₂O</th>
+
+                <th>CO₂</th>
+
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-fuelData>
+              <tr>
+                <td>
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button (click)="view(fuelData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                      class="p-button p-button-success p-button-outlined"></button>
+                    <button (click)="edit(fuelData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                      class="p-button p-button-warning p-button-outlined"></button>
+                    <button (click)="deleteff(fuelData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+                  </div>
+                </td>
+
+                <td>{{ fuelData.name }}</td>
+                <td>{{ fuelData.code }}</td>
+                <td>{{ fuelData.year }}</td>
+                <td>{{ fuelData.emsource }}</td>
+                <td>{{ mapSource(fuelData.source) }}</td>
+                <td>{{ fuelData.industry }}</td>
+                <td>{{ fuelData.tier }}</td>
+
+                <td>{{ fuelData.countryCode }}</td>
+                <td>{{ fuelData.ch4_default}}</td>
+                <td>{{ fuelData.n20_default}}</td>
+                <td>{{ fuelData.co2_default}}</td>
+
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+
+    </p-tabPanel>
+    <p-tabPanel header="Fuel Price">
+      <div class="container">
+        <h4 class="mt-4">Fuel Price</h4>
+        <div class="ui-fluid formgrid grid">
+          <p-table
+      paginatorDropdownAppendTo="body" [value]="fuelsPriceData" [lazy]="true" (onLazyLoad)="loadFuelPrice($event)" [paginator]="true"
+            [rows]="rows" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [rowsPerPageOptions]="[10,25,50]" [totalRecords]="totalRecordsFuelPrice" [loading]="loading">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <div class="col-sm-2" style="width: 30%">
+                    <!-- <button type="button" (click)="showDialog()" icon="pi pi-info-circle" label="Show"></button> -->
+
+                    <button class="ml-4" type="button" (click)="newFuelPrice()" pButton pRipple icon="pi pi-plus"
+                      styleClass="p-button-warn"></button>
+
+
+                  </div>
+                </th>
+                <th>Code</th>
+                <th>Country</th>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Price</th>
+                <th>Currency</th>
+
+
+
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-fuelPData>
+              <tr>
+                <td>
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button (click)="viewPrice(fuelPData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                      class="p-button p-button-success p-button-outlined"></button>
+                    <button (click)="editPrice(fuelPData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                      class="p-button p-button-warning p-button-outlined"></button>
+                    <button (click)="deletefp(fuelPData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+                  </div>
+                </td>
+
+                <td>{{ fuelPData.code }}</td>
+                <td>{{ fuelPData.country }}</td>
+                <td>{{ fuelPData.year }}</td>
+                <td>{{ fuelPData.month }}</td>
+                <td>{{ fuelPData.price }}</td>
+                <td>{{ fuelPData.currency }}</td>
+
+
+
+
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+
+    </p-tabPanel>
+    <p-tabPanel header="Fuel Specification">
+      <div class="container">
+        <h4 class="mt-4">Fuel Specification</h4>
+        <div class="ui-fluid formgrid grid">
+          <p-table
+      paginatorDropdownAppendTo="body" [value]="fuelSpecificData" [lazy]="true" (onLazyLoad)="loadFuelSpecification($event)"
+            [paginator]="true" [rows]="rows" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [rowsPerPageOptions]="[10,25,50]" [totalRecords]="totalRecordsFuelSpecific" [loading]="loading">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <div class="col-sm-2" style="width: 30%">
+                    <!-- <button type="button" (click)="showDialog()" icon="pi pi-info-circle" label="Show"></button> -->
+
+                    <button class="ml-4" type="button" (click)="newFuelSpecialize()" pButton pRipple icon="pi pi-plus"
+                      styleClass="p-button-warn"></button>
+
+
+                  </div>
+                </th>
+                <th>Code</th>
+                <th>Country</th>
+                <th>Year</th>
+                <th>NCV</th>
+                <th>Density</th>
+
+
+
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-fuelsPData>
+              <tr>
+                <td>
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button (click)="viewSpecify(fuelsPData.id)" pButton pRipple type="button" icon="pi pi-eye"
+                      class="p-button p-button-success p-button-outlined"></button>
+                    <button (click)="editSpecify(fuelsPData.id)" pButton pRipple type="button" icon="pi pi-pencil"
+                      class="p-button p-button-warning p-button-outlined"></button>
+                    <button (click)="deletefs(fuelsPData.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+                  </div>
+                </td>
+
+                <td>{{ fuelsPData.code }}</td>
+                <td>{{ fuelsPData.country }}</td>
+                <td>{{ fuelsPData.year }}</td>
+                <td>{{ fuelsPData.ncv }}</td>
+                <td>{{ fuelsPData.density }}</td>
+
+
+
+
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+    </p-tabPanel>
+  </p-tabView>
+</div>
+
+
+
+
+
+<p-dialog header="Fuel Factor Add" [(visible)]="display" [style]="{width: '50vw' }">
+
+  <!-- <div class="mb-12">
+      <h4 class="mt-4">{{ isNewEntry ? "Add" : isView ? "View": "Edit" }} Electricity</h4>
+    </div> -->
+  <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Fuel Type *</label>
+            <p-dropdown [disabled]="isView" name="fuelType" [options]="fuelTypes" [(ngModel)]="fuelFactor.code"
+              #fmonth="ngModel" placeholder="Select .." optionValue="code" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true"></p-dropdown>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Emission Source</label>
+            <p-dropdown [disabled]="isView" name="emsource" [options]="emsources" [(ngModel)]="fuelFactor.emsource"
+              #fmonth="ngModel" placeholder="Select .." optionValue="code" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true"></p-dropdown>
+            <!-- <textarea pInputTextarea [(ngModel)]="fuelFactor.reference"></textarea> -->
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Consumption Unit*</label>
+            <p-dropdown [disabled]="isView" name="emsource" [options]="consumption_units" [(ngModel)]="fuelFactor.consumptionUnit"
+              #fmonth="ngModel" placeholder="Select .." optionValue="code" optionLabel="label" [filter]="true" filterBy="name" [showClear]="true"></p-dropdown>
+            <!-- <textarea pInputTextarea [(ngModel)]="fuelFactor.reference"></textarea> -->
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4" *ngIf="(offroad.includes(fuelFactor.emsource) && (fuelFactor.code == 'PETROL' || fuelFactor.code == 'PETROL_95' ))" >
+                <div class="p-field" >
+                  <label>Stroke*</label>
+                  <p-dropdown                                                                             
+                  [disabled]="isView"
+                  name="stroke"
+                  [options]="strokes"
+                  [(ngModel)]="fuelFactor.stroke"
+                  #fmonth="ngModel"
+                  placeholder="Select .."
+                  optionValue="code"
+                  optionLabel="name"
+                 
+                ></p-dropdown>
+                </div>
+              </div>
+
+      </div>
+
+
+    </div>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-7">
+          <div class="p-field">
+            <label>Country *</label>
+            <p-dropdown [disabled]="isView" name="country" [options]="countries" [(ngModel)]="fuelFactor.countryCode"
+              #fmonth="ngModel" placeholder="Select .." optionValue="code" optionLabel="name"></p-dropdown>
+            <!-- <p
+                  class="info-message text-danger"
+                  *ngIf="
+                    !month.value &&
+                    (fData.submitted ||
+                    fmonth.touched ||
+                    fmonth.dirty)
+                  "
+                  >
+                  This is a mandatory field
+                </p> -->
+          </div>
+        </div>
+
+        <div class="col-12 col-md-5">
+          <div class="p-field">
+            <label>Year</label>
+            <p-dropdown name="year" [options]="years" placeholder="Select .." [(ngModel)]="fuelFactor.year">
+            </p-dropdown>
+
+            <!-- <p
+                  class="info-message text-danger"
+                  *ngIf="
+                    !month.value &&
+                    (fData.submitted ||
+                    fmonth.touched ||
+                    fmonth.dirty)
+                  "
+                  >
+                  This is a mandatory field
+                </p> -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Source *</label>
+            <p-dropdown [disabled]="isView" name="source" [options]="sources" [(ngModel)]="fuelFactor.source" (onChange)="onChangeType($event.value)"
+              #fmonth="ngModel" placeholder="Select .." optionLabel="name" optionValue="code"></p-dropdown>
+            <!-- <p
+                  class="info-message text-danger"
+                  *ngIf="
+                    !month.value &&
+                    (fData.submitted ||
+                    fmonth.touched ||
+                    fmonth.dirty)
+                  "
+                  >
+                  This is a mandatory field
+                </p> -->
+          </div>
+        </div>
+
+
+        <div class="col-12 col-md-4" >
+          <div class="p-field" >
+            <label>Industry *</label>
+            <p-dropdown [disabled]="fuelFactor.source == 'M' && !offroad.includes(fuelFactor.emsource)" [disabled]="isView" name="industry" [options]="industries" [(ngModel)]="fuelFactor.industry"
+              #fmonth="ngModel" placeholder="Select .." optionLabel="name" optionValue="code"></p-dropdown>
+            <!-- <p
+                  class="info-message text-danger"
+                  *ngIf="
+                    !month.value &&
+                    (fData.submitted ||
+                    fmonth.touched ||
+                    fmonth.dirty)
+                  "
+                  >
+                  This is a mandatory field
+                </p> -->
+          </div>
+        </div>
+
+
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Reference</label>
+            <input [disabled]="isView" type="text" name="refernce" class="form-control"
+              [(ngModel)]="fuelFactor.reference" pInputTextarea placeholder="Enter Reference" />
+
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-8">
+          <div class="p-field">
+            <label>Tier *</label>
+            <p-dropdown [disabled]="isView" name="institution" [options]="tiers" [(ngModel)]="fuelFactor.tier"
+              #fmonth="ngModel" placeholder="Select .." optionLabel="name" optionValue="code"></p-dropdown>
+            <!-- <p
+                  class="info-message text-danger"
+                  *ngIf="
+                    !month.value &&
+                    (fData.submitted ||
+                    fmonth.touched ||
+                    fmonth.dirty)
+                  "
+                  >
+                  This is a mandatory field
+                </p> -->
+          </div>
+        </div>
+
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Unit *</label>
+            <p-dropdown [disabled]="isView" name="efunit" [options]="ef_units" [(ngModel)]="fuelFactor.unit"
+              #fmonth="ngModel" placeholder="Select .." optionLabel="name" optionValue="name"></p-dropdown>
+            <!-- <p
+                  class="info-message text-danger"
+                  *ngIf="
+                    !month.value &&
+                    (fData.submitted ||
+                    fmonth.touched ||
+                    fmonth.dirty)
+                  "
+                  >
+                  This is a mandatory field
+                </p> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+    <!-- </div> -->
+
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <h6>CH₄*</h6>
+        <div class="col-12 col-md-4">
+          
+
+          <div class="p-field">
+            <label>Upper value*</label>
+            <input [disabled]="isView" type="number" name="ch4__upper" min = "0"[(ngModel)]="fuelFactor.ch4__upper"
+              class="form-control" placeholder="Enter Value" required />
+            <p class="info-message text-danger" *ngIf="!fuelFactor.ch4__upper && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Lower value*</label>
+            <input [disabled]="isView" type="number" name="ch4_lower"   min = "0"[(ngModel)]="fuelFactor.ch4_lower"
+              class="form-control" placeholder="Enter Value" required />
+            <p class="info-message text-danger" *ngIf="!fuelFactor.ch4_lower && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Default value*</label>
+            <input [disabled]="isView" type="number" name="ch4_default"  min = "0"[(ngModel)]="fuelFactor.ch4_default"
+              class="form-control" placeholder="Enter Value" required />
+            <p class="info-message text-danger" *ngIf="!fuelFactor.ch4_default && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <h6>N₂O*</h6>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Upper value*</label>
+            <input [disabled]="isView" type="number" name="n20__upper"  min = "0" [(ngModel)]="fuelFactor.n20__upper"
+              class="form-control" placeholder="Enter Value" required />
+            <p class="info-message text-danger" *ngIf="!fuelFactor.n20__upper && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Lower value*</label>
+            <input [disabled]="isView" type="number" name="n20_lower"  min = "0" [(ngModel)]="fuelFactor.n20_lower"
+              class="form-control" placeholder="Enter Value" required />
+            <p class="info-message text-danger" *ngIf="!fuelFactor.n20_lower && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Default value*</label>
+            <input [disabled]="isView" type="number" name="n20_default"   min = "0"[(ngModel)]="fuelFactor.n20_default"
+              class="form-control" placeholder="Enter Value" required />
+            <p class="info-message text-danger" *ngIf="!fuelFactor.n20_default && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <h6>C0₂*</h6>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Upper value*</label>
+            <input [disabled]="isView" type="number" name="co2__upper"   min = "0" [(ngModel)]="fuelFactor.co2__upper"
+              class="form-control" placeholder="Enter Value" required />
+            <p class="info-message text-danger" *ngIf="!fuelFactor.co2__upper && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Lower value*</label>
+            <input [disabled]="isView" type="number" name="co2_lower"  min = "0" [(ngModel)]="fuelFactor.co2_lower"
+              class="form-control" placeholder="Enter Value" required />
+            <p class="info-message text-danger" *ngIf="!fuelFactor.co2_lower && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Default value*</label>
+            <input [disabled]="isView" type="number" name="co2_default" min = "0" [(ngModel)]="fuelFactor.co2_default"
+              class="form-control" placeholder="Enter Value" required />
+            <p class="info-message text-danger" *ngIf="!fuelFactor.co2_default && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- </div> -->
+
+    <div class="row p-grid p-fluid col-md-6 col-sm-6">
+
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+        <button class="btn btn-secondary text-uppercase" (click)="onBackClick()" type="button">
+          Back
+        </button>
+      </div>
+
+      <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10" *ngIf="!isView">
+        <button pButton type="submit" label="Save"></button>
+      </div>
+
+    </div>
+
+
+  </form>
+
+  <!-- <p-toast position="top-right"></p-toast>
+  <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog> -->
+
+
+
+
+
+</p-dialog>
+
+<p-dialog header="Add New Fuel" [(visible)]="displayFuel" [style]="{width: '50vw' }">
+  <form #fuelData="ngForm" (ngSubmit)="saveFuel(fuelData)" novalidate>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-8">
+          <div class="p-field">
+            <label>Fuel Name *</label>
+            <input [disabled]="isView" [disabled]="false" type="text" name="fuelName" [(ngModel)]="fuel.name"
+              [required]="true" class="form-control" placeholder="Enter Fuel Name" required />
+            <p class="info-message text-danger" *ngIf="!fuel.name && (fuelData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Code</label>
+            <input [disabled]="isView" [disabled]="false" type="text" name="fuelCode" [(ngModel)]="fuel.code"
+              [required]="true" class="form-control" placeholder="Enter Fuel Code" required />
+            <p class="info-message text-danger" *ngIf="!fuel.code && (fuelData.submitted)">
+              This is a mandatory field
+            </p>
+            <!-- <textarea pInputTextarea [(ngModel)]="fuelFactor.reference"></textarea> -->
+          </div>
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+    <div class="row p-grid p-fluid col-md-6 col-sm-6">
+
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+        <button class="btn btn-secondary text-uppercase" (click)="onBackClickNF()" type="button">
+          Back
+        </button>
+      </div>
+
+      <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10" *ngIf="!isView">
+        <button pButton type="submit" label="Save"></button>
+      </div>
+
+    </div>
+  </form>
+</p-dialog>
+
+
+<p-dialog header="Fuel Price" [(visible)]="displayFuelPrice" [style]="{width: '50vw' ,height: '30vw'}">
+  <form #fuelPriceData="ngForm" (ngSubmit)="saveFuelPrice(fuelPriceData)" novalidate>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Fuel Type*</label>
+            <p-dropdown name="fuelpType" [options]="fuelTypes" [(ngModel)]="fuelPrice.code" #fmonth="ngModel"
+              placeholder="Select .." optionValue="code" optionLabel="name"></p-dropdown>
+            <p class="info-message text-danger" *ngIf="!fuelPrice.code && (fuelPriceData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Country</label>
+            <p-dropdown [disabled]="isView" name="fuelpCountry" [options]="countries" [(ngModel)]="fuelPrice.country"
+              #fmonth="ngModel" placeholder="Select .." optionValue="code" optionLabel="name"></p-dropdown>
+            <p class="info-message text-danger" *ngIf="!fuelPrice.country && (fuelPriceData.submitted)">
+              This is a mandatory field
+            </p>
+            <!-- <textarea pInputTextarea [(ngModel)]="fuelFactor.reference"></textarea> -->
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="p-field">
+            <label>year</label>
+            <p-dropdown name="year" [options]="years" placeholder="Select .." [(ngModel)]="fuelPrice.year"></p-dropdown>
+            <!-- <textarea pInputTextarea [(ngModel)]="fuelFactor.reference"></textarea> -->
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>month</label>
+            <p-dropdown [disabled]="isView" name="fuelpMonth" [options]="months" [(ngModel)]="fuelPrice.month"
+              #fmonth="ngModel" placeholder="Select .." optionValue="value" optionLabel="name"></p-dropdown>
+            <p class="info-message text-danger" *ngIf="!fuelPrice.month && (fuelPriceData.submitted)">
+              This is a mandatory field
+            </p>
+            <!-- <textarea pInputTextarea [(ngModel)]="fuelFactor.reference"></textarea> -->
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Currency</label>
+            <p-dropdown [disabled]="isView" name="fuelpCurrency" [options]="currencies" [(ngModel)]="fuelPrice.currency"
+              #fmonth="ngModel" placeholder="Select .." optionValue="code" optionLabel="name"></p-dropdown>
+            <p class="info-message text-danger" *ngIf="!fuelPrice.currency && (fuelPriceData.submitted)">
+              This is a mandatory field
+            </p>
+            <!-- <textarea pInputTextarea [(ngModel)]="fuelFactor.reference"></textarea> -->
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Price*</label>
+            <input [disabled]="isView" [disabled]="false" type="number" name="fuelp"  min = "0" [(ngModel)]="fuelPrice.price"
+              class="form-control" placeholder="Enter Fuel Price" required />
+            <p class="info-message text-danger" *ngIf="!fuelPrice.price && (fuelPriceData.submitted)">
+              This is a mandatory field
+            </p>
+            <!-- <textarea pInputTextarea [(ngModel)]="fuelFactor.reference"></textarea> -->
+          </div>
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+    <div class="row p-grid p-fluid col-md-6 col-sm-6">
+
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+        <button class="btn btn-secondary text-uppercase" (click)="onBackClickFP()" type="button">
+          Back
+        </button>
+      </div>
+
+      <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10" *ngIf="!isView">
+        <button pButton type="submit" label="Save"></button>
+      </div>
+
+    </div>
+  </form>
+</p-dialog>
+
+
+<p-dialog header="Fuel Specification" [(visible)]="displayFuelSpecification" [style]="{width: '50vw' ,height: '30vw'}">
+  <form #fuelSpecificeData="ngForm" (ngSubmit)="saveFuelSpecific(fuelSpecificeData)" novalidate>
+
+    <div class="p-grid p-fluid col-md-9 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Fuel Type*</label>
+            <p-dropdown name="fuelspType" [options]="fuelTypes" [(ngModel)]="fuelSpecific.code" #fmonth="ngModel"
+              placeholder="Select .." optionValue="code" optionLabel="name"></p-dropdown>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="p-field">
+            <label>Country</label>
+            <p-dropdown [disabled]="isView" name="fuelspCountry" [options]="countries"
+              [(ngModel)]="fuelSpecific.country" #fmonth="ngModel" placeholder="Select .." optionValue="code"
+              optionLabel="name"></p-dropdown>
+            <!-- <textarea pInputTextarea [(ngModel)]="fuelFactor.reference"></textarea> -->
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="p-field">
+            <label>Year</label>
+            <p-dropdown name="year" [options]="years" placeholder="Select .." [(ngModel)]="fuelSpecific.year">
+            </p-dropdown>
+            <!-- <textarea pInputTextarea [(ngModel)]="fuelFactor.reference"></textarea> -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="p-grid p-fluid col-md-12 col-sm-12">
+      <div class="row p-2">
+        <div class="col-12 col-md-6">
+          <div class="p-field">
+
+            <label for="ncv">NCV*</label>
+
+
+            <div class="row">
+              <input [disabled]="isView" [disabled]="false" type="number"  min = "0" name="fuelncv" [(ngModel)]="fuelSpecific.ncv"
+                style="width: 64%; margin-left: 2%;" class="col-8 form-control" placeholder="Enter Value" required />
+
+
+              <p-dropdown name="unitncv" [options]="unit_ncv" [(ngModel)]="fuelSpecific.unit_ncv" #fmonth="ngModel"
+                placeholder="Select .." class=" col-4" optionLabel="name" optionValue="name"></p-dropdown>
+
+            </div>
+
+            <p class="info-message text-danger" *ngIf="!fuelSpecific.ncv && (fuelSpecificeData.submitted)">
+              This is a mandatory field
+            </p>
+            <!-- <textarea pInputTextarea [(ngModel)]="fuelFactor.reference"></textarea> -->
+          </div>
+        </div>
+
+
+
+
+        <div class="col-12 col-md-6">
+          <div class="p-field">
+            <label for="density">Density*</label>
+
+            <div class="row">
+              <input [disabled]="isView" [disabled]="false" type="number" name="fuelspd" min = "0"
+                [(ngModel)]="fuelSpecific.density" style="width: 64%; margin-left: 2%;" class="col-8 form-control"
+                placeholder="Enter Value" required />
+
+              <p-dropdown name="unitden" [options]="unit_density" [(ngModel)]="fuelSpecific.unit_density"
+                #fmonth="ngModel" placeholder="Select .." class=" col-4" optionLabel="name" optionValue="name">
+              </p-dropdown>
+
+            </div>
+
+            <p class="info-message text-danger" *ngIf="!fuelSpecific.density && (fuelSpecificeData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+
+
+    <div class="row p-grid p-fluid col-md-6 col-sm-6">
+
+      <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-10">
+        <button class="btn btn-secondary text-uppercase" (click)="onBackClickFS()" type="button">
+          Back
+        </button>
+      </div>
+
+      <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-10" *ngIf="!isView">
+        <button pButton type="submit" label="Save"></button>
+      </div>
+
+    </div>
+  </form>
+</p-dialog>

@@ -1,0 +1,314 @@
+
+<div class="container pl-25 pr-25">
+    <div class="mb-12">
+      <h4 class="mt-4" *ngIf="projectType ===  projectTypesEnum.GHG">{{ isNewEntry ? "Add" : isView ? "View": "Edit" }} Fire Extinguisher</h4>
+      <h4 class="mt-4" *ngIf="projectType ===  projectTypesEnum.SBT">{{ isNewEntry ? "Add" : isView ? "View": "Edit" }} Fire Suppression Equipment</h4>
+    </div>
+    <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+      <div class="card">
+  
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Unit *</label>
+                <app-unit-select [isView]="isView" [unit]="selectedUnit" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>                
+              </div>
+            </div>
+          </div>
+        </div>
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Project *</label>
+                <app-project-select [isView]="isView" [unit]="selectedUnit"  [project]="selectedProject" (onUpdateProject)="onChangeProject($event)" [data]="fData"></app-project-select>               
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="year">Year *</label>
+                <input
+                  [disabled]="true"
+                  type="text"
+                  name="year"
+                  [(ngModel)]="fireExtinguisher.year"
+                  class="form-control"
+                  placeholder="Enter Year"
+                  required
+                />
+              <!-- <p 
+              class="info-message text-danger"
+              *ngIf="
+                !year.value &&
+                (fData.submitted ||
+                fyear.touched ||
+                fyear.dirty)
+              "
+              >
+                This is a mandatory field
+              </p> -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Month *</label>
+                <p-dropdown
+                [disabled]="isView"
+                name="institution"
+                [options]="months"
+                [required]="true"
+                [(ngModel)]="month"
+                  (onChange)="monthCgange()"
+                #fmonth="ngModel"
+                placeholder="Select .."
+                optionLabel="name"
+                
+              ></p-dropdown>
+              <p 
+              class="info-message text-danger"
+              *ngIf="
+                !month &&
+                (fData.submitted ||
+                fmonth.touched ||
+                fmonth.dirty)
+              "
+              >
+                This is a mandatory field
+              </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="fireExtinguisherType">Fire Extinguisher Type *</label>
+                  <p-dropdown
+                  [disabled]="isView"
+                  name="fireExtinguisherType"
+                  [options]="fireExtinguisherType"
+                  [required]="true"
+                  [(ngModel)]="fireExtinguisher.fireExtinguisherType"
+                  #fftype="ngModel"
+                  optionLabel="name"
+                  optionValue="code"
+                  placeholder="Select .."
+                ></p-dropdown>
+                <p 
+                class="info-message text-danger"
+                *ngIf="
+                  !fireExtinguisher.fireExtinguisherType &&
+                  (fData.submitted ||
+                  fftype.touched ||
+                  fftype.dirty)
+                "
+                >
+                  This is a mandatory field
+                </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="projectType == 'Smart Net Zero'">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="fireExtinguisherType">Suppression Type *</label>
+                  <p-dropdown
+                  [disabled]="isView"
+                  name="suppressionType"
+                  [options]="suppressionTypes"
+                  [required]="true"
+                  [(ngModel)]="fireExtinguisher.suppressionType"
+                  #fftype="ngModel"
+                  optionLabel="name"
+                  optionValue="code"
+                  placeholder="Select .."
+                ></p-dropdown>
+                <p 
+                class="info-message text-danger"
+                *ngIf="
+                  !fireExtinguisher.fireExtinguisherType &&
+                  (fData.submitted ||
+                  fftype.touched ||
+                  fftype.dirty)
+                "
+                >
+                  This is a mandatory field
+                </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid p-fluid col-md-9 col-sm-12">
+            <div class="row p-2">
+              <div class="col-12 col-md-8">
+                <div class="p-field">
+                  <label for="lastname">Capacity *</label>
+    
+
+                  <div class="row">
+                    <p-inputNumber
+                      [disabled]="isView"
+                      type="number"
+                      name="weightPerTank"
+                      [(ngModel)]="fireExtinguisher.weightPerTank"
+                      class="col-8"
+                      placeholder="Enter value"
+                      style="width: 64%;"
+                      mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5"
+                    ></p-inputNumber>
+                    <p-dropdown
+                      [disabled]="isView"
+                      name="weightunits"
+                      [options]="units.weightPerTank"
+                      [(ngModel)]="unit"
+                      #funit="ngModel"
+                      optionLabel="label"
+                      class=" col-4"
+                    ></p-dropdown>
+               
+                  </div>
+                  <p class="info-message text-danger" *ngIf=" !fireExtinguisher.weightPerTank && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+       
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="fireExtinguisher.suppressionType=='PORTABLE'">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="lastname">No of Tanks*</label>
+  
+                <input
+                  [disabled]="isView"
+                  type="number"
+                  name="noOftanks"
+                  [(ngModel)]="fireExtinguisher.noOfTanks"
+                  class="form-control"
+                  placeholder="Enter number"
+                  required
+                />
+                <p class="info-message text-danger" *ngIf=" !fireExtinguisher.noOfTanks && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+  
+        
+        <div id="basic" class="row" *ngIf="puesData && puesData.sourceType && puesData.sourceType.toString() === 'B'">
+          <div class="col-1" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="true"></p-radioButton>
+            <label class="radio-l">Mobile</label>
+          </div> 
+  
+          <div class="col-2" style="margin-left: 10px;">                    
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="false"></p-radioButton>
+            <label class="radio-l">Stationary</label>
+          </div> 
+          <div class="col-9" style="margin-left: 10px;"> </div>
+          <br>
+        </div>
+  
+  
+  
+        <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="puesData && !puesData.clasification">
+          <div class="row p-2">
+            <div class="col-12 col-md-8">
+              <div class="p-field">
+                <label for="institution">Ownership *</label>
+                <p-dropdown
+                  [disabled]="isView"
+                  name="ownership"
+                  [options]="ownerships"
+                  [(ngModel)]="fireExtinguisher.ownership"
+                  #fOwnership="ngModel"
+                  placeholder="Select .."
+                  optionLabel="name"
+                  optionValue="name"
+                  appendTo="body"
+                  ></p-dropdown>           
+              </div>
+            </div>
+            <p class="info-message text-danger" *ngIf=" !fireExtinguisher.ownership && (fData.submitted)">
+              This is a mandatory field
+            </p>
+          </div>
+          <br>
+        </div>
+
+        <div>
+          <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+            One or more mandatory fields should be filled before save action.
+          </p>
+        </div>
+  
+        
+        <br>
+
+
+        <div class="row p-grid p-fluid col-md-6 col-sm-6">
+          <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+            <button class="btn btn-secondary text-uppercase" (click)="onBackClick()">
+              Back
+            </button>
+          </div>
+          <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+            <button *ngIf="!isNewEntry && deletable && !isView" class="btn btn-danger text-uppercase" type="button"
+              (click)="onDeleteClick()">
+              Delete
+            </button>
+          </div>
+          <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+            <button [disabled]="coreatingUser || isDuplicated" class="btn btn-primary text-uppercase" type="submit" *ngIf="!isView">
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="row">
+          <div *ngIf="coreatingUser" class="d-flex col-6 justify-content-end">
+            <p class="info-message text-warning mt-2" *ngIf="true">
+              please wait a moment...
+            </p>
+          </div>
+        </div>
+      </div>
+  
+      
+    </form>
+  </div>
+  
+   <!-- <p-toast position="top-right"></p-toast> -->
+  
+  
+  
+  

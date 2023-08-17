@@ -1,0 +1,442 @@
+<div class="container pl-20 pr-20">
+  <div class="mb-12">
+    <h4 class="mt-4">{{ isNewEntry ? "Add" : isView ? "View": "Edit" }} Road Transport</h4>
+  </div>
+  <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+    <div class="p-grid p-fluid card">
+      <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+        <div id="basic" class="row">
+          <div class="col">
+            <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="isAnyAdmin">
+              <label for="institution">Unit *</label>
+              <div class="col-9">
+                <app-unit-select [isView]="isView" [unit]="selectedUnit" (onUpdateUnit)="onUpdateUnit($event)">
+                </app-unit-select>
+              </div>
+            </div>
+            <div class="p-field row container" style="margin-bottom: 10px;"  *ngIf="isProjectSelected">
+              <label for="institution">Project *</label>
+              <div class="col-9">
+                <app-project-select [isView]="isView" [unit]="selectedUnit" [project]="selectedProject" 
+                  (onUpdateProject)="onChangeProject($event)" [data]="fData"></app-project-select>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="p-field row container" style="margin-bottom: 10px;">
+              <label for="firstname">Year *</label>
+              <div class="col-9">
+                <input [disabled]="true" type="text" name="year" [(ngModel)]="freightRoad.year" class="form-control"
+                  placeholder="Enter Year" required />
+              </div>
+            </div>
+            <div class="p-field row container" style="margin-bottom: 10px;">
+              <label for="firstname">Month *</label>
+              <div class="col-9">
+                <p-dropdown [disabled]="isView" [required]="true" name="month" [options]="months" [(ngModel)]="month"
+                  (onChange)="monthCgange()" #fmonth="ngModel" placeholder="Select .." optionLabel="name"
+                  appendTo="body"></p-dropdown>
+                <p class="info-message text-danger" *ngIf="
+                      !month &&
+                      (fData.submitted ||
+                      fmonth.touched ||
+                      fmonth.dirty)
+                    ">
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-grid p-fluid card">
+      <div class="p-grid p-fluid card">
+        <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+          <div id="basic" class="row">
+            <div class="col">
+              <div class="p-field row container" style="margin-bottom: 10px;">
+                <label for="firstname">Vehicle Number *</label>
+                <div class="col-9">
+                  <input [disabled]="isView" type="text" name="vehicleNo" [(ngModel)]="freightRoad.vehicleNo"
+                    class="col-8 form-control" placeholder="Vehicle No" required />
+                </div>
+                <p class="info-message text-danger" *ngIf=" !freightRoad.vehicleNo && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div class="p-field row container" style="margin-bottom: 10px;">
+                <label for="year">Method * </label>
+                <div class="col-9">
+                  <p-dropdown (onChange)="onSelectMethod($event)" [disabled]="isView" name="method"
+                    [options]="methods_freightTransport" [required]="true" [(ngModel)]="method" #fmethod="ngModel"
+                    placeholder="Select .." optionLabel="name" appendTo="body"></p-dropdown>
+                </div>
+                <p class="info-message text-danger" *ngIf=" !method && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div class="p-field row container" style="margin-bottom: 20px;">
+                <div class="col-9">
+                  <p-checkbox (onChange)="checkShared()" [(ngModel)]="checkedShared" value="true" name="shared" class="col-1">
+                  </p-checkbox>
+                  <label class="col-4" for="shared">Shared</label>
+                </div>
+              </div>
+              <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="checkedShared && checkedShared.length > 0">
+                <label for="year">Your Share (%) </label>
+                <div class="col-9">
+                  <input [disabled]="isView" type="number" name="share" [(ngModel)]="freightRoad.share"
+                  class="col-8 form-control" placeholder="Enter your share"  />
+                </div>
+              </div>
+              <div class="p-field row container" style="margin-bottom: 10px;">
+                <label for="year">Number of Trips *</label>
+                <div class="col-9">
+                  <input [disabled]="isView" type="number" name="noOfTrips" [(ngModel)]="freightRoad.noOfTrips"
+                    class="col-8 form-control" placeholder="Number of trips" required />
+                </div>
+                <p class="info-message text-danger" *ngIf=" !freightRoad.noOfTrips && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div class="p-field row container" *ngIf="(ownership |json) !== '{}' && ownership?.name === 'Hired'">
+                <div class="row col-8">
+                  <p-checkbox (onChange)="check()" [(ngModel)]="checked" [value]="true" name="paid" class="col-2">
+                  </p-checkbox>
+                  <label class="col-7" for="paid">Paid by the company</label>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="p-field row container" style="margin-bottom: 10px;">
+                <label for="firstname">Ownership *</label>
+                <div class="col-9">
+                  <p-dropdown [disabled]="isView" name="ownership" [options]="ownership_freightTransport"
+                    [(ngModel)]="ownership" #fOwnership="ngModel" placeholder="Select .." optionLabel="name"
+                    appendTo="body" [required]="true"></p-dropdown>
+                </div>
+                <p class="info-message text-danger" *ngIf=" !ownership && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div class="p-field row container" style="margin-bottom: 10px;">
+                <label for="year">Cargo Type * </label>
+                <div class="col-9">
+                  <p-dropdown [disabled]="isView" name="cargoType" [options]="cargoType_road_freightTransport"
+                    [required]="true" [(ngModel)]="freightRoad.cargoType" #fcargoType="ngModel" placeholder="Select .."
+                    optionLabel="name" optionValue="code" appendTo="body"></p-dropdown>
+                </div>
+                <p class="info-message text-danger" *ngIf=" !freightRoad.cargoType && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="method?.id === 2 && !sharedCargos.includes(freightRoad.cargoType)">
+                <label for="year">One Way/Round Trip *</label>
+                <div class="col-9">
+                  <p-dropdown [disabled]="isView" name="option"
+                    [options]="options_freightTransport" [(ngModel)]="freightRoad.option" #ffreightType="ngModel"
+                    placeholder="Select .." optionLabel="name" optionValue="code"  appendTo="body" [required]="true"></p-dropdown>
+                </div>
+                <p class="info-message text-danger" *ngIf=" !freightRoad.option && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+              <div class="p-field row container" style="margin-bottom: 10px;">
+                <label for="year">Domestic/International * </label>
+                <div class="col-9">
+                    <p-dropdown [disabled]="isView" name="domesticInternational"
+                        [options]="domesticInternationals" [(ngModel)]="domesticInternational" [required]="true"
+                        #fdomesticInternational="ngModel" placeholder="Select .." optionLabel="name" appendTo="body" >
+                    </p-dropdown>
+                </div>
+                <p class="info-message text-danger" *ngIf=" !domesticInternational && (fData.submitted)">
+                  This is a mandatory field
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="method?.id === 2 && !sharedCargos.includes(freightRoad.cargoType)">
+        <div class="p-grid p-fluid card">
+          <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+            <div id="basic" class="row">
+              <h6><b>Forward Journey</b></h6>
+              <div class="col">
+                <div class="p-field row container" style="margin-bottom: 10px;">
+                  <label for="year">Distance Travelled * <span *ngIf="onSelectUpDistanceUnitId === 1">( {{upDistanceKm}} km )</span> </label>
+                  
+                    <div class="col-6">
+                      <ng-container>
+                        <p-inputNumber [disabled]="isView" type="number" name="upDistance" [(ngModel)]="freightRoad.upDistance"
+                          class="" placeholder="Enter Distance" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                      </ng-container>
+                      <!-- <ng-container *ngIf="onSelectUpDistanceUnitId === 1;">
+                        <p-inputNumber [disabled]="isView" type="number" name="upCostPerKM" [(ngModel)]="freightRoad.upCostPerKM"
+                          class="" placeholder="Enter Cost per Km" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                      </ng-container> -->
+                      
+                    </div>
+                    <div class="col-3">
+                      <p-dropdown [disabled]="isView" (onChange)="onSelectUpDistanceUnit($event)" name="upDistance_unit"
+                        [options]="units.distance" [(ngModel)]="upDistance_unit" #fdistance_unit="ngModel"
+                        [autoDisplayFirst]="true" optionLabel="label" class=" col-md-3" appendTo="body"></p-dropdown>
+                    </div>
+                 
+                </div>
+                <ng-container *ngIf="onSelectUpDistanceUnitId === 1 && method?.id === 2;">
+                  <div class="p-field row container" style="margin-bottom: 10px;">
+                    <label for="year">Cost per km*</label>
+                    <div class="col-9">
+                      <p-inputNumber [disabled]="isView" type="number" name="upCost" [(ngModel)]="freightRoad.upCost"
+                        class="" placeholder="Enter Cost" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                    </div>
+                    <p class="info-message text-danger" *ngIf=" !freightRoad.upCost && (fData.submitted)">
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="col">
+                <div class="p-field row container" style="margin-bottom: 10px;">
+                  <label for="year">Weight Transported *</label>
+                  <div class="col-6">
+                    <p-inputNumber [disabled]="isView" type="number" name="upWeight" [(ngModel)]="freightRoad.upWeight"
+                      class="" placeholder="Enter weight" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                  </div>
+                  <div class="col-3">
+                    <p-dropdown [disabled]="isView" name="upWeight_unit" [options]="units.weight"
+                      [(ngModel)]="upWeight_unit" #fupWeight_unit="ngModel" optionLabel="label"
+                      class=" col-md-3" appendTo="body"></p-dropdown>
+                  </div>
+                  <p class="info-message text-danger" *ngIf=" !freightRoad.upWeight && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+                <ng-container *ngIf="onSelectUpDistanceUnitId === 1 && method?.id === 2;">
+                  <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="onSelectUpDistanceUnitId === 1">
+                    <label for="year">Total Cost </label>
+                    <div class="col-9">
+                      <p-inputNumber [disabled]="isView" type="number" name="totalCost"
+                        [(ngModel)]="totalUpCost" class="" placeholder="Enter cost" (ngModelChange)="onUpCostChange($event)" 
+                        mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                    </div>
+                    <p class="info-message text-danger" *ngIf=" !month && (fData.submitted)">
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="freightRoad.option === 'ROUND_TRIP' && method?.id === 2 && !sharedCargos.includes(freightRoad.cargoType)">
+        <div class="p-grid p-fluid card">
+          <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+            <div id="basic" class="row">
+              <h6><b>Return Journey</b></h6>
+              <div class="col">
+                <div class="p-field row container" style="margin-bottom: 10px;">
+                   <label for="year">Distance Travelled *  <span *ngIf="onSelectDownDistanceUnitId === 1">( {{downDistanceKm}} km )</span></label>
+
+                  
+                    <div class="col-6">
+                      <ng-container >
+                        <p-inputNumber [disabled]="isView" type="number" name="downDistance"
+                          [(ngModel)]="freightRoad.downDistance" class="" placeholder="Enter Distance"
+                          mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                      </ng-container>
+                      <!-- <ng-container *ngIf="onSelectDownDistanceUnitId === 1;">
+                        <p-inputNumber [disabled]="isView" type="number" name="downCostPerKM"
+                          [(ngModel)]="freightRoad.downCostPerKM" class="" placeholder="Enter Cost per Km"
+                          mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                        <p class="info-message text-danger" *ngIf=" !freightRoad.downCostPerKM && (fData.submitted)">
+                          This is a mandatory field
+                        </p>
+                      </ng-container> -->
+                      
+                    </div>
+                    <div class="col-3">
+                      <p-dropdown [disabled]="isView" (onChange)="onSelectDownDistanceUnit($event)"
+                        name="downDistance_unit" [options]="units.distance" [(ngModel)]="downDistance_unit"
+                        #fdistance_unit="ngModel" [autoDisplayFirst]="true" optionLabel="label" class=" col-md-3"
+                        appendTo="body"></p-dropdown>
+                    </div>
+                </div>
+                <ng-container *ngIf="onSelectDownDistanceUnitId === 1 && method?.id === 2;">
+                  <div class="p-field row container" style="margin-bottom: 10px;">
+                    <label for="year">Cost per km*</label>
+                    <div class="col-9">
+                      <p-inputNumber [disabled]="isView" type="number" name="downCost" [(ngModel)]="freightRoad.downCost"
+                        class="" placeholder="Enter Cost" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                    </div>
+                    <p class="info-message text-danger" *ngIf=" !freightRoad.downCost && (fData.submitted)">
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="col">
+                <div class="p-field row container" style="margin-bottom: 10px;">
+                  <label for="year">Weight Transported *</label>
+                  <div class="col-6">
+                    <p-inputNumber [disabled]="isView" type="number" name="downWeight" [(ngModel)]="freightRoad.downWeight"
+                      class="" placeholder="Enter weight" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                  </div>
+                  <div class="col-3">
+                    <p-dropdown [disabled]="isView" name="downWeight_unit" [options]="units.weight"
+                      [(ngModel)]="downWeight_unit" #fdistance_unit="ngModel" 
+                      optionLabel="label" class=" col-md-3" appendTo="body"></p-dropdown>
+                  </div>
+                  <p class="info-message text-danger" *ngIf=" !freightRoad.downWeight && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+                <ng-container *ngIf="onSelectDownDistanceUnitId === 1 && method?.id === 2;">
+                  <div class="p-field row container" style="margin-bottom: 10px;" *ngIf="onSelectUpDistanceUnitId === 1">
+                    <label for="year">Total Cost </label>
+                    <div class="col-9">
+                      <p-inputNumber [disabled]="isView" type="number" name="totalCost"
+                        [(ngModel)]="totalDownCost" class="" placeholder="Enter cost" (ngModelChange)="onDownCostChange($event)" 
+                        mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                    </div>
+                    <p class="info-message text-danger" *ngIf=" !month && (fData.submitted)">
+                      This is a mandatory field
+                    </p>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <div class="p-grid p-fluid card">
+        <div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+          <div id="basic" class="row">
+            <div class="col">
+              <ng-container *ngIf="method?.id === 1 || (method?.id === 2 && sharedCargos.includes(freightRoad.cargoType))">
+                <div class="p-field row container" style="margin-bottom: 10px;">
+                  <label for="year">Fuel Type * </label>
+                  <div class="col-9">
+                    <app-fuel-select
+                      (onUpdateFuel)="onUpdateFuel($event)"
+                      *ngIf="selectedUnit"
+                      [year]="freightRoad.year" 
+                      [countryCode]="selectedUnit.country.code"
+                      [es]="sourceName.Freight_road"
+                      [fuel]="freightRoad.fuelType"
+                      >
+                    </app-fuel-select>
+                    <!-- <p-dropdown [disabled]="isView" name="fuelType" [options]="fuelType1" [required]="true"
+                      [(ngModel)]="freightRoad.fuelType" #ffuelType="ngModel" placeholder="Select .." optionLabel="name"
+                      optionValue="code"
+                      appendTo="body"></p-dropdown> -->
+                  </div>
+                  <p class="info-message text-danger" *ngIf=" !freightRoad.fuelType && (fData.submitted)">
+                    This is a mandatory field
+                  </p>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="method?.id === 2 && sharedCargos.includes(freightRoad.cargoType)">
+                <div class="p-field row container" style="margin-bottom: 10px;">
+                    <label for="year">Distance travelled up/down*</label>
+                    <div class="col-6">
+                      <p-inputNumber [disabled]="isView" type="number" name="fuelConsumption"
+                        [(ngModel)]="freightRoad.upDistance" class=""
+                        placeholder="Enter Distance"  mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                    </div>
+                    <div class="col-3">
+                      <p-dropdown [disabled]="isView" name="fuel_unit" [options]="units.distance" [(ngModel)]="freightRoad.upDistance_unit"
+                        #ffuel_unit="ngModel" [autoDisplayFirst]="true" optionLabel="label" optionValue="code" class=" col-md-3"
+                        appendTo="body"></p-dropdown>
+                    </div>
+                    <p class="info-message text-danger" *ngIf=" !freightRoad.upDistance && (fData.submitted)">
+                      This is a mandatory field
+                    </p>
+                  
+                </div>
+              </ng-container>
+            </div>
+            <div class="col">
+              <ng-container *ngIf="method?.id === 1">
+                <div class="p-field row container" style="margin-bottom: 10px;">
+                    <label for="year">Fuel Consumption*</label>
+                    <div class="col-6">
+                      <p-inputNumber [disabled]="isView" type="number" name="fuelConsumption"
+                        [(ngModel)]="freightRoad.fuelConsumption" class=""
+                        placeholder="Enter Fuel Consumption"  mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                    </div>
+                    <div class="col-3">
+                      <p-dropdown [disabled]="isView" name="fuel_unit" [options]="units.fuel" [(ngModel)]="fuel_unit"
+                        #ffuel_unit="ngModel" [autoDisplayFirst]="true" optionLabel="label" class=" col-md-3"
+                        appendTo="body"></p-dropdown>
+                    </div>
+                    <p class="info-message text-danger" *ngIf=" !freightRoad.fuelConsumption && (fData.submitted)">
+                      This is a mandatory field
+                    </p>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="method?.id === 2 && sharedCargos.includes(freightRoad.cargoType)">
+                <div class="p-field row container" style="margin-bottom: 10px;">
+                    <label for="year">Fuel Economy*</label>
+                    <div class="col-6">
+                      <p-inputNumber [disabled]="isView" type="number" name="fuelEconomy"
+                        [(ngModel)]="freightRoad.fuelEconomy" class=""
+                        placeholder="Enter Fuel Consumption" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" ></p-inputNumber>
+                    </div>
+                    <div class="col-3">
+                      <p-dropdown [disabled]="isView" name="fuelEconomy_unit" [options]="units.fuelEconomy" [(ngModel)]="freightRoad.fuelEconomy_unit"
+                        #ffuel_unit="ngModel" [autoDisplayFirst]="true" optionLabel="label" optionValue="code" class=" col-md-3"
+                        appendTo="body"></p-dropdown>
+                    </div>
+                    <p class="info-message text-danger" *ngIf=" !freightRoad.fuelEconomy_unit && (fData.submitted)">
+                      This is a mandatory field
+                    </p>
+                  
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="basic" class="row" *ngIf="puesData && puesData.sourceType && puesData.sourceType.toString() === 'B'">
+          <div class="col-1" style="margin-left: 10px;">
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname"
+              [value]="true"></p-radioButton>
+            <label class="radio-l">Mobile</label>
+          </div>
+          <div class="col-2" style="margin-left: 10px;">
+            <p-radioButton (onClick)="isMobileChange()" [(ngModel)]="isMobile" class="radio-b" name="groupname"
+              [value]="false"></p-radioButton>
+            <label class="radio-l">Stationary</label>
+          </div>
+          <div class="col-9" style="margin-left: 10px;"> </div>
+          <br>
+        </div>
+
+        <div class="row justify-content-end">
+          <div class="row p-grid p-fluid col-md-6 col-sm-6">
+            <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+              <button class="btn btn-secondary text-uppercase" (click)="onBackClick()">
+                Back
+              </button>
+            </div>
+            <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+              <button *ngIf="!isNewEntry  && deletable" class="btn btn-danger text-uppercase" type="button"
+                (click)="onDeleteClick()">
+                Delete
+              </button>
+            </div>
+            <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+              <button [disabled]="creating || !puesAssigned || isDuplicated" class="btn btn-primary text-uppercase" type="submit">
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

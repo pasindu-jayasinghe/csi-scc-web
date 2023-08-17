@@ -1,0 +1,16 @@
+
+<div class="container">
+    <div class="p-grid p-fluid card">
+        <div style="padding: 0px 30px 0 30px">
+            <h6>Assign Emission Sources</h6>
+        </div>
+        <div class="row" style="padding: 0px 0px 0px 30px;">
+            <div class="p-field check" *ngFor="let emissionSource of emissionSources">
+                <div class="">
+                    <p-checkbox (onChange)="onChangeProjectES($event, emissionSource.id)" [disabled]="isView" [name]="emissionSource.name+'_emissionSources'" [value]="emissionSource" [(ngModel)]="selectedEmissionSource"></p-checkbox>
+                    <label class="check-box-label" for="la">{{ getName(emissionSource) | titlecase}}</label>
+                </div>                       
+            </div>                                    
+        </div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="row" style="width: 90.666667%;margin-bottom: 10px;margin-left: 4px;">
+    <div class="col">
+        <p style="font-size: 16px">{{ getName(pues.emissionSource) | titlecase}}</p>
+    </div>
+    <div class="col">    
+        <p-checkbox (onChange)="changeAdd()" name="Add" [value]="true" [(ngModel)]="add"></p-checkbox>
+        <label class="check-box-label" for="la">Add</label>
+    </div>
+
+    <div class="col">    
+        <p-checkbox (onChange)="changeEdit()" name="Edit" [value]="true" [(ngModel)]="edit"></p-checkbox>
+        <label class="check-box-label" for="la">Edit</label>
+    </div>
+
+    <div class="col">    
+        <p-checkbox (onChange)="changeDelete()" name="Delete" [value]="true" [(ngModel)]="deleteEs"></p-checkbox>
+        <label class="check-box-label" for="la">Delete</label>
+    </div>
+    <hr>
+</div>
+

@@ -1,0 +1,149 @@
+<div *ngIf="!hasErrors">
+  <!-- <div class="p-grid p-fluid card">
+    <div class="row">
+      <div class="col-6">
+        <div class="row">
+          <div class="col-4">
+            <label style="padding-top: 8px">All Units</label>
+          </div>
+          <div class="col-8">
+            <p-radioButton (onClick)="allUnitClick()" name="groupname" [value]="true" [(ngModel)]="isMultiUnit"></p-radioButton>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="row">
+          <div class="col-4">
+            <label style="padding-top: 8px">One Unit</label>
+          </div>
+          <div class="col-8">
+            <p-radioButton name="groupname" [value]="false" [(ngModel)]="isMultiUnit"></p-radioButton>
+          </div>
+        </div>
+        <div class="row" *ngIf="!isMultiUnit">
+          <p style="color: #ffa5007a;">If you decide to select 'All Units' again, Please remove the selected unit</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="p-grid p-fluid card">
+    <div class="row">
+      <div class="col-6" *ngIf="isMultiUnit">
+        <div class="row">
+          <div class="col-2">
+            <label style="padding-top: 8px">Unit</label>
+          </div>
+          <div class="col-8">
+            <app-unit-select [isView]="!isAnyAdmin" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>   
+          </div>
+        </div>
+      </div>
+      <div class="col-6" *ngIf="selectedUnit">
+        <div class="row">
+          <div class="col-2">
+            <label style="padding-top: 8px">Project</label>
+          </div>
+          <div class="col-8">
+            <app-project-select [unit]="selectedUnit" [withoutUnit]="true" [isView]="false" (onUpdateProject)="onChangeProject($event)"></app-project-select>               
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="p-grid p-fluid card">
+    <div class="row">
+      <p>Before filling in the data Please read the instructions sheet carefully.</p>
+    </div>
+    <div class="row" *ngIf="(!puesAssigned && !isMultiUnit)">
+      <p>This Emission source is not assigned to selected unit and project</p>
+    </div>
+  
+    <div class="row" *ngIf="!projectInDataEntry">
+      <p>This project is not in Data Entry mode</p>
+    </div>
+  
+    <div class="p-grid p-fluid col-md-12col-sm-12" *ngIf="(puesAssigned || isMultiUnit) && projectInDataEntry">
+      <div class="row">
+          <div class="col-6"></div>
+          <div class="col-4">
+              <p-button [disabled]="selectedProject == undefined " icon="pi pi-down" (click)="download()" label="Download Template"></p-button>
+          </div>
+      </div>
+    </div>
+  
+    <div id="basic" class="row" *ngIf="puesAssigned && projectInDataEntry && puesData && puesData.sourceType && puesData.sourceType.toString() === 'B'">
+      <div class="col-4" style="margin-left: 10px;">                    
+        <p-radioButton [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="true"></p-radioButton>
+        <label class="radio-l">Mobile</label>
+      </div> 
+  
+      <div class="col-4" style="margin-left: 10px;">                    
+        <p-radioButton [(ngModel)]="isMobile" class="radio-b" name="groupname" [value]="false"></p-radioButton>
+        <label class="radio-l">Stationary</label>
+      </div> 
+    </div>
+  
+    <br>
+  
+    <div class="p-grid p-fluid col-md-12 col-sm-12" *ngIf="(puesAssigned && projectInDataEntry && puesData && !puesData.clasification) && !isMultiUnit">
+      <div class="row p-2">
+        <div class="col-12 col-md-6">
+          <div class="p-field">
+            <label for="institution">Ownership *</label>
+            <p-dropdown
+              name="ownership"
+              [options]="ownerships"
+              [(ngModel)]="selecteOwnership"
+              #fOwnership="ngModel"
+              placeholder="Select .."
+              optionLabel="code"
+              optionValue="code"
+              appendTo="body"
+            ></p-dropdown>           
+          </div>
+        </div>
+      </div>
+      <br>
+    </div>
+  
+  
+    <br>
+    <div class="col-6" *ngIf="(puesAssigned || isMultiUnit) && projectInDataEntry">
+      <label for="institution">Select Excel file to upload *</label>
+      <app-file-uploader
+          [addable]="true"
+          [multiple]="false"
+          (onChangeFile)="onAddFile($event)"
+          (onDeleteFile)="onRemoveFile($event)"
+          ></app-file-uploader>
+    </div>
+  
+    <br>
+  
+    <div class="p-grid p-fluid col-md-12col-sm-12" *ngIf="(puesAssigned || isMultiUnit) && projectInDataEntry">
+      <div class="row">
+          <div class="col-6"></div>
+          <div class="col-4">
+              <p-button [disabled]="!uploadedExcellFile && !creating" icon="pi pi-check" (click)="onUpload($event)" label="Upload"></p-button>
+          </div>
+      </div>
+    </div>
+    
+  
+  </div>
+</div>
+
+<div *ngIf="hasErrors">
+  <div class="row">
+    <div class="col-9">
+      <p-messages [closable]="false" [(value)]="headerErrors"></p-messages>
+      <p-messages *ngIf="errorOnSaving" [closable]="false" [(value)]="errorOnSavingMsg"></p-messages>
+    </div>
+    <div class="col-3" style="margin-top: 2%;">
+      <!-- <button (click)="downloadErrors()" class="ml-4" type="button" pButton pRipple styleClass="p-button-warn">Download Errors</button> -->
+    </div>
+  </div>
+  <p-tree [value]="errorNodes"></p-tree>
+</div>

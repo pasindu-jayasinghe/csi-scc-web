@@ -1,0 +1,1062 @@
+<div class="container pl-25 pr-25">
+    <div class="mb-12">
+        <h4 class="mt-4">
+            {{ isNewEntry ? "Add" : isView ? "View" : "Edit" }} Use of Sold Products
+        </h4>
+    </div>
+    <form #fData="ngForm" (ngSubmit)="save(fData)" novalidate>
+        <div class="card">
+            <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isAnyAdmin">
+                <div class="row p-2">
+                    <div class="col-12 col-md-8">
+                        <div class="p-field">
+                            <label for="institution">Unit *</label>
+                            <app-unit-select [isView]="isView" [unit]="selectedUnit"
+                                (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-grid p-fluid col-md-9 col-sm-12" *ngIf="isProjectSelected">
+                <div class="row p-2">
+                    <div class="col-12 col-md-8">
+                        <div class="p-field">
+                            <label for="institution">Project *</label>
+                            <app-project-select [isView]="isView" [unit]="selectedUnit" [project]="soldProducts.project"
+                                (onUpdateProject)="onChangeProject($event)" [data]="fData"></app-project-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-grid p-fluid col-md-9 col-sm-12">
+                <div class="row p-2">
+                    <div class="col-12 col-md-8">
+                        <div class="p-field">
+                            <label for="institution">Year *</label>
+
+                            <input [disabled]="true" type="text" name="year" [(ngModel)]="soldProducts.year"
+                                class="form-control" placeholder="Enter Year" required />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-grid p-fluid col-md-9 col-sm-12">
+                <div class="row p-2">
+                    <div class="col-12 col-md-8">
+                        <div class="p-field">
+                            <label for="institution">Month * </label>
+                            <div class="row">
+                                <p-dropdown [disabled]="isView" name="institution" [options]="months"
+                                    [(ngModel)]="month" (onChange)="monthCgange()" #fmonth="ngModel"
+                                    placeholder="Select .." optionLabel="name" [required]="true"
+                                    appendTo="body"></p-dropdown>
+                            </div>
+                            <p class="info-message text-danger" *ngIf="
+                    !month && (fData.submitted || fmonth.touched || fmonth.dirty)
+                  ">
+                                This is a mandatory field
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-grid p-fluid col-md-9 col-sm-12">
+                <div class="row p-2">
+                    <div class="col-12 col-md-8">
+                        <div class="p-field">
+                            <label for="institution">Method * <i
+                                    pTooltip="Please remove unfilled data row by clicking '-' button in right side before save."
+                                    class="pi pi-info-circle " style="font-size: 1rem"></i></label>
+                            <p-dropdown (onChange)="onSelectMethod($event)" [disabled]="isView || !isNewEntry"
+                                name="method" [required]="true" [options]="methods_use_of_sold_products"
+                                [(ngModel)]="soldProducts.method" #fmethod="ngModel" placeholder="Select .."
+                                optionLabel="name" optionValue="code" appendTo="body"></p-dropdown>
+                            <p class="info-message text-danger"
+                                *ngIf="!soldProducts.method && (fData.submitted || fmethod.touched || fmethod.dirty)">
+                                This is a mandatory field
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="soldProducts.method == createNetZeroUseOfSoldProductDtoMethod.DIRECT_ENERGY">
+                <br />
+                <p>Sum across fuels consumed from use of products</p>
+                <div *ngIf="soldProducts.directEnergy.fuelData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Direct_fuel_consumption)"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2" *ngFor="let fuelData of soldProducts.directEnergy.fuelData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Fuel Type *</label>
+                                        <app-fuel-select *ngIf="selectedUnit"
+                                            (onUpdateFuel)="onUpdateFuel($event, fuelData)" [year]="soldProducts.year"
+                                            [countryCode]="selectedUnit.country.code"
+                                            [es]="sourceName.Use_of_sold_products" [fuel]="fuelData.fuel_type"
+                                            [isView]="isView">
+                                        </app-fuel-select>
+                                        <p class="info-message text-danger"
+                                            *ngIf=" !fuelData.fuel_type && (fData.submitted)">
+                                            This is a mandatory field
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Total lifetime expected uses of product *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'flifetime' + i" [(ngModel)]="fuelData.fuel_lifetime"
+                                            class="form-control" placeholder="Enter Lifetime" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!fuelData.fuel_lifetime && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Number sold in reporting period * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'fnumofprod' + i" [(ngModel)]="fuelData.fuel_number_of_sold"
+                                            class="form-control" placeholder="Enter Number of Sold" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!fuelData.fuel_number_of_sold && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Fuel consumed per use * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'fconsumption' + i" [(ngModel)]="fuelData.fuel_consumption"
+                                            class="form-control" placeholder="Enter Fuel Consumption" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!fuelData.fuel_consumption && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'fconsumptionunit' + i"
+                                            [options]="units.fuel_consumption"
+                                            [(ngModel)]="fuelData.fuel_consumption_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(soldProducts.directEnergy.fuelData, i)" pButton pRipple
+                                        icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="soldProducts.directEnergy.fuelData.length ==i + 1" class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Direct_fuel_consumption)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <p>Sum across electricity consumed from use of products</p>
+                <div *ngIf="soldProducts.directEnergy.electricityData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Direct_electricity_consumption)"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2"
+                        *ngFor="let elecData of soldProducts.directEnergy.electricityData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Total lifetime expected uses of product *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'elifetime' + i" [(ngModel)]="elecData.elec_lifetime"
+                                            class="form-control" placeholder="Enter Lifetime" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!elecData.elec_lifetime && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Number sold in reporting period *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'enumprod' + i" [(ngModel)]="elecData.elec_number_of_sold"
+                                            class="form-control" placeholder="Enter Number of Sold" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!elecData.elec_number_of_sold && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Electricity consumed per use * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'econsumption' + i" [(ngModel)]="elecData.elec_consumption"
+                                            class="form-control" placeholder="Enter Electricity Consumption" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!elecData.elec_consumption && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'econsumptionunit' + i"
+                                            [options]="units.electricity_consumption"
+                                            [(ngModel)]="elecData.elec_consumption_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(soldProducts.directEnergy.electricityData, i)" pButton
+                                        pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="soldProducts.directEnergy.electricityData.length ==i + 1" class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Direct_electricity_consumption)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <p>Sum across refrigerant leakage from use of products</p>
+                <div *ngIf="soldProducts.directEnergy.refrigerantData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Direct_refrigerant_leakage)"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2"
+                        *ngFor="let refData of soldProducts.directEnergy.refrigerantData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Refrigerant Type *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'reftype' + i" placeholder="Select Type"
+                                            [options]="refrigerant_types" [(ngModel)]="refData.ref_type"
+                                            #funit="ngModel" optionValue="name" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                        <p class="info-message text-danger"
+                                            *ngIf=" !refData.ref_type && (fData.submitted)">
+                                            This is a mandatory field
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Total lifetime expected uses of product *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'rlifetime' + i" [(ngModel)]="refData.ref_lifetime"
+                                            class="form-control" placeholder="Enter Lifetime" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!refData.ref_lifetime && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Number sold in reporting period * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'rnumofprod' + i" [(ngModel)]="refData.ref_number_of_sold"
+                                            class="form-control" placeholder="Enter Number of Sold" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!refData.ref_number_of_sold && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Refrigerant leakage per use * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'rconsumption' + i" [(ngModel)]="refData.ref_leakage"
+                                            class="form-control" placeholder="Enter Leakage" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!refData.ref_leakage && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'refunit' + i"
+                                            [options]="units.regrigerant_leakage" [(ngModel)]="refData.ref_leakage_unit"
+                                            #funit="ngModel" optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(soldProducts.directEnergy.refrigerantData, i)" pButton
+                                        pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="soldProducts.directEnergy.refrigerantData.length ==i + 1" class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Direct_refrigerant_leakage)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="soldProducts.method == createNetZeroUseOfSoldProductDtoMethod.DIRECT_COMBUSTED">
+                <div *ngIf="soldProducts.directCombusted.combustedData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_COMBUSTED, netZeroUseOfSoldProductActivityDataTypeName.Direct_combusted)"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2" *ngFor="let cData of soldProducts.directCombusted.combustedData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Fuel Type *</label>
+                                        <app-fuel-select *ngIf="selectedUnit"
+                                            (onUpdateFuel)="onUpdateFuel($event, cData)" [year]="soldProducts.year"
+                                            [countryCode]="selectedUnit.country.code"
+                                            [es]="sourceName.Use_of_sold_products" [fuel]="cData.fuel_type"
+                                            [isView]="isView">
+                                        </app-fuel-select>
+                                        <p class="info-message text-danger"
+                                            *ngIf=" !cData.fuel_type && (fData.submitted)">
+                                            This is a mandatory field
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Total quantity of fuel/feedstock sold *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'cQuantity' + i" [(ngModel)]="cData.total_quantity"
+                                            class="form-control" placeholder="Enter Quantity" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!cData.total_quantity && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView" [name]="'quantity_unit' + i"
+                                            [options]="units.fuel_consumption" [(ngModel)]="cData.total_quantity_unit"
+                                            #funit="ngModel" optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(soldProducts.directCombusted.combustedData, i)" pButton
+                                        pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="soldProducts.directCombusted.combustedData.length ==i + 1" class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_COMBUSTED, netZeroUseOfSoldProductActivityDataTypeName.Direct_combusted)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="soldProducts.method == createNetZeroUseOfSoldProductDtoMethod.DIRECT_GREENHOUSE">
+                <div *ngIf="soldProducts.directGreenhouse.greenhouseData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_GREENHOUSE, netZeroUseOfSoldProductActivityDataTypeName.Direct_Greenhouse)"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2"
+                        *ngFor="let gData of soldProducts.directGreenhouse.greenhouseData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>GHG Type *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'ghgtype' + i" placeholder="Select Type"
+                                            [options]="ghg_types" [(ngModel)]="gData.ghg_type" #funit="ngModel"
+                                            optionValue="code" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                        <p class="info-message text-danger"
+                                            *ngIf=" !gData.ghg_type && (fData.submitted)">
+                                            This is a mandatory field
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>GHG contained per product *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'ighgcont' + i" [(ngModel)]="gData.ghg_amount" class="form-control"
+                                            placeholder="Enter GHG contained per product" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!gData.ghg_amount && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'ghgamountunit' + i" [options]="units.ghg_emit"
+                                            [(ngModel)]="gData.ghg_amount_unit" #funit="ngModel" optionValue="code"
+                                            optionLabel="label" class="col-4" appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Total Number of products sold *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'gnumprod' + i" [(ngModel)]="gData.number_of_products"
+                                            class="form-control" placeholder="Enter Number of Sold" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!gData.number_of_products && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Percentage of GHG released during lifetime use of product * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'gpercentage' + i" [(ngModel)]="gData.percentage_of_released"
+                                            class="form-control" placeholder="Enter Percentage" required>
+                                        <p class="info-message text-danger"
+                                            *ngIf="!gData.percentage_of_released && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(soldProducts.directGreenhouse.greenhouseData, i)" pButton
+                                        pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="soldProducts.directGreenhouse.greenhouseData.length ==i + 1" class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_GREENHOUSE, netZeroUseOfSoldProductActivityDataTypeName.Direct_Greenhouse)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="soldProducts.method == createNetZeroUseOfSoldProductDtoMethod.INDIRECT_ENERGY">
+                <br />
+                <p>Sum across fuels consumed from use scenarios </p>
+                <div *ngIf="soldProducts.indirectEnergy.fuelData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.INDIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Indirect_fuel_consumption)"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2" *ngFor="let fuelData of soldProducts.indirectEnergy.fuelData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Fuel Type *</label>
+                                        <app-fuel-select
+                                            *ngIf="selectedUnit && soldProducts.year && selectedUnit.country?.code"
+                                            (onUpdateFuel)="onUpdateFuel($event, fuelData)" [year]="soldProducts.year"
+                                            [countryCode]="selectedUnit.country.code"
+                                            [es]="sourceName.Use_of_sold_products" [fuel]="fuelData.fuel_type"
+                                            [isView]="isView">
+                                        </app-fuel-select>
+                                        <p class="info-message text-danger"
+                                            *ngIf=" !fuelData.fuel_type && (fData.submitted)">
+                                            This is a mandatory field
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Total lifetime expected uses of product *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'iflifetime' + i" [(ngModel)]="fuelData.indir_fuel_lifetime"
+                                            class="form-control" placeholder="Enter Lifetime" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!fuelData.indir_fuel_lifetime && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Percentage of total lifetime uses using this scenario * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'ifpercentage' + i"
+                                            [(ngModel)]="fuelData.indir_fuel_percentage_of_lifetime"
+                                            class="form-control" placeholder="Enter Percentage" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!fuelData.indir_fuel_percentage_of_lifetime && fData.submitted">This
+                                            is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Number sold in reporting period * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'ifnumofprod' + i" [(ngModel)]="fuelData.indir_fuel_number_of_sold"
+                                            class="form-control" placeholder="Enter Number of Sold" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!fuelData.indir_fuel_number_of_sold && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Fuel consumed per use in this scenario * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'ifconsumption' + i" [(ngModel)]="fuelData.indir_fuel_consumption"
+                                            class="form-control" placeholder="Enter Fuel Consumption" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!fuelData.indir_fuel_consumption && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'ifuelconsumptionunit' + i"
+                                            [options]="units.fuel_consumption"
+                                            [(ngModel)]="fuelData.indir_fuel_consumption_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(soldProducts.indirectEnergy.fuelData, i)" pButton pRipple
+                                        icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="soldProducts.indirectEnergy.fuelData.length ==i + 1" class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.INDIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Indirect_fuel_consumption)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <p>Sum across electricity consumed from use scenarios</p>
+                <div *ngIf="soldProducts.indirectEnergy.electricityData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Indirect_electricity_consumption)"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2"
+                        *ngFor="let elecData of soldProducts.indirectEnergy.electricityData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Total lifetime expected uses of product *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'ielifetime' + i" [(ngModel)]="elecData.indir_elec_lifetime"
+                                            class="form-control" placeholder="Enter Lifetime" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!elecData.indir_elec_lifetime && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Percentage of total lifetime uses using this scenario *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'iepercentage' + i"
+                                            [(ngModel)]="elecData.indir_elec_percentage_of_lifetime"
+                                            class="form-control" placeholder="Enter Percentage" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!elecData.indir_elec_percentage_of_lifetime && fData.submitted">This
+                                            is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Number sold in reporting period *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'ienumprod' + i" [(ngModel)]="elecData.indir_elec_number_of_sold"
+                                            class="form-control" placeholder="Enter Number of Sold" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!elecData.indir_elec_number_of_sold && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Electricity consumed per use * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'ieconsumption' + i" [(ngModel)]="elecData.indir_elec_consumption"
+                                            class="form-control" placeholder="Enter Electricity Consumption" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!elecData.indir_elec_consumption && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'ifconsumptionunit' + i"
+                                            [options]="units.electricity_consumption"
+                                            [(ngModel)]="elecData.indir_elec_consumption_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(soldProducts.indirectEnergy.electricityData, i)" pButton
+                                        pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="soldProducts.indirectEnergy.electricityData.length ==i + 1" class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.DIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Indirect_electricity_consumption)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <p>Sum across refrigerant leakage from use scenarios</p>
+                <div *ngIf="soldProducts.indirectEnergy.refrigerantData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.INDIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Indirect_refrigerant_leakage)"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2"
+                        *ngFor="let refData of soldProducts.indirectEnergy.refrigerantData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Refrigerant Type *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'ireftype' + i" placeholder="Select Type"
+                                            [options]="refrigerant_types" [(ngModel)]="refData.ref_type"
+                                            #funit="ngModel" optionValue="name" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                        <p class="info-message text-danger"
+                                            *ngIf=" !refData.ref_type && (fData.submitted)">
+                                            This is a mandatory field
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Total lifetime expected uses of product *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'irlifetime' + i" [(ngModel)]="refData.indir_ref_lifetime"
+                                            class="form-control" placeholder="Enter Lifetime" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!refData.indir_ref_lifetime && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Percentage of total lifetime uses using this scenario * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'irpercentage' + i"
+                                            [(ngModel)]="refData.indir_ref_percentage_of_lifetime" class="form-control"
+                                            placeholder="Enter Percentage" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!refData.indir_ref_percentage_of_lifetime && fData.submitted">This is
+                                            a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Number sold in reporting period * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'irnumofprod' + i" [(ngModel)]="refData.indir_ref_number_of_sold"
+                                            class="form-control" placeholder="Enter Number of Sold" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!refData.indir_ref_number_of_sold && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Refrigerant leakage per use in this scenario * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'irconsumption' + i" [(ngModel)]="refData.indir_ref_leakage"
+                                            class="form-control" placeholder="Enter Leakage" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!refData.indir_ref_leakage && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'irefunit' + i"
+                                            [options]="units.regrigerant_leakage"
+                                            [(ngModel)]="refData.indir_ref_leakage_unit" #funit="ngModel"
+                                            optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(soldProducts.indirectEnergy.refrigerantData, i)" pButton
+                                        pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="soldProducts.indirectEnergy.refrigerantData.length ==i + 1" class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.INDIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Indirect_refrigerant_leakage)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p>Sum across GHG emitted indirectly from use scenarios</p>
+                <div *ngIf="soldProducts.indirectEnergy.ghgData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.INDIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Indirect_GHG_emitted)"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2" *ngFor="let ghgData of soldProducts.indirectEnergy.ghgData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>GHG Type *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'ighgtype' + i" placeholder="Select Type"
+                                            [options]="ghg_types" [(ngModel)]="ghgData.ghg_type" #funit="ngModel"
+                                            optionValue="code" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                        <p class="info-message text-danger"
+                                            *ngIf=" !ghgData.ghg_type && (fData.submitted)">
+                                            This is a mandatory field
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Total lifetime expected uses of product *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'grlifetime' + i" [(ngModel)]="ghgData.indir_ghg_lifetime"
+                                            class="form-control" placeholder="Enter Lifetime" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!ghgData.indir_ghg_lifetime && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Percentage of total lifetime uses using this scenario * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'igpercentage' + i"
+                                            [(ngModel)]="ghgData.indir_ghg_percentage_of_lifetime" class="form-control"
+                                            placeholder="Enter Percentage" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!ghgData.indir_ghg_percentage_of_lifetime && fData.submitted">This is
+                                            a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Number sold in reporting period * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'gnumofprod' + i" [(ngModel)]="ghgData.indir_ghg_number_of_sold"
+                                            class="form-control" placeholder="Enter Number of Sold" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!ghgData.indir_ghg_number_of_sold && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>GHG emitted indirectly * </label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'igconsumption' + i" [(ngModel)]="ghgData.indir_ghg_emit"
+                                            class="form-control" placeholder="Enter GHG Emission" />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!ghgData.indir_ghg_emit && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView" [name]="'ighgunit' + i"
+                                            [options]="units.ghg_emit" [(ngModel)]="ghgData.indir_ghg_emit_unit"
+                                            #funit="ngModel" optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(soldProducts.indirectEnergy.ghgData, i)" pButton pRipple
+                                        icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="soldProducts.indirectEnergy.ghgData.length ==i + 1" class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.INDIRECT_ENERGY, netZeroUseOfSoldProductActivityDataTypeName.Indirect_GHG_emitted)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="soldProducts.method == createNetZeroUseOfSoldProductDtoMethod.INTERMEDIATE_PRODUCTS">
+                <div *ngIf="soldProducts.intermediateProducts.intermediateData.length === 0" class="col-2">
+                    <button class="ml-1" type="button"
+                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.INTERMEDIATE_PRODUCTS, netZeroUseOfSoldProductActivityDataTypeName.Intermediate_products)"
+                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                </div>
+                <div class="p-grid p-fluid col-md-12 col-sm-12 bg-row">
+                    <div class="row p-2"
+                        *ngFor="let intData of soldProducts.intermediateProducts.intermediateData;let i = index">
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Product Type *</label>
+                                        <p-dropdown [disabled]="isView" [name]="'inttype' + i" placeholder="Select Type"
+                                            [options]="intermediate_products" [(ngModel)]="intData.product_type"
+                                            #funit="ngModel" optionValue="code" optionLabel="name" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                        <p class="info-message text-danger"
+                                            *ngIf=" !intData.product_type && (fData.submitted)">
+                                            This is a mandatory field
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Total intermediate products sold *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'intsold' + i" [(ngModel)]="intData.intermediate_sold"
+                                            class="form-control" placeholder="Enter Total Products" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!intData.intermediate_sold && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Total lifetime uses of final sold product *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'intlifetime' + i" [(ngModel)]="intData.intermediate_lifetime"
+                                            class="form-control" placeholder="Enter Lifetime" required />
+                                        <p class="info-message text-danger"
+                                            *ngIf="!intData.intermediate_lifetime && fData.submitted">This is a
+                                            mandatory field</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <div class="row p-2">
+                                <div class="col-4 col-md-4">
+                                    <div class="p-field">
+                                        <label>Emission factor per use of sold intermediate product *</label>
+                                        <input [disabled]="isView" type="number" step="any" min="0"
+                                            oninput="if(isNaN(this.value) || this.value < 0) this.value = 0"
+                                            [name]="'intef' + i" [(ngModel)]="intData.intermediate_ef"
+                                            class="form-control" placeholder="Enter Emission Factor"  />
+                                    </div>
+                                </div>
+                                <div class="col-2 col-md-2">
+                                    <div class="p-field">
+                                        <label>Unit </label>
+                                        <p-dropdown [disabled]="isView"
+                                            [name]="'intefunit' + i"
+                                            [options]="units.intermediate_ef" [(ngModel)]="intData.intermediate_ef_unit"
+                                            #funit="ngModel" optionValue="code" optionLabel="label" class="col-4"
+                                            appendTo="body"></p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!isView" class="col-2 col-md-2">
+                            <div class="row">
+                                <div class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="removeRow(soldProducts.intermediateProducts.intermediateData, i)"
+                                        pButton pRipple icon="pi pi-minus" styleClass="p-button-warn"></button>
+                                </div>
+                                <div *ngIf="soldProducts.intermediateProducts.intermediateData.length ==i + 1"
+                                    class="col-2">
+                                    <button class="ml-1" type="button"
+                                        (click)="addNewDataObject(createNetZeroUseOfSoldProductDtoMethod.INTERMEDIATE_PRODUCTS, netZeroUseOfSoldProductActivityDataTypeName.Intermediate_products)"
+                                        pButton pRipple icon="pi pi-plus" styleClass="p-button-warn"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <p class="info-message text-danger ml-5 col-6" *ngIf="fData.submitted && !fData.valid">
+                    One or more mandatory fields should be filled before save action.
+                </p>
+            </div>
+            <br />
+
+            <div class="row p-grid p-fluid col-md-6 col-sm-6">
+                <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+                    <button class="btn btn-secondary text-uppercase" (click)="onBackClick()">Back</button>
+                </div>
+                <div class="d-flex col-4 justify-content-start p-button-vertical mb-0 pl-2">
+                    <button *ngIf="!isNewEntry && deletable && !isView" class="btn btn-danger text-uppercase"
+                        type="button" (click)="onDeleteClick()">Delete</button>
+                </div>
+                <div class="d-flex col-4 justify-content-end p-button-vertical mb-0 pl-2">
+                    <button [disabled]="creating || !puesAssigned || isDuplicated"
+                        class="btn btn-primary text-uppercase" type="submit" *ngIf="!isView">Save</button>
+                </div>
+            </div>
+            <div class="row"></div>
+        </div>
+    </form>
+</div>

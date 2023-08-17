@@ -1,0 +1,11 @@
+
+<button
+    class="ml-4"
+    type="button"
+    (click)="add()"
+    pButton
+    pRipple
+    icon="pi pi-plus"
+    styleClass="p-button-warn"
+></button>
+<app-one-year-emissio-item [selectedUnit]="selectedUnit" *ngFor="let prevEmission of prevEmissionList" [esList]="esList" [year]="year" [projectType]="projectType" [prevEmission]="prevEmission"></app-one-year-emissio-item>

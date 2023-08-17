@@ -1,0 +1,14 @@
+<p-dropdown 
+    *ngIf="fuels.length > 0"
+    [disabled]="isView" 
+    name="fuelType" 
+    [options]="fuels" 
+    [(ngModel)]="fuel"
+    (onChange)="onChangeFuel($event)"
+    [required]="true" 
+    placeholder="Select .."
+    optionLabel="name"
+    optionValue="code"
+    appendTo="body"
+    >
+</p-dropdown>

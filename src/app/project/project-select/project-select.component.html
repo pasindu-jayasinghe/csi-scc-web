@@ -1,0 +1,16 @@
+<p-dropdown
+    *ngIf="projects.length >0"
+    [disabled]="isView"
+    (onChange)="onChangeProject($event)"
+    name="project"
+    [options]="projects"
+    [(ngModel)]="project"
+    #fproject="ngModel"
+    placeholder="Select .."
+    optionLabel="name"      
+    appendTo="body"
+    [filter]="true" filterBy="name" [showClear]="true"
+></p-dropdown>
+<p class="info-message text-danger" *ngIf="!project &&  (data && data.submitted)">
+    This is a mandatory field
+</p>

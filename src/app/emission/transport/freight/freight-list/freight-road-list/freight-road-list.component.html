@@ -1,0 +1,180 @@
+<div class="container">
+  <div class="row">
+    <h4 class="mt-4 col-5">Road Freight <span (click)="watchVideo()" pTooltip="Click to watch guidance video"  class="infor-video"><i class="pi pi-video"></i></span></h4>
+
+    <div class="row">
+      <div class="col">
+        <button *ngIf="creatable" class="ml-4" type="button" (click)="newFreightRoad()" pButton pRipple icon="pi pi-plus"
+          styleClass="p-button-warn"></button>
+      </div>
+      <div pTooltip="Delete selected all records" class="col" *ngIf="selected.length > 0 && deletable">
+        <button class="ml-4" icon="pi pi-times" class="p-button p-button-danger p-button-outlined" type="button" (click)="deleteAll(esCode.toString())" pButton></button>
+      </div>
+      <div class="col-2" *ngIf="!isAuditor && creatable && excellUploadable">
+        <button class="ml-4" type="button" (click)="uploadExcell()" pButton pRipple
+          style="width: 150px;margin-left: 4px;" styleClass="p-button-warn"> Upload Excel
+        </button>
+      </div>
+    </div>
+    <!-- <button
+      *ngIf="creatable"
+      class="col-6"
+      type="button"
+      (click)="newFreightRoad()"
+      pButton
+      pRipple
+      icon="pi pi-plus"
+      styleClass="p-button-warn"
+      style="height: fit-content; margin-top:2.5%"
+  ></button> -->
+</div>
+    <div class="p-grid p-fluid card">
+      <div class="row">
+        <div class="col-5" *ngIf="!isAuditor">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">Unit</label>
+            </div>
+            <div class="col-8">
+              <app-unit-select [isView]="!isAnyAdmin" (onUpdateUnit)="onUpdateUnit($event)"></app-unit-select>   
+            </div>
+          </div>
+        </div>
+        <div class="col-5">
+          <div class="row">
+            <div class="col-2">
+              <label style="padding-top: 8px">Project</label>
+            </div>
+            <div class="col-8">
+              <app-project-select   [project]="selectedProject" [isView]="false" (onUpdateProject)="onChangeProject($event)"></app-project-select>               
+            </div>
+          </div>
+        </div>
+        <div class="col-2" *ngIf=" downloadable">
+          <button class="ml-4" type="button" (click)="downloadExcel()" pButton pRipple
+          style="width: 150px;margin-left: 4px;" styleClass="p-button-warn"> Download Excel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-fluid card">
+
+  
+      <p-table
+      dataKey="id"
+      (selection)="selected"
+      selectionMode="multiple" 
+      [rowSelectable]="isRowSelectable"
+      (selectAllChange)="onSelectAllChange($event)"
+      (selectionChange)="onSelectionChange($event)"
+      paginatorDropdownAppendTo="body"
+       [value]="freightRoadData"
+       [lazy]="true"
+       (onLazyLoad)="load($event)"
+       [paginator]="true"
+       [rows]="rows"
+       [showCurrentPageReport]="true"
+       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+       [rowsPerPageOptions]="[10,25,50]"
+       [totalRecords]="totalRecords"
+       [loading]="loading"
+       >
+        <ng-template pTemplate="header">
+          <tr>
+                       
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th> 
+            <th></th>        
+            <th>Project</th>
+            <th>Vehicle No</th>
+            <th>Method</th>
+            <th>Domestic/International</th>
+            <th>Ownership</th>
+            <!-- <th>Freight Type</th> -->
+            <th>Cargo Type</th>
+            <th>OneWay/TwoWay</th>
+            <th>No of Trips</th>
+            <th pSortableColumn="month">Month<p-sortIcon field="month"></p-sortIcon></th>  
+            <th pSortableColumn="year">Year<p-sortIcon field="year"></p-sortIcon></th>           
+            <th>Up Distance Unit</th> 
+            <th>Down Distance Unit</th>
+            <th>Up Distance</th>
+            <th>Down Distance</th>
+            <th>Up Weight</th> 
+            <th>Down Weight</th>  
+            <th>Up Weight Unit</th> 
+            <th>Down Weight Unit</th>            
+            <th>Up Cost</th> 
+            <th>Down Cost</th>
+            <th>Up Cost Per KM</th>
+            <th>Down Cost Per KM</th>
+            <th>Fuel Type</th>
+            <th>Fuel Consumption</th>
+            <th>Fuel Unit</th> 
+            <!-- <th>Emission</th> -->
+            <th>Emission (CO<sub>2</sub>)</th>
+            <th>Emission (CH<sub>4</sub>)</th>
+            <th>Emission (N<sub>2</sub>O)</th>
+            <th>Total Emission</th>
+  
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-freightRoad>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="freightRoad" ></p-tableCheckbox>
+            </td>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button  *ngIf="viewable" (click)="view(freightRoad.id)" pButton pRipple type="button" icon="pi pi-eye" class="p-button p-button-success p-button-outlined"></button>
+                <button  *ngIf="editable" (click)="edit(freightRoad.id)" pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-button-warning p-button-outlined"></button>
+                <button  *ngIf="deletable" (click)="onDeleteClick(freightRoad.id)" pButton pRipple type="button" icon="pi pi-times" class="p-button p-button-danger p-button-outlined"></button>
+                <button *ngIf="isAuditor && requestable" (click)="onCheck(freightRoad, esCode)" pButton pRipple type="button"
+                  icon="pi pi-check-circle" class="p-button p-button-success p-button-outlined"></button>
+              </div>
+            </td>
+
+            <td>{{ freightRoad.project.name }}</td>
+            <td>{{ freightRoad.vehicleNo }}</td>
+            <td>{{ freightRoad.method }}</td>
+            <td>{{ freightRoad.domOrInt }}</td>
+            <td>{{ freightRoad.ownership }}</td>
+            <!-- <td>{{ freightRoad.freightType }}</td> -->
+            <td>{{ freightRoad.cargoType }}</td>
+            <td>{{ freightRoad.option }}</td>
+            <td>{{ freightRoad.noOfTrips }}</td>
+            <td>{{ getMonth(freightRoad.month) }}</td>
+            <td>{{ freightRoad.year }}</td>
+            <td>{{ parameterUnits && parameterUnits[freightRoad.upDistance_unit] ? parameterUnits[freightRoad.upDistance_unit].label: '-' }}</td>
+            <td>{{ parameterUnits && parameterUnits[freightRoad.downDistance_unit] ? parameterUnits[freightRoad.downDistance_unit].label: '-' }}</td>
+            <td>{{ freightRoad.upDistance }}</td>
+            <td>{{ freightRoad.downDistance }}</td>
+            <td>{{ freightRoad.upWeight }}</td>
+            <td>{{ freightRoad.downWeight }}</td>
+            <td>{{ parameterUnits && parameterUnits[freightRoad.upWeight_unit] ? parameterUnits[freightRoad.upWeight_unit].label: '-' }}</td>
+            <td>{{ parameterUnits && parameterUnits[freightRoad.downWeight_unit] ? parameterUnits[freightRoad.downWeight_unit].label: '-' }}</td>
+            <td>{{ freightRoad.upCost }}</td>
+            <td>{{ freightRoad.downCost }}</td>
+            <td>{{ freightRoad.upCostPerKM }}</td>
+            <td>{{ freightRoad.downCostPerKM }}</td>
+            <td>{{ getFuelName(freightRoad.fuelType) }}</td>
+            <td>{{ freightRoad.fuelConsumption }}</td>
+            <td>{{ parameterUnits && parameterUnits[freightRoad.fuelConsumption_unit] ? parameterUnits[freightRoad.fuelConsumption_unit].label: '-' }}</td>
+            <!-- <td>{{ freightRoad.emission }}</td> -->
+            <td>{{ freightRoad.e_sc_co2 | number:'1.4-4'}}</td>
+            <td>{{ freightRoad.e_sc_ch4 | number:'1.4-4'}}</td>
+            <td>{{ freightRoad.e_sc_n2o | number:'1.4-4'}}</td>
+            <td>{{ freightRoad.e_sc | number:'1.4-4'}}</td>
+  
+  
+  
+  
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  
+
